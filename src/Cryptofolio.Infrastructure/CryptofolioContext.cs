@@ -1,3 +1,4 @@
+using Cryptofolio.Core;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cryptofolio.Infrastructure
@@ -7,6 +8,11 @@ namespace Cryptofolio.Infrastructure
     /// </summary>
     public class CryptofolioContext : DbContext
     {
+        /// <summary>
+        /// The assets set.
+        /// </summary>
+        public DbSet<Asset> Assets { get; set; }
+
         /// <summary>
         /// Creates a new instance of <see cref="CryptofolioContext"/>.
         /// </summary>
