@@ -1,0 +1,27 @@
+﻿# This script can be used to bootstrap development dependencies.
+
+version: "3.8"
+
+services:
+
+  cryptofolio-postgres:
+    image: postgres:13.1
+    ports:
+      - "55432:5432"
+    environment:
+      - POSTGRES_USER=cryptofolio
+      - POSTGRES_PASSWORD=Pass@word1
+      - POSTGRES_DB=cryptofolio
+    restart: unless-stopped
+
+  cryptofolio-kafka:
+    image: lensesio/fast-data-dev:latest
+    ports:
+      - "2181:2181"
+      - "3030:3030"
+      - "8081-8083:8081-8083"
+      - "9581-9585:9581-9585"
+      - "9092:9092"
+    environment:
+      - ADV_HOST=localhost
+    restart: unless-stopped

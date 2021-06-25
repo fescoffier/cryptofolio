@@ -3,9 +3,69 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{FDD6F67D-6FBE-47BF-8FBA-BAEA74EC119D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{4487B702-0ED4-43BE-8FD1-76F0BA28AD6D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{F80CA797-A4CA-4C02-9496-5518EAA9F03E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Collector", "Collector", "{98EE018B-8036-483A-BACD-6FB1C3E8127E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Handlers", "Handlers", "{E00D633C-F653-4FFB-AE0D-811CE4827DA7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EC9DE59C-48BD-493E-9EDB-549BCC310239}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		global.json = global.json
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Core", "src\Cryptofolio.Core\Cryptofolio.Core.csproj", "{C0F02C0A-C0FA-439B-AF67-C37C920EC2C3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Infrastructure", "src\Cryptofolio.Infrastructure\Cryptofolio.Infrastructure.csproj", "{CD61234C-A011-4898-AA23-92BCEE327394}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Collector.Job", "src\Cryptofolio.Collector.Job\Cryptofolio.Collector.Job.csproj", "{959A924C-B33D-46AA-B207-2D3FC76857E8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Infrastructure.Tests", "test\Cryptofolio.Infrastructure.Tests\Cryptofolio.Infrastructure.Tests.csproj", "{FE542C69-F183-4834-8764-0E113B45D436}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Infrastructure.IntegrationTests", "test\Cryptofolio.Infrastructure.IntegrationTests\Cryptofolio.Infrastructure.IntegrationTests.csproj", "{9D92F72E-6284-4081-810B-AED5C625AECA}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C0F02C0A-C0FA-439B-AF67-C37C920EC2C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0F02C0A-C0FA-439B-AF67-C37C920EC2C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0F02C0A-C0FA-439B-AF67-C37C920EC2C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0F02C0A-C0FA-439B-AF67-C37C920EC2C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD61234C-A011-4898-AA23-92BCEE327394}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD61234C-A011-4898-AA23-92BCEE327394}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD61234C-A011-4898-AA23-92BCEE327394}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD61234C-A011-4898-AA23-92BCEE327394}.Release|Any CPU.Build.0 = Release|Any CPU
+		{959A924C-B33D-46AA-B207-2D3FC76857E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{959A924C-B33D-46AA-B207-2D3FC76857E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{959A924C-B33D-46AA-B207-2D3FC76857E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{959A924C-B33D-46AA-B207-2D3FC76857E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE542C69-F183-4834-8764-0E113B45D436}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE542C69-F183-4834-8764-0E113B45D436}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE542C69-F183-4834-8764-0E113B45D436}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE542C69-F183-4834-8764-0E113B45D436}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D92F72E-6284-4081-810B-AED5C625AECA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D92F72E-6284-4081-810B-AED5C625AECA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D92F72E-6284-4081-810B-AED5C625AECA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D92F72E-6284-4081-810B-AED5C625AECA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C0F02C0A-C0FA-439B-AF67-C37C920EC2C3} = {4487B702-0ED4-43BE-8FD1-76F0BA28AD6D}
+		{CD61234C-A011-4898-AA23-92BCEE327394} = {F80CA797-A4CA-4C02-9496-5518EAA9F03E}
+		{959A924C-B33D-46AA-B207-2D3FC76857E8} = {98EE018B-8036-483A-BACD-6FB1C3E8127E}
+		{FE542C69-F183-4834-8764-0E113B45D436} = {F80CA797-A4CA-4C02-9496-5518EAA9F03E}
+		{9D92F72E-6284-4081-810B-AED5C625AECA} = {F80CA797-A4CA-4C02-9496-5518EAA9F03E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7F9B8C09-ECC1-413C-92A4-58299272789F}
