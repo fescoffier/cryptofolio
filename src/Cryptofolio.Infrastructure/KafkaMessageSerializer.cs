@@ -27,7 +27,7 @@ namespace Cryptofolio.Infrastructure
         {
             using var ms = new MemoryStream();
             using var writer = new Utf8JsonWriter(ms);
-            JsonSerializer.Serialize<TMessage>(writer, data, Options.ValueSerilializerOptions);
+            JsonSerializer.Serialize(writer, data, data.GetType(), Options.ValueSerilializerOptions);
             return ms.ToArray();
         }
 

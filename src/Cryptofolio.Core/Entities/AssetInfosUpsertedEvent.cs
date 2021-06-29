@@ -8,13 +8,13 @@ namespace Cryptofolio.Core.Entities
     public class AssetInfosUpsertedEvent : IEvent
     {
         /// <inheritdoc/>
-        public DateTimeOffset Date { get; init; }
+        public DateTimeOffset Date { get; }
 
         /// <inheritdoc/>
-        public string UserId { get; init; }
+        public string UserId { get; }
 
         /// <inheritdoc/>
-        public string Username { get; init; }
+        public string Username { get; }
 
         /// <inheritdoc/>
         public string Category => EventConstants.Categories.Asset;
@@ -22,6 +22,6 @@ namespace Cryptofolio.Core.Entities
         /// <summary>
         /// The asset that has been inserted/updated.
         /// </summary>
-        public Asset Asset { get; init; }
+        public Asset Asset { get; }
     }
 }
