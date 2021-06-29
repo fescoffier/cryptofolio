@@ -6,7 +6,7 @@ namespace Cryptofolio.Collector.Job
     public class CoingeckoOptions
     {
         /// <summary>
-        /// The URI the API can be reached.
+        /// The URI where the API can be reached.
         /// </summary>
         public string ApiUri { get; set; }
     }

@@ -1,4 +1,4 @@
-namespace Cryptofolio.Core
+namespace Cryptofolio.Core.Entities
 {
     /// <summary>
     /// Models an asset.

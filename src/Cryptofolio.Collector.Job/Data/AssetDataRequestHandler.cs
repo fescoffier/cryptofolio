@@ -1,6 +1,7 @@
 using CoinGecko.Entities.Response.Coins;
 using CoinGecko.Interfaces;
 using Cryptofolio.Core;
+using Cryptofolio.Core.Entities;
 using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Data;
 using MediatR;
@@ -13,20 +14,20 @@ using System.Threading.Tasks;
 
 namespace Cryptofolio.Collector.Job.Data
 {
-    public class AssetRequestHandler : IPipelineBehavior<AssetDataRequest, Unit>
+    public class AssetDataRequestHandler : IPipelineBehavior<AssetDataRequest, Unit>
     {
         private readonly CryptofolioContext _context;
         private readonly ICoinsClient _coinsClient;
         private readonly IEventDispatcher _dispatcher;
         private readonly ISystemClock _systemClock;
-        private readonly ILogger<AssetRequestHandler> _logger;
+        private readonly ILogger<AssetDataRequestHandler> _logger;
 
-        public AssetRequestHandler(
+        public AssetDataRequestHandler(
             CryptofolioContext context,
             ICoinsClient coinsClient,
             IEventDispatcher dispatcher,
             ISystemClock systemClock,
-            ILogger<AssetRequestHandler> logger)
+            ILogger<AssetDataRequestHandler> logger)
         {
             _context = context;
             _coinsClient = coinsClient;

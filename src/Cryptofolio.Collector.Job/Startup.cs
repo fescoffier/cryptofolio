@@ -1,7 +1,11 @@
 using CoinGecko.Clients;
 using CoinGecko.Interfaces;
 using Confluent.Kafka;
+using Cryptofolio.Collector.Job.Data;
+using Cryptofolio.Core;
 using Cryptofolio.Infrastructure;
+using Cryptofolio.Infrastructure.Data;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -39,6 +43,19 @@ namespace Cryptofolio.Collector.Job
                 }
             });
 
+            // Kafka
+            services.AddProducer<AssetDataRequest>(options =>
+            {
+                options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(AssetDataRequest).FullName}").Get<string>();
+                options.Config = Configuration.GetSection("Kafka:Consumer").Get<ProducerConfig>();
+            });
+            services.AddConsumer<AssetDataRequest>(options =>
+            {
+                options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(AssetDataRequest).FullName}").Get<string>();
+                options.Config = Configuration.GetSection("Kafka:Consumer").Get<ConsumerConfig>();
+            });
+            services.AddTransient<IEventDispatcher, KafkaEventDispatcher>();
+
             // Coingecko
             services.Configure<CoingeckoOptions>(Configuration.GetSection("Coingecko"));
             services
@@ -47,6 +64,11 @@ namespace Cryptofolio.Collector.Job
                     var options = provider.GetRequiredService<IOptionsMonitor<CoingeckoOptions>>().CurrentValue;
                     client.BaseAddress = new(options.ApiUri);
                 });
+
+            // MediatR
+            services.AddMediatR(typeof(Startup));
+            services.AddScoped<AssetDataRequestHandler>();
+            services.AddScoped<IPipelineBehavior<AssetDataRequest, Unit>>(p => p.GetRequiredService<AssetDataRequestHandler>());
 
             // Healthchecks
             services

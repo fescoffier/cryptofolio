@@ -1,4 +1,4 @@
-using Cryptofolio.Core;
+using Cryptofolio.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cryptofolio.Infrastructure

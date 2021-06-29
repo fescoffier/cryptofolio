@@ -30,6 +30,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Infrastructure.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Infrastructure.IntegrationTests", "test\Cryptofolio.Infrastructure.IntegrationTests\Cryptofolio.Infrastructure.IntegrationTests.csproj", "{9D92F72E-6284-4081-810B-AED5C625AECA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptofolio.Collector.Job.IntegrationTests", "test\Cryptofolio.Collector.Job.IntegrationTests\Cryptofolio.Collector.Job.IntegrationTests.csproj", "{BB6050D2-7B0C-4BEC-B6FC-9129E2DFC8BC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +58,10 @@ Global
 		{9D92F72E-6284-4081-810B-AED5C625AECA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D92F72E-6284-4081-810B-AED5C625AECA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D92F72E-6284-4081-810B-AED5C625AECA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB6050D2-7B0C-4BEC-B6FC-9129E2DFC8BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB6050D2-7B0C-4BEC-B6FC-9129E2DFC8BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB6050D2-7B0C-4BEC-B6FC-9129E2DFC8BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB6050D2-7B0C-4BEC-B6FC-9129E2DFC8BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -66,6 +72,7 @@ Global
 		{959A924C-B33D-46AA-B207-2D3FC76857E8} = {98EE018B-8036-483A-BACD-6FB1C3E8127E}
 		{FE542C69-F183-4834-8764-0E113B45D436} = {F80CA797-A4CA-4C02-9496-5518EAA9F03E}
 		{9D92F72E-6284-4081-810B-AED5C625AECA} = {F80CA797-A4CA-4C02-9496-5518EAA9F03E}
+		{BB6050D2-7B0C-4BEC-B6FC-9129E2DFC8BC} = {98EE018B-8036-483A-BACD-6FB1C3E8127E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7F9B8C09-ECC1-413C-92A4-58299272789F}
