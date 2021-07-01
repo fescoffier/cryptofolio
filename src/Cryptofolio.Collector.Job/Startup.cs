@@ -44,6 +44,11 @@ namespace Cryptofolio.Collector.Job
             });
 
             // Kafka
+            services.AddProducer<IEvent>(options =>
+            {
+                options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(IEvent).FullName}").Get<string>();
+                options.Config = Configuration.GetSection("Kafka:Consumer").Get<ProducerConfig>();
+            });
             services.AddProducer<AssetDataRequest>(options =>
             {
                 options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(AssetDataRequest).FullName}").Get<string>();

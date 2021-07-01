@@ -1,4 +1,5 @@
-﻿using Confluent.Kafka;
+using Confluent.Kafka;
+using Cryptofolio.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
@@ -18,12 +19,13 @@ namespace Cryptofolio.Infrastructure
         /// <param name="configureOptions">The configuration method.</param>
         /// <returns>The service collection.</returns>
         public static IServiceCollection AddProducer<TMessage>(this IServiceCollection services, Action<KafkaProducerOptions<TMessage>> configureOptions)
-            where TMessage : class, new()
         {
             services.Configure(configureOptions);
-            services.PostConfigure<KafkaProducerOptions<TMessage>>(options => options.ValueSerilializerOptions ??= new()
+            services.PostConfigure<KafkaProducerOptions<TMessage>>(options =>
             {
-                PropertyNameCaseInsensitive = true
+                options.ValueSerilializerOptions ??= new();
+                options.ValueSerilializerOptions.PropertyNameCaseInsensitive = true;
+                options.ValueSerilializerOptions.Converters.Add(new IEventJsonConverter());
             });
             services.AddSingleton(p =>
             {
@@ -44,12 +46,13 @@ namespace Cryptofolio.Infrastructure
         /// <param name="configureOptions">The configuration method.</param>
         /// <returns>The service collection.</returns>
         public static IServiceCollection AddConsumer<TMessage>(this IServiceCollection services, Action<KafkaConsumerOptions<TMessage>> configureOptions)
-            where TMessage : class, new()
         {
             services.Configure(configureOptions);
-            services.PostConfigure<KafkaConsumerOptions<TMessage>>(options => options.ValueSerilializerOptions ??= new()
+            services.PostConfigure<KafkaConsumerOptions<TMessage>>(options =>
             {
-                PropertyNameCaseInsensitive = true
+                options.ValueSerilializerOptions ??= new();
+                options.ValueSerilializerOptions.PropertyNameCaseInsensitive = true;
+                options.ValueSerilializerOptions.Converters.Add(new IEventJsonConverter());
             });
             services.AddSingleton(p =>
             {

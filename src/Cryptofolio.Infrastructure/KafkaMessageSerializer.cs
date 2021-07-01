@@ -7,7 +7,7 @@ using System.Text.Json;
 namespace Cryptofolio.Infrastructure
 {
     /// <inheritdoc/>
-    public class KafkaMessageSerializer<TMessage> : ISerializer<TMessage>, IDeserializer<TMessage> where TMessage : class, new()
+    public class KafkaMessageSerializer<TMessage> : ISerializer<TMessage>, IDeserializer<TMessage>
     {
         private readonly IOptionsMonitor<KafkaOptions<TMessage>> _optionsMonitor;
 
@@ -27,7 +27,7 @@ namespace Cryptofolio.Infrastructure
         {
             using var ms = new MemoryStream();
             using var writer = new Utf8JsonWriter(ms);
-            JsonSerializer.Serialize(writer, data, data.GetType(), Options.ValueSerilializerOptions);
+            JsonSerializer.Serialize<TMessage>(writer, data, Options.ValueSerilializerOptions);
             return ms.ToArray();
         }
 

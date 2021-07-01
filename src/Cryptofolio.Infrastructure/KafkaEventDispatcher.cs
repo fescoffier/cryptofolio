@@ -18,10 +18,22 @@ namespace Cryptofolio.Infrastructure
 
         private KafkaOptions<IEvent> ProducerOptions => _producerWrapper.Options;
 
+        /// <summary>
+        /// Creates a new instance of <see cref="KafkaEventDispatcher"/>.
+        /// </summary>
+        /// <param name="producerWrapper">The producer wrapper.</param>
+        /// <param name="logger">The logger.</param>
+        public KafkaEventDispatcher(KafkaProducerWrapper<string, IEvent> producerWrapper, ILogger<KafkaEventDispatcher> logger)
+        {
+            _producerWrapper = producerWrapper;
+            _logger = logger;
+        }
+
         /// <inheritdoc/>
         public async Task DispatchAsync(IEvent @event)
         {
-            _logger.LogInformation("");
+            _logger.LogInformation("Dispatching an event occurence to Kafka.");
+            _logger.LogTraceObject("Event", @event);
 
             var message = new Message<string, IEvent>
             {
@@ -29,20 +41,26 @@ namespace Cryptofolio.Infrastructure
                 Value = @event
             };
             var pr = await Producer.ProduceAsync(ProducerOptions.Topic, message);
-            if (pr.Status != PersistenceStatus.Persisted)
+            if (pr.Status == PersistenceStatus.Persisted)
             {
                 _logger.LogDebug("Event occurence dispatched to topic {0} at partition {1} and offset {2}.",
                     pr.Topic,
                     pr.TopicPartitionOffset.Partition,
                     pr.TopicPartitionOffset.Offset);
             }
-            else if (pr.Status != PersistenceStatus.PossiblyPersisted)
+            else if (pr.Status == PersistenceStatus.PossiblyPersisted)
             {
-                
+                _logger.LogWarning("Event occurence dispatched to topic {0} at partition {1} and offset {2}, but no acknowledgement was received by the broker.",
+                    pr.Topic,
+                    pr.TopicPartitionOffset.Partition,
+                    pr.TopicPartitionOffset.Offset);
             }
             else
             {
-
+                _logger.LogError("Event occurence can't be dispatched to topic {0} at partition {1} and offset {2}.",
+                    pr.Topic,
+                    pr.TopicPartitionOffset.Partition,
+                    pr.TopicPartitionOffset.Offset);
             }
         }
     }
