@@ -12,18 +12,18 @@ using Xunit;
 
 namespace Cryptofolio.Collector.Job.IntegrationTests.Data
 {
-    public class AssetDataRequestHandlerTests : IClassFixture<WebApplicationFactory>
+    public class ExchangeDataRequestHandlerTests : IClassFixture<WebApplicationFactory>
     {
         private readonly IServiceScope _scope;
-        private readonly AssetDataRequestHandler _handler;
-        private readonly ICoinsClient _coinsClient;
+        private readonly ExchangeDataRequestHandler _handler;
+        private readonly IExchangesClient _exchangesClient;
         private readonly CryptofolioContext _context;
 
-        public AssetDataRequestHandlerTests(WebApplicationFactory factory)
+        public ExchangeDataRequestHandlerTests(WebApplicationFactory factory)
         {
             _scope = factory.Services.CreateScope();
-            _handler = _scope.ServiceProvider.GetRequiredService<AssetDataRequestHandler>();
-            _coinsClient = _scope.ServiceProvider.GetRequiredService<ICoinsClient>();
+            _handler = _scope.ServiceProvider.GetRequiredService<ExchangeDataRequestHandler>();
+            _exchangesClient = _scope.ServiceProvider.GetRequiredService<IExchangesClient>();
             _context = _scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
         }
 
@@ -31,36 +31,38 @@ namespace Cryptofolio.Collector.Job.IntegrationTests.Data
         public async Task Handle_Test()
         {
             // Setup
-            var assetId = "ethereum";
-            var eth = await _coinsClient.GetAllCoinDataWithId(assetId);
-            var request = new AssetDataRequest
+            var exchangeId = "gdax";
+            var gdax = await _exchangesClient.GetExchangesByExchangeId(exchangeId);
+            var request = new ExchangeDataRequest
             {
                 TraceIdentifier = Guid.NewGuid().ToString(),
                 Date = DateTimeOffset.UtcNow,
-                Id = assetId
+                Id = exchangeId
             };
 
             // Act
             await _handler.Handle(request, CancellationToken.None, null);
 
             // Assert
-            var asset = _context.Assets.SingleOrDefault(a => a.Id == assetId);
-            asset.Id.Should().Be(eth.Id);
-            asset.Name.Should().Be(eth.Name);
-            asset.Symbol.Should().Be(eth.Symbol);
-            asset.Description.Should().Be(eth.Description["en"]);
+            var exchange = _context.Exchanges.SingleOrDefault(a => a.Id == exchangeId);
+            exchange.Id.Should().Be(exchangeId);
+            exchange.Name.Should().Be(gdax.Name);
+            exchange.Description.Should().Be(gdax.Description);
+            exchange.YearEstablished.Should().Be(gdax.YearEstablished);
+            exchange.Url.Should().Be(gdax.Url);
+            exchange.Image.Should().Be(gdax.Image);
         }
 
         [Fact]
         public void Handle_RequestCancelled_Test()
         {
             // Setup
-            var assetId = "ethereum";
-            var request = new AssetDataRequest
+            var exchangeId = "gdax";
+            var request = new ExchangeDataRequest
             {
                 TraceIdentifier = Guid.NewGuid().ToString(),
                 Date = DateTimeOffset.UtcNow,
-                Id = assetId
+                Id = exchangeId
             };
             var cancellationToken = new CancellationToken(true);
 

@@ -14,6 +14,11 @@ namespace Cryptofolio.Core
             /// The asset category.
             /// </summary>
             public const string Asset = "Asset";
+
+            /// <summary>
+            /// The exchange category.
+            /// </summary>
+            public const string Exchange = "Exchange";
         }
     }
 }

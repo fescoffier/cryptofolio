@@ -3,9 +3,9 @@ using System;
 namespace Cryptofolio.Core.Entities
 {
     /// <summary>
-    /// Models an inserter or updated event occured on <see cref="Entities.Asset"/>.
+    /// Models an inserted or updated event occured on <see cref="Entities.Exchange"/>.
     /// </summary>
-    public class AssetInfosUpsertedEvent : IEvent
+    public class ExchangeInfosUpsertedEvent : IEvent
     {
         /// <inheritdoc/>
         public DateTimeOffset Date { get; init; }
@@ -20,8 +20,8 @@ namespace Cryptofolio.Core.Entities
         public string Category => EventConstants.Categories.Asset;
 
         /// <summary>
-        /// The asset that has been inserted/updated.
+        /// The exchange that has been inserted/updated.
         /// </summary>
-        public Asset Asset { get; init; }
+        public Exchange Exchange { get; init; }
     }
 }

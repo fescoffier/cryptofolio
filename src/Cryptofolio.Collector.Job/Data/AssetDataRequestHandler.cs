@@ -14,6 +14,9 @@ using System.Threading.Tasks;
 
 namespace Cryptofolio.Collector.Job.Data
 {
+    /// <summary>
+    /// Provides an implementation of <see cref="IPipelineBehavior{AssetDataRequest, Unit}"/> to handle <see cref="AssetDataRequest"/> message.
+    /// </summary>
     public class AssetDataRequestHandler : IPipelineBehavior<AssetDataRequest, Unit>
     {
         private readonly CryptofolioContext _context;
@@ -22,6 +25,14 @@ namespace Cryptofolio.Collector.Job.Data
         private readonly ISystemClock _systemClock;
         private readonly ILogger<AssetDataRequestHandler> _logger;
 
+        /// <summary>
+        /// Creates a new instance of <see cref="AssetDataRequestHandler"/>.
+        /// </summary>
+        /// <param name="context">The Db context.</param>
+        /// <param name="coinsClient">The coins client.</param>
+        /// <param name="dispatcher">The event dispatcher.</param>
+        /// <param name="systemClock">The system clock.</param>
+        /// <param name="logger">The logger.</param>
         public AssetDataRequestHandler(
             CryptofolioContext context,
             ICoinsClient coinsClient,
@@ -36,6 +47,7 @@ namespace Cryptofolio.Collector.Job.Data
             _logger = logger;
         }
 
+        /// <inheritdoc/>
         public async Task<Unit> Handle(AssetDataRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<Unit> next)
         {
             _logger.LogInformation("Handling asset data request {0} submitted at {1} for the {2} asset", request.TraceIdentifier, request.Date, request.Id);

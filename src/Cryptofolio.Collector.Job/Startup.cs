@@ -59,6 +59,16 @@ namespace Cryptofolio.Collector.Job
                 options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(AssetDataRequest).FullName}").Get<string>();
                 options.Config = Configuration.GetSection("Kafka:Consumer").Get<ConsumerConfig>();
             });
+            services.AddProducer<ExchangeDataRequest>(options =>
+            {
+                options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(ExchangeDataRequest).FullName}").Get<string>();
+                options.Config = Configuration.GetSection("Kafka:Consumer").Get<ProducerConfig>();
+            });
+            services.AddConsumer<ExchangeDataRequest>(options =>
+            {
+                options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(ExchangeDataRequest).FullName}").Get<string>();
+                options.Config = Configuration.GetSection("Kafka:Consumer").Get<ConsumerConfig>();
+            });
             services.AddTransient<IEventDispatcher, KafkaEventDispatcher>();
 
             // Coingecko
@@ -69,11 +79,21 @@ namespace Cryptofolio.Collector.Job
                     var options = provider.GetRequiredService<IOptionsMonitor<CoingeckoOptions>>().CurrentValue;
                     client.BaseAddress = new(options.ApiUri);
                 });
+            services
+                .AddHttpClient<IExchangesClient, ExchangesClient>((provider, client) =>
+                {
+                    var options = provider.GetRequiredService<IOptionsMonitor<CoingeckoOptions>>().CurrentValue;
+                    client.BaseAddress = new(options.ApiUri);
+                });
 
             // MediatR
             services.AddMediatR(typeof(Startup));
+            // Assets
             services.AddScoped<AssetDataRequestHandler>();
             services.AddScoped<IPipelineBehavior<AssetDataRequest, Unit>>(p => p.GetRequiredService<AssetDataRequestHandler>());
+            // Exchanges
+            services.AddScoped<ExchangeDataRequestHandler>();
+            services.AddScoped<IPipelineBehavior<ExchangeDataRequest, Unit>>(p => p.GetRequiredService<ExchangeDataRequestHandler>());
 
             // Healthchecks
             services
