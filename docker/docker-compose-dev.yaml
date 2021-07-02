@@ -25,3 +25,11 @@ services:
     environment:
       - ADV_HOST=localhost
     restart: unless-stopped
+
+  cryptofolio-elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.2
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - "discovery.type=single-node"
