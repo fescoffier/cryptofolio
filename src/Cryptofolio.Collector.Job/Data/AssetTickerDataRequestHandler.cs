@@ -92,20 +92,6 @@ namespace Cryptofolio.Collector.Job.Data
                 }
             }
 
-            var asset = await _context.Assets.SingleOrDefaultAsync(a => a.Id == request.Id, cancellationToken);
-            if (asset == null)
-            {
-                asset = new()
-                {
-                    Id = request.Id
-                };
-                _context.Assets.Add(asset);
-            }
-            asset.Name = price.Name;
-            asset.Symbol = price.Symbol;
-            // TODO: Might be a good idea to handle different localization.
-            asset.Description = price.Description["en"];
-
             try
             {
                 _logger.LogDebug("Saving changes.");
