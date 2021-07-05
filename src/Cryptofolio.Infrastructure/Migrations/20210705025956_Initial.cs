@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Cryptofolio.Infrastructure.Migrations
 {
@@ -35,15 +36,48 @@ namespace Cryptofolio.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_exchange", x => x.id);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "asset_ticker",
+                columns: table => new
+                {
+                    timestamp = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    asset_id = table.Column<string>(type: "character varying(100)", nullable: false),
+                    value = table.Column<decimal>(type: "numeric", nullable: false),
+                    vs_currency = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_asset_ticker", x => new { x.asset_id, x.timestamp });
+                    table.ForeignKey(
+                        name: "FK_asset_ticker_asset_asset_id",
+                        column: x => x.asset_id,
+                        principalTable: "asset",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_asset_ticker_timestamp",
+                table: "asset_ticker",
+                column: "timestamp");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_asset_ticker_vs_currency",
+                table: "asset_ticker",
+                column: "vs_currency");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "asset");
+                name: "asset_ticker");
 
             migrationBuilder.DropTable(
                 name: "exchange");
+
+            migrationBuilder.DropTable(
+                name: "asset");
         }
     }
 }

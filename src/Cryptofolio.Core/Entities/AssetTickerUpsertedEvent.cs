@@ -1,11 +1,12 @@
 using System;
+using System.Collections.Generic;
 
 namespace Cryptofolio.Core.Entities
 {
     /// <summary>
-    /// Models an inserted or updated event occured on <see cref="Entities.Asset"/>.
+    /// Models an inserted or updated event occured on <see cref="Entities.AssetTicker"/>.
     /// </summary>
-    public class AssetInfosUpsertedEvent : IEvent
+    public class AssetTickerUpsertedEvent : IEvent
     {
         /// <inheritdoc/>
         public DateTimeOffset Date { get; init; }
@@ -20,8 +21,13 @@ namespace Cryptofolio.Core.Entities
         public string Category => EventConstants.Categories.Asset;
 
         /// <summary>
-        /// The asset that has been inserted/updated.
+        /// The assets ids.
         /// </summary>
-        public Asset Asset { get; init; }
+        public IEnumerable<string> Ids { get; set; }
+
+        /// <summary>
+        /// The versus currencies.
+        /// </summary>
+        public IEnumerable<string> VsCurrencies { get; set; }
     }
 }

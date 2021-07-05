@@ -45,6 +45,33 @@ namespace Cryptofolio.Infrastructure.Migrations
                     b.ToTable("asset");
                 });
 
+            modelBuilder.Entity("Cryptofolio.Core.Entities.AssetTicker", b =>
+                {
+                    b.Property<string>("asset_id")
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTimeOffset>("Timestamp")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("timestamp");
+
+                    b.Property<decimal>("Value")
+                        .HasColumnType("numeric")
+                        .HasColumnName("value");
+
+                    b.Property<string>("VsCurrency")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("vs_currency");
+
+                    b.HasKey("asset_id", "Timestamp");
+
+                    b.HasIndex("Timestamp");
+
+                    b.HasIndex("VsCurrency");
+
+                    b.ToTable("asset_ticker");
+                });
+
             modelBuilder.Entity("Cryptofolio.Core.Entities.Exchange", b =>
                 {
                     b.Property<string>("Id")
@@ -78,6 +105,17 @@ namespace Cryptofolio.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("exchange");
+                });
+
+            modelBuilder.Entity("Cryptofolio.Core.Entities.AssetTicker", b =>
+                {
+                    b.HasOne("Cryptofolio.Core.Entities.Asset", "Asset")
+                        .WithMany()
+                        .HasForeignKey("asset_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Asset");
                 });
 #pragma warning restore 612, 618
         }
