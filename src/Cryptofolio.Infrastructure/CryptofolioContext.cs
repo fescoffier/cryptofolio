@@ -1,4 +1,5 @@
 using Cryptofolio.Core.Entities;
+using Cryptofolio.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cryptofolio.Infrastructure
@@ -22,6 +23,11 @@ namespace Cryptofolio.Infrastructure
         /// The exchanges set.
         /// </summary>
         public DbSet<Exchange> Exchanges { get; set; }
+
+        /// <summary>
+        /// The settings set.
+        /// </summary>
+        public DbSet<Setting> Settings { get; set; }
 
         /// <summary>
         /// Creates a new instance of <see cref="CryptofolioContext"/>.
