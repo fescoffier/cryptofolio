@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Cryptofolio.Infrastructure.Migrations
 {
     [DbContext(typeof(CryptofolioContext))]
-    [Migration("20210705025956_Initial")]
+    [Migration("20210706031646_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,16 +56,16 @@ namespace Cryptofolio.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("timestamp");
 
-                    b.Property<decimal>("Value")
-                        .HasColumnType("numeric")
-                        .HasColumnName("value");
-
                     b.Property<string>("VsCurrency")
                         .HasMaxLength(10)
                         .HasColumnType("character varying(10)")
                         .HasColumnName("vs_currency");
 
-                    b.HasKey("asset_id", "Timestamp");
+                    b.Property<decimal>("Value")
+                        .HasColumnType("numeric")
+                        .HasColumnName("value");
+
+                    b.HasKey("asset_id", "Timestamp", "VsCurrency");
 
                     b.HasIndex("Timestamp");
 

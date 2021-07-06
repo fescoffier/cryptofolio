@@ -1,5 +1,5 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 
 namespace Cryptofolio.Infrastructure.Migrations
 {
@@ -42,13 +42,13 @@ namespace Cryptofolio.Infrastructure.Migrations
                 columns: table => new
                 {
                     timestamp = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    vs_currency = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
                     asset_id = table.Column<string>(type: "character varying(100)", nullable: false),
-                    value = table.Column<decimal>(type: "numeric", nullable: false),
-                    vs_currency = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: true)
+                    value = table.Column<decimal>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_asset_ticker", x => new { x.asset_id, x.timestamp });
+                    table.PrimaryKey("PK_asset_ticker", x => new { x.asset_id, x.timestamp, x.vs_currency });
                     table.ForeignKey(
                         name: "FK_asset_ticker_asset_asset_id",
                         column: x => x.asset_id,

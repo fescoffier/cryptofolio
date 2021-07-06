@@ -1,4 +1,3 @@
-using CoinGecko.Entities.Response.Coins;
 using CoinGecko.Entities.Response.Simple;
 using CoinGecko.Interfaces;
 using Cryptofolio.Core;
@@ -12,7 +11,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,6 +23,20 @@ namespace Cryptofolio.Collector.Job.Data
         private readonly IEventDispatcher _dispatcher;
         private readonly ISystemClock _systemClock;
         private readonly ILogger<AssetTickerDataRequestHandler> _logger;
+
+        public AssetTickerDataRequestHandler(
+            CryptofolioContext context,
+            ISimpleClient simpleClient,
+            IEventDispatcher dispatcher,
+            ISystemClock systemClock,
+            ILogger<AssetTickerDataRequestHandler> logger)
+        {
+            _context = context;
+            _simpleClient = simpleClient;
+            _dispatcher = dispatcher;
+            _systemClock = systemClock;
+            _logger = logger;
+        }
 
         public async Task<Unit> Handle(AssetTickerDataRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<Unit> next)
         {
@@ -59,6 +71,8 @@ namespace Cryptofolio.Collector.Job.Data
 
             cancellationToken.ThrowIfCancellationRequested();
 
+            var updatedIds = new HashSet<string>();
+            var updatedCurrencies = new HashSet<string>();
             foreach (var id in request.Ids)
             {
                 var asset = await _context.Assets.SingleOrDefaultAsync(a => a.Id == id, cancellationToken);
@@ -71,7 +85,7 @@ namespace Cryptofolio.Collector.Job.Data
                 {
                     var tickerValue = price[id][currency].Value;
                     var tickerLastUpdatedAtMs = price[id]["last_updated_at"].Value;
-                    var tickerLastUpdatedAt = DateTimeOffset.FromUnixTimeMilliseconds(Convert.ToInt64(tickerLastUpdatedAtMs));
+                    var tickerLastUpdatedAt = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(tickerLastUpdatedAtMs));
                     var tickerExists = await _context.AssetTickers
                         .AnyAsync(t =>
                             t.Asset.Id == id &&
@@ -81,6 +95,7 @@ namespace Cryptofolio.Collector.Job.Data
                         );
                     if (!tickerExists)
                     {
+                        _logger.LogDebug("Ticker at {0} for {1} versus currency {2} does not exists.", tickerLastUpdatedAt, id, currency);
                         _context.AssetTickers.Add(new AssetTicker
                         {
                             Asset = asset,
@@ -88,6 +103,12 @@ namespace Cryptofolio.Collector.Job.Data
                             Value = tickerValue,
                             VsCurrency = currency
                         });
+                        updatedIds.Add(id);
+                        updatedCurrencies.Add(currency);
+                    }
+                    else
+                    {
+                        _logger.LogDebug("Ticker at {0} for {1} versus currency {2} exists.", tickerLastUpdatedAt, id, currency);
                     }
                 }
             }
@@ -100,18 +121,23 @@ namespace Cryptofolio.Collector.Job.Data
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "An error has occured while upserting the {0} asset data.", request.Id);
+                _logger.LogError(e, "An error has occured while upserting the tickers data.");
                 return Unit.Value;
             }
 
-            _logger.LogDebug("Dispatching an {0} event.", nameof(AssetInfosUpsertedEvent));
-            await _dispatcher.DispatchAsync(new AssetInfosUpsertedEvent
+            _logger.LogDebug("Dispatching an {0} event.", nameof(AssetTickerUpsertedEvent));
+            await _dispatcher.DispatchAsync(new AssetTickerUpsertedEvent
             {
                 Date = _systemClock.UtcNow,
-                Asset = asset
+                Ids = updatedIds,
+                VsCurrencies = updatedCurrencies
             });
 
-            _logger.LogInformation("Asset data request {0} submitted at {1} for the {2} asset handled successfully.", request.TraceIdentifier, request.Date, request.Id);
+            _logger.LogInformation("Asset ticker data request {0} submitted at {1} for the [{2}] assets versus currencies [{3}] handled successfully.",
+                request.TraceIdentifier,
+                request.Date,
+                ids,
+                vsCurrencies);
 
             return Unit.Value;
         }

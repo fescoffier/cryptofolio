@@ -80,6 +80,12 @@ namespace Cryptofolio.Collector.Job
                     client.BaseAddress = new(options.ApiUri);
                 });
             services
+                .AddHttpClient<ISimpleClient, SimpleClient>((provider, client) =>
+                {
+                    var options = provider.GetRequiredService<IOptionsMonitor<CoingeckoOptions>>().CurrentValue;
+                    client.BaseAddress = new(options.ApiUri);
+                });
+            services
                 .AddHttpClient<IExchangesClient, ExchangesClient>((provider, client) =>
                 {
                     var options = provider.GetRequiredService<IOptionsMonitor<CoingeckoOptions>>().CurrentValue;
@@ -91,6 +97,8 @@ namespace Cryptofolio.Collector.Job
             // Assets
             services.AddScoped<AssetDataRequestHandler>();
             services.AddScoped<IPipelineBehavior<AssetDataRequest, Unit>>(p => p.GetRequiredService<AssetDataRequestHandler>());
+            services.AddScoped<AssetTickerDataRequestHandler>();
+            services.AddScoped<IPipelineBehavior<AssetTickerDataRequest, Unit>>(p => p.GetRequiredService<AssetTickerDataRequestHandler>());
             // Exchanges
             services.AddScoped<ExchangeDataRequestHandler>();
             services.AddScoped<IPipelineBehavior<ExchangeDataRequest, Unit>>(p => p.GetRequiredService<ExchangeDataRequestHandler>());
