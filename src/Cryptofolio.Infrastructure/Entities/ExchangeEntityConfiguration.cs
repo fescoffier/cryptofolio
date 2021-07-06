@@ -4,8 +4,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Cryptofolio.Infrastructure.Entities
 {
+    /// <summary>
+    /// Provides entity configuration for <see cref="Exchange"/>.
+    /// </summary>
     public class ExchangeEntityConfiguration : IEntityTypeConfiguration<Exchange>
     {
+        /// <inheritdoc/>
         public void Configure(EntityTypeBuilder<Exchange> builder)
         {
             builder.ToTable("exchange");
