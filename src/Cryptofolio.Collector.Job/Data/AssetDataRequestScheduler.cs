@@ -50,7 +50,7 @@ namespace Cryptofolio.Collector.Job.Data
                     return new Message<string, AssetDataRequest>
                     {
                         Key = guid,
-                        Value = new AssetDataRequest
+                        Value = new()
                         {
                             TraceIdentifier = guid,
                             Date = SystemClock.UtcNow,

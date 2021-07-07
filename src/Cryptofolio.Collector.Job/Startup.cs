@@ -47,12 +47,12 @@ namespace Cryptofolio.Collector.Job
             services.AddProducer<IEvent>(options =>
             {
                 options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(IEvent).FullName}").Get<string>();
-                options.Config = Configuration.GetSection("Kafka:Consumer").Get<ProducerConfig>();
+                options.Config = Configuration.GetSection("Kafka:Producer").Get<ProducerConfig>();
             });
             services.AddProducer<AssetDataRequest>(options =>
             {
                 options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(AssetDataRequest).FullName}").Get<string>();
-                options.Config = Configuration.GetSection("Kafka:Consumer").Get<ProducerConfig>();
+                options.Config = Configuration.GetSection("Kafka:Producer").Get<ProducerConfig>();
             });
             services.AddConsumer<AssetDataRequest>(options =>
             {
@@ -62,7 +62,7 @@ namespace Cryptofolio.Collector.Job
             services.AddProducer<AssetTickerDataRequest>(options =>
             {
                 options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(AssetTickerDataRequest).FullName}").Get<string>();
-                options.Config = Configuration.GetSection("Kafka:Consumer").Get<ProducerConfig>();
+                options.Config = Configuration.GetSection("Kafka:Producer").Get<ProducerConfig>();
             });
             services.AddConsumer<AssetTickerDataRequest>(options =>
             {
@@ -72,7 +72,7 @@ namespace Cryptofolio.Collector.Job
             services.AddProducer<ExchangeDataRequest>(options =>
             {
                 options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(ExchangeDataRequest).FullName}").Get<string>();
-                options.Config = Configuration.GetSection("Kafka:Consumer").Get<ProducerConfig>();
+                options.Config = Configuration.GetSection("Kafka:Producer").Get<ProducerConfig>();
             });
             services.AddConsumer<ExchangeDataRequest>(options =>
             {

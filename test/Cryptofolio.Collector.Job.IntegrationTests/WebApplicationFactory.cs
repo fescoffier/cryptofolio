@@ -1,3 +1,6 @@
+using Confluent.Kafka;
+using Cryptofolio.Collector.Job.Data;
+using Cryptofolio.Collector.Job.IntegrationTests.Data;
 using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
@@ -26,7 +29,10 @@ namespace Cryptofolio.Collector.Job.IntegrationTests
                 {
                     { "ConnectionStrings:Cryptofolio", $"Host=localhost;Database={DbName};Username=cryptofolio;Password=Pass@word1;Port=55432;IncludeErrorDetails=true" },
                     { "Kafka:Topics:Cryptofolio.Infrastructure.Data.AssetDataRequest", Guid.NewGuid().ToString() },
-                    { "Kafka:Topics:Cryptofolio.Infrastructure.Data.ExchangeDataRequest", Guid.NewGuid().ToString() }
+                    { "Kafka:Topics:Cryptofolio.Infrastructure.Data.AssetTickerDataRequest", Guid.NewGuid().ToString() },
+                    { "Kafka:Topics:Cryptofolio.Infrastructure.Data.ExchangeDataRequest", Guid.NewGuid().ToString() },
+                    { "Kafka:Topics:Cryptofolio.Collector.Job.IntegrationTests.TestDataRequest", Guid.NewGuid().ToString() },
+                    { "Data:Schedules:Cryptofolio.Collector.Job.IntegrationTests.TestDataRequest", "* * * * *" }
                 });
             });
             builder.ConfigureServices((ctx, services) =>
@@ -37,7 +43,17 @@ namespace Cryptofolio.Collector.Job.IntegrationTests
                 services.AddSingleton(systemClockMock.Object);
                 services.AddSingleton(systemClockMock);
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<AssetDataRequest>)));
+                services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(AssetDataRequestScheduler)));
+                services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<AssetTickerDataRequest>)));
+                services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(AssetTickerDataRequestScheduler)));
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<ExchangeDataRequest>)));
+                services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(ExchangeDataRequestScheduler)));
+                services.AddProducer<TestDataRequest>(options =>
+                {
+                    options.Topic = ctx.Configuration.GetSection($"Kafka:Topics:{typeof(TestDataRequest).FullName}").Get<string>();
+                    options.Config = ctx.Configuration.GetSection("Kafka:Producer").Get<ProducerConfig>();
+                });
+                services.AddSingleton<TestDataRequestScheduler>();
             });
         }
 
