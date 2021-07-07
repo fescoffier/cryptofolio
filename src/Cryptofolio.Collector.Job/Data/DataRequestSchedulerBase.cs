@@ -73,8 +73,7 @@ namespace Cryptofolio.Collector.Job.Data
             KafkaProducerWrapper<string, TRequest> producerWrapper,
             IOptionsMonitor<DataRequestSchedulerOptions> optionsMonitor,
             ISystemClock systemClock,
-            ILogger logger
-        )
+            ILogger logger)
         {
             _provider = provider;
             ProducerWrapper = producerWrapper;
