@@ -14,43 +14,43 @@ using System.Threading.Tasks;
 namespace Cryptofolio.Collector.Job.Data
 {
     /// <summary>
-    /// Provides an implementation of <see cref="DataRequestSchedulerBase{AssetDataRequest}"/> to schedule <see cref="AssetDataRequest"/>.
+    /// Provides an implementation of <see cref="DataRequestSchedulerBase{ExchangeDataRequest}"/> to schedule <see cref="ExchangeDataRequest"/>.
     /// </summary>
-    public class AssetDataRequestScheduler : DataRequestSchedulerBase<AssetDataRequest>
+    public class ExchangeDataRequestScheduler : DataRequestSchedulerBase<ExchangeDataRequest>
     {
         /// <summary>
-        /// Creates a new instance of <see cref="AssetDataRequestScheduler"/>.
+        /// Creates a new instance of <see cref="ExchangeDataRequestScheduler"/>.
         /// </summary>
         /// <param name="provider">The service provider.</param>
         /// <param name="producerWrapper">The producer wrapper.</param>
         /// <param name="optionsMonitor">The options monitor.</param>
         /// <param name="systemClock">The system clock.</param>
         /// <param name="logger">The logger.</param>
-        public AssetDataRequestScheduler(
+        public ExchangeDataRequestScheduler(
             IServiceProvider provider,
-            KafkaProducerWrapper<string, AssetDataRequest> producerWrapper,
+            KafkaProducerWrapper<string, ExchangeDataRequest> producerWrapper,
             IOptionsMonitor<DataRequestSchedulerOptions> optionsMonitor,
             ISystemClock systemClock,
-            ILogger<AssetDataRequestScheduler> logger
+            ILogger<ExchangeDataRequestScheduler> logger
         ) : base(provider, producerWrapper, optionsMonitor, systemClock, logger)
         {
         }
 
         /// <inheritdoc/>
-        protected override async Task<IEnumerable<Message<string, AssetDataRequest>>> PrepareMessages(CryptofolioContext context, CancellationToken cancellationToken)
+        protected override async Task<IEnumerable<Message<string, ExchangeDataRequest>>> PrepareMessages(CryptofolioContext context, CancellationToken cancellationToken)
         {
             var settings = await context.Settings
-                .Where(s => s.Group == typeof(AssetDataRequestScheduler).FullName)
+                .Where(s => s.Group == typeof(ExchangeDataRequestScheduler).FullName)
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);
             return settings
                 .Select(setting =>
                 {
                     var guid = Guid.NewGuid().ToString();
-                    return new Message<string, AssetDataRequest>
+                    return new Message<string, ExchangeDataRequest>
                     {
                         Key = guid,
-                        Value = new AssetDataRequest
+                        Value = new ExchangeDataRequest
                         {
                             TraceIdentifier = guid,
                             Date = SystemClock.UtcNow,

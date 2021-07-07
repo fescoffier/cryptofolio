@@ -38,6 +38,19 @@ namespace Cryptofolio.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "settings",
+                columns: table => new
+                {
+                    key = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    group = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    value = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_settings", x => x.key);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "asset_ticker",
                 columns: table => new
                 {
@@ -75,6 +88,9 @@ namespace Cryptofolio.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "exchange");
+
+            migrationBuilder.DropTable(
+                name: "settings");
 
             migrationBuilder.DropTable(
                 name: "asset");

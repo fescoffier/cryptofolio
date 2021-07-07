@@ -107,6 +107,27 @@ namespace Cryptofolio.Infrastructure.Migrations
                     b.ToTable("exchange");
                 });
 
+            modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.Setting", b =>
+                {
+                    b.Property<string>("Key")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("key");
+
+                    b.Property<string>("Group")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("group");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("text")
+                        .HasColumnName("value");
+
+                    b.HasKey("Key");
+
+                    b.ToTable("settings");
+                });
+
             modelBuilder.Entity("Cryptofolio.Core.Entities.AssetTicker", b =>
                 {
                     b.HasOne("Cryptofolio.Core.Entities.Asset", "Asset")

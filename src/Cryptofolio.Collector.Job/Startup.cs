@@ -59,6 +59,16 @@ namespace Cryptofolio.Collector.Job
                 options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(AssetDataRequest).FullName}").Get<string>();
                 options.Config = Configuration.GetSection("Kafka:Consumer").Get<ConsumerConfig>();
             });
+            services.AddProducer<AssetTickerDataRequest>(options =>
+            {
+                options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(AssetTickerDataRequest).FullName}").Get<string>();
+                options.Config = Configuration.GetSection("Kafka:Consumer").Get<ProducerConfig>();
+            });
+            services.AddConsumer<AssetTickerDataRequest>(options =>
+            {
+                options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(AssetTickerDataRequest).FullName}").Get<string>();
+                options.Config = Configuration.GetSection("Kafka:Consumer").Get<ConsumerConfig>();
+            });
             services.AddProducer<ExchangeDataRequest>(options =>
             {
                 options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(ExchangeDataRequest).FullName}").Get<string>();
@@ -102,6 +112,12 @@ namespace Cryptofolio.Collector.Job
             // Exchanges
             services.AddScoped<ExchangeDataRequestHandler>();
             services.AddScoped<IPipelineBehavior<ExchangeDataRequest, Unit>>(p => p.GetRequiredService<ExchangeDataRequestHandler>());
+
+            // Data requests scheduler.
+            services.Configure<DataRequestSchedulerOptions>(Configuration.GetSection("Data"));
+            services.AddHostedService<AssetDataRequestScheduler>();
+            services.AddHostedService<AssetTickerDataRequestScheduler>();
+            services.AddHostedService<ExchangeDataRequestScheduler>();
 
             // Healthchecks
             services

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Cryptofolio.Infrastructure.Data
 {
@@ -10,11 +11,13 @@ namespace Cryptofolio.Infrastructure.Data
         /// <summary>
         /// The assets ids.
         /// </summary>
+        [JsonPropertyName("ids")]
         public IEnumerable<string> Ids { get; set; }
 
         /// <summary>
         /// The versus currencies.
         /// </summary>
+        [JsonPropertyName("vs_currencies")]
         public IEnumerable<string> VsCurrencies { get; set; }
     }
 }

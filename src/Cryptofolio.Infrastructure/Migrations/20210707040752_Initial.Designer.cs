@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Cryptofolio.Infrastructure.Migrations
 {
     [DbContext(typeof(CryptofolioContext))]
-    [Migration("20210706031646_Initial")]
+    [Migration("20210707040752_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -107,6 +107,27 @@ namespace Cryptofolio.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("exchange");
+                });
+
+            modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.Setting", b =>
+                {
+                    b.Property<string>("Key")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("key");
+
+                    b.Property<string>("Group")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("group");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("text")
+                        .HasColumnName("value");
+
+                    b.HasKey("Key");
+
+                    b.ToTable("settings");
                 });
 
             modelBuilder.Entity("Cryptofolio.Core.Entities.AssetTicker", b =>

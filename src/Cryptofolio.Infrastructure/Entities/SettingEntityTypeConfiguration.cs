@@ -13,7 +13,7 @@ namespace Cryptofolio.Infrastructure.Entities
         {
             builder.ToTable("settings");
             builder.HasKey(p => p.Key);
-            builder.Property(p => p.Key).HasColumnType("varchar(max)").HasColumnName("key");
+            builder.Property(p => p.Key).HasMaxLength(500).HasColumnName("key");
             builder.Property(p => p.Group).HasMaxLength(100).HasColumnName("group");
             builder.Property(p => p.Value).HasColumnType("text").HasColumnName("value");
         }
