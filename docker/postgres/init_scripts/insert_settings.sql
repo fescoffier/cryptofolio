@@ -1,0 +1,8 @@
+insert into settings ("key","group",value) values ('Data:Schedules:Cryptofolio.Infrastructure.Data.AssetDataRequest:Assets:0','Cryptofolio.Collector.Job.Data.AssetDataRequestScheduler','bitcoin');
+insert into settings ("key","group",value) values ('Data:Schedules:Cryptofolio.Infrastructure.Data.AssetDataRequest:Assets:1','Cryptofolio.Collector.Job.Data.AssetDataRequestScheduler','ethereum');
+insert into settings ("key","group",value) values ('Data:Schedules:Cryptofolio.Infrastructure.Data.AssetTickerDataRequest:Ids:0','Cryptofolio.Collector.Job.Data.AssetTickerDataRequestScheduler:Ids','bitcoin');
+insert into settings ("key","group",value) values ('Data:Schedules:Cryptofolio.Infrastructure.Data.AssetTickerDataRequest:Ids:1','Cryptofolio.Collector.Job.Data.AssetTickerDataRequestScheduler:Ids','ethereum');
+insert into settings ("key","group",value) values ('Data:Schedules:Cryptofolio.Infrastructure.Data.AssetTickerDataRequest:VsCurrencies:0','Cryptofolio.Collector.Job.Data.AssetTickerDataRequestScheduler:VsCurrencies','usd');
+insert into settings ("key","group",value) values ('Data:Schedules:Cryptofolio.Infrastructure.Data.AssetTickerDataRequest:VsCurrencies:1','Cryptofolio.Collector.Job.Data.AssetTickerDataRequestScheduler:VsCurrencies','eur');
+insert into settings ("key","group",value) values ('Data:Schedules:Cryptofolio.Infrastructure.Data.ExchangeDataRequest:Exchanges:0','Cryptofolio.Collector.Job.Data.ExchangeDataRequestScheduler','gdax');
+insert into settings ("key","group",value) values ('Data:Schedules:Cryptofolio.Infrastructure.Data.ExchangeDataRequest:Exchanges:1','Cryptofolio.Collector.Job.Data.ExchangeDataRequestScheduler','binance');
