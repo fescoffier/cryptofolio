@@ -31,8 +31,11 @@ namespace Cryptofolio.Collector.Job.IntegrationTests
                     { "Kafka:Topics:Cryptofolio.Infrastructure.Data.AssetDataRequest", Guid.NewGuid().ToString() },
                     { "Kafka:Topics:Cryptofolio.Infrastructure.Data.AssetTickerDataRequest", Guid.NewGuid().ToString() },
                     { "Kafka:Topics:Cryptofolio.Infrastructure.Data.ExchangeDataRequest", Guid.NewGuid().ToString() },
-                    { "Kafka:Topics:Cryptofolio.Collector.Job.IntegrationTests.TestDataRequest", Guid.NewGuid().ToString() },
-                    { "Data:Schedules:Cryptofolio.Collector.Job.IntegrationTests.TestDataRequest", "* * * * *" }
+                    { "Kafka:Topics:Cryptofolio.Collector.Job.IntegrationTests.Data.TestDataRequest", Guid.NewGuid().ToString() },
+                    { "Data:Schedules:Cryptofolio.Infrastructure.Data.AssetDataRequest", "* * * * *" },
+                    { "Data:Schedules:Cryptofolio.Infrastructure.Data.AssetTickerDataRequest", "* * * * *" },
+                    { "Data:Schedules:Cryptofolio.Infrastructure.Data.ExchangeDataRequest", "* * * * *" },
+                    { "Data:Schedules:Cryptofolio.Collector.Job.IntegrationTests.Data.TestDataRequest", "* * * * *" }
                 });
             });
             builder.ConfigureServices((ctx, services) =>
@@ -42,17 +45,27 @@ namespace Cryptofolio.Collector.Job.IntegrationTests
                 systemClockMock.SetupGet(m => m.UtcNow).Returns(() => DateTimeOffset.UtcNow);
                 services.AddSingleton(systemClockMock.Object);
                 services.AddSingleton(systemClockMock);
+                services.AddProducer<TestDataRequest>(options =>
+                {
+                    options.Topic = ctx.Configuration.GetSection($"Kafka:Topics:{typeof(TestDataRequest).FullName}").Get<string>();
+                    options.Config = ctx.Configuration.GetSection("Kafka:Producer").Get<ProducerConfig>();
+                });
+                services.AddConsumer<TestDataRequest>(options =>
+                {
+                    options.Topic = ctx.Configuration.GetSection($"Kafka:Topics:{typeof(TestDataRequest).FullName}").Get<string>();
+                    options.Config = ctx.Configuration.GetSection("Kafka:Consumer").Get<ConsumerConfig>();
+                });
+                services.AddSingleton<AssetDataRequestScheduler>();
+                services.AddSingleton<AssetTickerDataRequestScheduler>();
+                services.AddSingleton<ExchangeDataRequestScheduler>();
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<AssetDataRequest>)));
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(AssetDataRequestScheduler)));
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<AssetTickerDataRequest>)));
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(AssetTickerDataRequestScheduler)));
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<ExchangeDataRequest>)));
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(ExchangeDataRequestScheduler)));
-                services.AddProducer<TestDataRequest>(options =>
-                {
-                    options.Topic = ctx.Configuration.GetSection($"Kafka:Topics:{typeof(TestDataRequest).FullName}").Get<string>();
-                    options.Config = ctx.Configuration.GetSection("Kafka:Producer").Get<ProducerConfig>();
-                });
+                services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<TestDataRequest>)));
+
                 services.AddSingleton<TestDataRequestScheduler>();
             });
         }
