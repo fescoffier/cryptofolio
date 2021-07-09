@@ -37,4 +37,4 @@ services:
   cryptofolio-redis:
     image: redis:6.2.4
     ports:
-        "6379:6379"
+      - "6379:6379"
