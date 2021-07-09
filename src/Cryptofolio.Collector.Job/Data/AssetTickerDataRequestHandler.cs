@@ -91,6 +91,7 @@ namespace Cryptofolio.Collector.Job.Data
                 if (asset == null)
                 {
                     _logger.LogError("The {0} asset does not exists.", id);
+                    continue;
                 }
 
                 foreach (var currency in request.VsCurrencies)
