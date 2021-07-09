@@ -11,7 +11,7 @@ namespace Cryptofolio.Infrastructure.Entities
         /// <inheritdoc/>
         public void Configure(EntityTypeBuilder<Setting> builder)
         {
-            builder.ToTable("settings");
+            builder.ToTable("setting");
             builder.HasKey(p => p.Key);
             builder.Property(p => p.Key).HasMaxLength(500).HasColumnName("key");
             builder.Property(p => p.Group).HasMaxLength(100).HasColumnName("group");

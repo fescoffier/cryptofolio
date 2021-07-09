@@ -127,7 +127,7 @@ namespace Cryptofolio.Infrastructure.Migrations
 
                     b.HasKey("Key");
 
-                    b.ToTable("settings");
+                    b.ToTable("setting");
                 });
 
             modelBuilder.Entity("Cryptofolio.Core.Entities.AssetTicker", b =>

@@ -38,7 +38,7 @@ namespace Cryptofolio.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "settings",
+                name: "setting",
                 columns: table => new
                 {
                     key = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
@@ -90,7 +90,7 @@ namespace Cryptofolio.Infrastructure.Migrations
                 name: "exchange");
 
             migrationBuilder.DropTable(
-                name: "settings");
+                name: "setting");
 
             migrationBuilder.DropTable(
                 name: "asset");
