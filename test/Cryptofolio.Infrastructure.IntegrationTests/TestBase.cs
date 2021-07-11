@@ -69,7 +69,7 @@ namespace Cryptofolio.Infrastructure.IntegrationTests
 
         protected CryptofolioContext CreateContext()
         {
-            var contextOptions = new DbContextOptionsBuilder<CryptofolioContext>().UseNpgsql(Configuration.GetConnectionString("Cryptofolio")).Options;
+            var contextOptions = new DbContextOptionsBuilder<CryptofolioContext>().UseNpgsql(Configuration.GetConnectionString("CryptofolioContext")).Options;
             var context = new CryptofolioContext(contextOptions);
             context.Database.Migrate();
             return context;

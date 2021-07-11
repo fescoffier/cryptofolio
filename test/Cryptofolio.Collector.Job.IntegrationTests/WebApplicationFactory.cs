@@ -27,7 +27,7 @@ namespace Cryptofolio.Collector.Job.IntegrationTests
             {
                 config.AddInMemoryCollection(new Dictionary<string, string>
                 {
-                    { "ConnectionStrings:Cryptofolio", $"Host=localhost;Database={DbName};Username=cryptofolio;Password=Pass@word1;Port=55432;IncludeErrorDetails=true" },
+                    { "ConnectionStrings:CryptofolioContext", $"Host=localhost;Database={DbName};Username=cryptofolio;Password=Pass@word1;Port=55432;IncludeErrorDetails=true" },
                     { "Kafka:Topics:Cryptofolio.Infrastructure.Data.AssetDataRequest", Guid.NewGuid().ToString() },
                     { "Kafka:Topics:Cryptofolio.Infrastructure.Data.AssetTickerDataRequest", Guid.NewGuid().ToString() },
                     { "Kafka:Topics:Cryptofolio.Infrastructure.Data.ExchangeDataRequest", Guid.NewGuid().ToString() },

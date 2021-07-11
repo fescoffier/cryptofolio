@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.Options;
+using StackExchange.Redis;
 
 namespace Cryptofolio.Collector.Job
 {
@@ -35,7 +36,7 @@ namespace Cryptofolio.Collector.Job
             // EF Core
             services.AddDbContext<CryptofolioContext>(builder =>
             {
-                builder.UseNpgsql(Configuration.GetConnectionString("Cryptofolio"));
+                builder.UseNpgsql(Configuration.GetConnectionString("CryptofolioContext"));
                 if (Environment.IsDevelopment())
                 {
                     builder.EnableSensitiveDataLogging();
@@ -81,26 +82,35 @@ namespace Cryptofolio.Collector.Job
             });
             services.AddTransient<IEventDispatcher, KafkaEventDispatcher>();
 
+            // Redis
+            services.AddSingleton(ConnectionMultiplexer.Connect(Configuration.GetConnectionString("Redis")));
+            services.AddSingleton<IConnectionMultiplexer>(p => p.GetRequiredService<ConnectionMultiplexer>());
+            services.AddTransient(p => p.GetRequiredService<ConnectionMultiplexer>().GetDatabase());
+
             // Coingecko
             services.Configure<CoingeckoOptions>(Configuration.GetSection("Coingecko"));
+            services.AddScoped<CoingeckoHttpClientHandler>();
             services
                 .AddHttpClient<ICoinsClient, CoinsClient>((provider, client) =>
                 {
                     var options = provider.GetRequiredService<IOptionsMonitor<CoingeckoOptions>>().CurrentValue;
                     client.BaseAddress = new(options.ApiUri);
-                });
+                })
+                .ConfigurePrimaryHttpMessageHandler<CoingeckoHttpClientHandler>();
             services
                 .AddHttpClient<ISimpleClient, SimpleClient>((provider, client) =>
                 {
                     var options = provider.GetRequiredService<IOptionsMonitor<CoingeckoOptions>>().CurrentValue;
                     client.BaseAddress = new(options.ApiUri);
-                });
+                })
+                .ConfigurePrimaryHttpMessageHandler<CoingeckoHttpClientHandler>();
             services
                 .AddHttpClient<IExchangesClient, ExchangesClient>((provider, client) =>
                 {
                     var options = provider.GetRequiredService<IOptionsMonitor<CoingeckoOptions>>().CurrentValue;
                     client.BaseAddress = new(options.ApiUri);
-                });
+                })
+                .ConfigurePrimaryHttpMessageHandler<CoingeckoHttpClientHandler>();
 
             // MediatR
             services.AddMediatR(typeof(Startup));
@@ -122,7 +132,7 @@ namespace Cryptofolio.Collector.Job
             // Healthchecks
             services
                 .AddHealthChecks()
-                .AddNpgSql(Configuration.GetConnectionString("Cryptofolio"), name: "db")
+                .AddNpgSql(Configuration.GetConnectionString("CryptofolioContext"), name: "db")
                 .AddKafka(
                     Configuration.GetSection("Kafka:Producer").Get<ProducerConfig>(),
                     Configuration.GetSection("Kafka:Topics:HealthChecks").Get<string>()
