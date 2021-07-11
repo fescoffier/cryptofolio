@@ -8,5 +8,5 @@ services:
     build:
       # You can override the build context (where the source code is) by defining a JOB_COLLECTOR_BUILD_CONTEXT environment variable.
       context: ${JOB_COLLECTOR_BUILD_CONTEXT:-../}
-      dockerfile: src/Collector/Cryptofolio.Collector.Job/Dockerfile
-    image: docker.cryptofolio.io/jobs/collector:${JOB_COLLECTOR_TAG:-latest}
+      dockerfile: src/Cryptofolio.Collector.Job/Dockerfile
+    image: registry.digitalocean.com/cryptofolio/jobs/collector:${JOB_COLLECTOR_TAG:-latest}

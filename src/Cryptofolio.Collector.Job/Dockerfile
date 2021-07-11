@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/aspnet:5.0.7-buster-slim AS base
+FROM mcr.microsoft.com/dotnet/aspnet:5.0.7-alpine3.13 AS base
 WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0.301-buster-slim AS build
