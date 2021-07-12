@@ -7,7 +7,7 @@ using System.Text.Json;
 namespace Cryptofolio.Infrastructure
 {
     /// <inheritdoc/>
-    public class KafkaMessageSerializer<TMessage> : ISerializer<TMessage>, IDeserializer<TMessage> where TMessage : class, new()
+    public class KafkaMessageSerializer<TMessage> : ISerializer<TMessage>, IDeserializer<TMessage>
     {
         private readonly IOptionsMonitor<KafkaOptions<TMessage>> _optionsMonitor;
 

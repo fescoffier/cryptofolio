@@ -1,8 +1,10 @@
+using Cryptofolio.Core;
 using Cryptofolio.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using System;
+using System.Text.Json;
 
 namespace Cryptofolio.Collector.Job
 {
@@ -37,7 +39,13 @@ namespace Cryptofolio.Collector.Job
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureLogging()
+                .ConfigureLogging(new JsonSerializerOptions
+                {
+                    Converters =
+                    {
+                        new IEventJsonConverter()
+                    }
+                })
                 .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
     }
 }

@@ -1,0 +1,32 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+  workflow_run:
+    workflows:
+      - Tests
+    branches:
+      - main
+    types: 
+      - completed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build Docker images
+        run: docker-compose -f docker/docker-compose-build.yaml build
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      - name: Log in to DO Container Registry 
+        run: doctl registry login --expiry-seconds 600
+      - name: Push Docker images
+        run: docker-compose -f docker/docker-compose-build.yaml push

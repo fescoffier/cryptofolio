@@ -1,3 +1,5 @@
+using Cryptofolio.Core.Entities;
+using Cryptofolio.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cryptofolio.Infrastructure
@@ -7,6 +9,26 @@ namespace Cryptofolio.Infrastructure
     /// </summary>
     public class CryptofolioContext : DbContext
     {
+        /// <summary>
+        /// The assets set.
+        /// </summary>
+        public DbSet<Asset> Assets { get; set; }
+
+        /// <summary>
+        /// The assets tickers set.
+        /// </summary>
+        public DbSet<AssetTicker> AssetTickers { get; set; }
+
+        /// <summary>
+        /// The exchanges set.
+        /// </summary>
+        public DbSet<Exchange> Exchanges { get; set; }
+
+        /// <summary>
+        /// The settings set.
+        /// </summary>
+        public DbSet<Setting> Settings { get; set; }
+
         /// <summary>
         /// Creates a new instance of <see cref="CryptofolioContext"/>.
         /// </summary>
