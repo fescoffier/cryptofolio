@@ -32,7 +32,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Infrastructure.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Collector.Job.IntegrationTests", "test\Cryptofolio.Collector.Job.IntegrationTests\Cryptofolio.Collector.Job.IntegrationTests.csproj", "{BB6050D2-7B0C-4BEC-B6FC-9129E2DFC8BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptofolio.Core.Tests", "test\Cryptofolio.Core.Tests\Cryptofolio.Core.Tests.csproj", "{BB70F662-77A0-4C93-9949-D4DC26C9A34E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Core.Tests", "test\Cryptofolio.Core.Tests\Cryptofolio.Core.Tests.csproj", "{BB70F662-77A0-4C93-9949-D4DC26C9A34E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptofolio.Handlers.Job", "src\Cryptofolio.Handlers.Job\Cryptofolio.Handlers.Job.csproj", "{8FFA5080-B67E-4EBA-8A75-67467EBCFCE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,6 +70,10 @@ Global
 		{BB70F662-77A0-4C93-9949-D4DC26C9A34E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB70F662-77A0-4C93-9949-D4DC26C9A34E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB70F662-77A0-4C93-9949-D4DC26C9A34E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FFA5080-B67E-4EBA-8A75-67467EBCFCE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FFA5080-B67E-4EBA-8A75-67467EBCFCE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FFA5080-B67E-4EBA-8A75-67467EBCFCE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FFA5080-B67E-4EBA-8A75-67467EBCFCE8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -80,6 +86,7 @@ Global
 		{9D92F72E-6284-4081-810B-AED5C625AECA} = {F80CA797-A4CA-4C02-9496-5518EAA9F03E}
 		{BB6050D2-7B0C-4BEC-B6FC-9129E2DFC8BC} = {98EE018B-8036-483A-BACD-6FB1C3E8127E}
 		{BB70F662-77A0-4C93-9949-D4DC26C9A34E} = {4487B702-0ED4-43BE-8FD1-76F0BA28AD6D}
+		{8FFA5080-B67E-4EBA-8A75-67467EBCFCE8} = {E00D633C-F653-4FFB-AE0D-811CE4827DA7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7F9B8C09-ECC1-413C-92A4-58299272789F}
