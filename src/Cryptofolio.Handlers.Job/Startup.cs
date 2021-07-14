@@ -1,6 +1,7 @@
 using Confluent.Kafka;
 using Cryptofolio.Core;
 using Cryptofolio.Infrastructure;
+using Elasticsearch.Net;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Internal;
+using Nest;
+using System.Linq;
 
 namespace Cryptofolio.Handlers.Job
 {
@@ -44,6 +47,18 @@ namespace Cryptofolio.Handlers.Job
                 options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(IEvent).FullName}").Get<string>();
                 options.Config = Configuration.GetSection("Kafka:Consumer").Get<ConsumerConfig>();
             });
+
+            // Elasticsearcg
+            services.AddSingleton<IConnectionPool>(
+                new StaticConnectionPool(
+                    Configuration.GetSection("Elasticsearch:Nodes")
+                        .Get<string[]>()
+                        .Select(n => new Node(new(n)))
+                        .ToList()
+                )
+            );
+            services.AddSingleton<IConnectionSettingsValues>(p => new ConnectionSettings(p.GetRequiredService<IConnectionPool>()));
+            services.AddSingleton<IElasticClient>(p => new ElasticClient(p.GetRequiredService<IConnectionSettingsValues>()));
 
             // MediatR
             services.AddMediatR(typeof(Startup));
