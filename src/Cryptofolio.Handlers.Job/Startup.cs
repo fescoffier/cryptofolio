@@ -1,8 +1,8 @@
 using Confluent.Kafka;
-using Cryptofolio.Core;
 using Cryptofolio.Infrastructure;
 using Elasticsearch.Net;
 using MediatR;
+using MediatR.Pipeline;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -48,7 +48,7 @@ namespace Cryptofolio.Handlers.Job
                 options.Config = Configuration.GetSection("Kafka:Consumer").Get<ConsumerConfig>();
             });
 
-            // Elasticsearcg
+            // Elasticsearch
             services.AddSingleton<IConnectionPool>(
                 new StaticConnectionPool(
                     Configuration.GetSection("Elasticsearch:Nodes")
@@ -57,11 +57,25 @@ namespace Cryptofolio.Handlers.Job
                         .ToList()
                 )
             );
-            services.AddSingleton<IConnectionSettingsValues>(p => new ConnectionSettings(p.GetRequiredService<IConnectionPool>()));
+            services.AddSingleton<IConnectionSettingsValues>(p =>
+            {
+                var settings = new ConnectionSettings(p.GetRequiredService<IConnectionPool>())
+                    .DefaultMappingFor<IEvent>(config => config
+                        .IdProperty(p => p.Id)
+                        .IndexName(Configuration.GetSection($"Elasticsearch:Indices:{typeof(IEvent).FullName}").Get<string>())
+                    );
+                if (Environment.IsDevelopment())
+                {
+                    settings.EnableDebugMode();
+                }
+                return settings;
+            });
             services.AddSingleton<IElasticClient>(p => new ElasticClient(p.GetRequiredService<IConnectionSettingsValues>()));
 
             // MediatR
-            services.AddMediatR(typeof(Startup));
+            services.AddMediatR(typeof(IMediator));
+
+            // Events
 
             // Healthchecks
             services
@@ -71,6 +85,7 @@ namespace Cryptofolio.Handlers.Job
                     Configuration.GetSection("Kafka:Producer").Get<ProducerConfig>(),
                     Configuration.GetSection("Kafka:Topics:HealthChecks").Get<string>()
                 );
+            // TODO: Elasticsearch checks.
 
             services.TryAddSingleton<ISystemClock, SystemClock>();
         }

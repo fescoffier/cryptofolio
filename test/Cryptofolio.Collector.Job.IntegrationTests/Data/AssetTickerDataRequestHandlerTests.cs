@@ -1,8 +1,8 @@
 using CoinGecko.Interfaces;
 using Cryptofolio.Collector.Job.Data;
-using Cryptofolio.Core.Entities;
 using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Data;
+using Cryptofolio.Infrastructure.Entities;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using System;

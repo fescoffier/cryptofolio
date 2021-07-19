@@ -1,7 +1,5 @@
 using Confluent.Kafka;
-using Cryptofolio.Core;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Threading.Tasks;
 
 namespace Cryptofolio.Infrastructure
@@ -37,7 +35,7 @@ namespace Cryptofolio.Infrastructure
 
             var message = new Message<string, IEvent>
             {
-                Key = Guid.NewGuid().ToString(),
+                Key = @event.Id,
                 Value = @event
             };
             var pr = await Producer.ProduceAsync(ProducerOptions.Topic, message);

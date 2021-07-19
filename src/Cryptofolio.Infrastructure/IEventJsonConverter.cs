@@ -2,7 +2,7 @@ using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Cryptofolio.Core
+namespace Cryptofolio.Infrastructure
 {
     /// <summary>
     /// Provides a JSON converter for <see cref="IEvent"/>.

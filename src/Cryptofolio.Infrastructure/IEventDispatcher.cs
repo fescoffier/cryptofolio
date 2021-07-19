@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Cryptofolio.Core
+namespace Cryptofolio.Infrastructure
 {
     /// <summary>
     /// Provides an abstraction to dispatch event occurence.

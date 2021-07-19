@@ -2,7 +2,6 @@ using CoinGecko.Clients;
 using CoinGecko.Interfaces;
 using Confluent.Kafka;
 using Cryptofolio.Collector.Job.Data;
-using Cryptofolio.Core;
 using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Data;
 using MediatR;
@@ -137,6 +136,7 @@ namespace Cryptofolio.Collector.Job
                     Configuration.GetSection("Kafka:Producer").Get<ProducerConfig>(),
                     Configuration.GetSection("Kafka:Topics:HealthChecks").Get<string>()
                 );
+            // TODO: Elasticsearch checks.
 
             services.TryAddSingleton<ISystemClock, SystemClock>();
         }

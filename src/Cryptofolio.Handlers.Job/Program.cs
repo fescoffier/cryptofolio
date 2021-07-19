@@ -1,4 +1,3 @@
-using Cryptofolio.Core;
 using Cryptofolio.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;

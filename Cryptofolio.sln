@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{FDD6F67D-6FBE-47BF-8FBA-BAEA74EC119D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{4487B702-0ED4-43BE-8FD1-76F0BA28AD6D}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{F80CA797-A4CA-4C02-9496-5518EAA9F03E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Collector", "Collector", "{98EE018B-8036-483A-BACD-6FB1C3E8127E}"
@@ -20,8 +18,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		global.json = global.json
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Core", "src\Cryptofolio.Core\Cryptofolio.Core.csproj", "{C0F02C0A-C0FA-439B-AF67-C37C920EC2C3}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Infrastructure", "src\Cryptofolio.Infrastructure\Cryptofolio.Infrastructure.csproj", "{CD61234C-A011-4898-AA23-92BCEE327394}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Collector.Job", "src\Cryptofolio.Collector.Job\Cryptofolio.Collector.Job.csproj", "{959A924C-B33D-46AA-B207-2D3FC76857E8}"
@@ -32,9 +28,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Infrastructure.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Collector.Job.IntegrationTests", "test\Cryptofolio.Collector.Job.IntegrationTests\Cryptofolio.Collector.Job.IntegrationTests.csproj", "{BB6050D2-7B0C-4BEC-B6FC-9129E2DFC8BC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Core.Tests", "test\Cryptofolio.Core.Tests\Cryptofolio.Core.Tests.csproj", "{BB70F662-77A0-4C93-9949-D4DC26C9A34E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptofolio.Handlers.Job", "src\Cryptofolio.Handlers.Job\Cryptofolio.Handlers.Job.csproj", "{8FFA5080-B67E-4EBA-8A75-67467EBCFCE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Handlers.Job", "src\Cryptofolio.Handlers.Job\Cryptofolio.Handlers.Job.csproj", "{8FFA5080-B67E-4EBA-8A75-67467EBCFCE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,10 +36,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C0F02C0A-C0FA-439B-AF67-C37C920EC2C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C0F02C0A-C0FA-439B-AF67-C37C920EC2C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C0F02C0A-C0FA-439B-AF67-C37C920EC2C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C0F02C0A-C0FA-439B-AF67-C37C920EC2C3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CD61234C-A011-4898-AA23-92BCEE327394}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CD61234C-A011-4898-AA23-92BCEE327394}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD61234C-A011-4898-AA23-92BCEE327394}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -66,10 +56,6 @@ Global
 		{BB6050D2-7B0C-4BEC-B6FC-9129E2DFC8BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB6050D2-7B0C-4BEC-B6FC-9129E2DFC8BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB6050D2-7B0C-4BEC-B6FC-9129E2DFC8BC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BB70F662-77A0-4C93-9949-D4DC26C9A34E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BB70F662-77A0-4C93-9949-D4DC26C9A34E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BB70F662-77A0-4C93-9949-D4DC26C9A34E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BB70F662-77A0-4C93-9949-D4DC26C9A34E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8FFA5080-B67E-4EBA-8A75-67467EBCFCE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8FFA5080-B67E-4EBA-8A75-67467EBCFCE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FFA5080-B67E-4EBA-8A75-67467EBCFCE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -79,13 +65,11 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{C0F02C0A-C0FA-439B-AF67-C37C920EC2C3} = {4487B702-0ED4-43BE-8FD1-76F0BA28AD6D}
 		{CD61234C-A011-4898-AA23-92BCEE327394} = {F80CA797-A4CA-4C02-9496-5518EAA9F03E}
 		{959A924C-B33D-46AA-B207-2D3FC76857E8} = {98EE018B-8036-483A-BACD-6FB1C3E8127E}
 		{FE542C69-F183-4834-8764-0E113B45D436} = {F80CA797-A4CA-4C02-9496-5518EAA9F03E}
 		{9D92F72E-6284-4081-810B-AED5C625AECA} = {F80CA797-A4CA-4C02-9496-5518EAA9F03E}
 		{BB6050D2-7B0C-4BEC-B6FC-9129E2DFC8BC} = {98EE018B-8036-483A-BACD-6FB1C3E8127E}
-		{BB70F662-77A0-4C93-9949-D4DC26C9A34E} = {4487B702-0ED4-43BE-8FD1-76F0BA28AD6D}
 		{8FFA5080-B67E-4EBA-8A75-67467EBCFCE8} = {E00D633C-F653-4FFB-AE0D-811CE4827DA7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

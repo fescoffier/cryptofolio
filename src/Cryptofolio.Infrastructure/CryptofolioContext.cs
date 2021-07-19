@@ -1,4 +1,3 @@
-using Cryptofolio.Core.Entities;
 using Cryptofolio.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 

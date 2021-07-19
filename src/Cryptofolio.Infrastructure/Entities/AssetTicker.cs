@@ -1,6 +1,6 @@
 using System;
 
-namespace Cryptofolio.Core.Entities
+namespace Cryptofolio.Infrastructure.Entities
 {
     /// <summary>
     /// Models an asset's ticker.

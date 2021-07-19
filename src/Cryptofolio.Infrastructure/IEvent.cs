@@ -1,12 +1,18 @@
+using MediatR;
 using System;
 
-namespace Cryptofolio.Core
+namespace Cryptofolio.Infrastructure
 {
     /// <summary>
     /// Provides an abstraction to model an event.
     /// </summary>
-    public interface IEvent
+    public interface IEvent : IRequest
     {
+        /// <summary>
+        /// The event unique id.
+        /// </summary>
+        public string Id { get; }
+
         /// <summary>
         /// The date at which the event occured.
         /// </summary>
