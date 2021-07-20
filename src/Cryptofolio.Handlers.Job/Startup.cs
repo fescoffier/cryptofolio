@@ -1,5 +1,6 @@
 using Confluent.Kafka;
 using Cryptofolio.Infrastructure;
+using Cryptofolio.Infrastructure.Entities;
 using Elasticsearch.Net;
 using MediatR;
 using MediatR.Pipeline;
@@ -59,11 +60,11 @@ namespace Cryptofolio.Handlers.Job
             );
             services.AddSingleton<IConnectionSettingsValues>(p =>
             {
-                var settings = new ConnectionSettings(p.GetRequiredService<IConnectionPool>())
-                    .DefaultMappingFor<IEvent>(config => config
-                        .IdProperty(p => p.Id)
-                        .IndexName(Configuration.GetSection($"Elasticsearch:Indices:{typeof(IEvent).FullName}").Get<string>())
-                    );
+                var indexTemplate = Configuration.GetSection($"Elasticsearch:Indices:{typeof(IEvent).FullName}").Get<string>();
+                var settings = new ConnectionSettings(p.GetRequiredService<IConnectionPool>());
+                settings.DefaultMappingFor<AssetInfosUpsertedEvent>(config => config.IndexName(indexTemplate));
+                settings.DefaultMappingFor<AssetTickerUpsertedEvent>(config => config.IndexName(indexTemplate));
+                settings.DefaultMappingFor<ExchangeInfosUpsertedEvent>(config => config.IndexName(indexTemplate));
                 if (Environment.IsDevelopment())
                 {
                     settings.EnableDebugMode();
