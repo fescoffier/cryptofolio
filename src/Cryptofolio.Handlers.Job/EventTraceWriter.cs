@@ -35,7 +35,7 @@ namespace Cryptofolio.Handlers.Job
             _logger.LogInformation("Storing the {0} event occurence of category {1} and type {2}.", @event.Id, @event.Category, typeof(TEvent).FullName);
             _logger.LogTraceObject("Event", @event);
 
-            var result = await _elasticClient.IndexDocumentAsync(@event, cancellationToken);
+            var result = await _elasticClient.IndexDocumentAsync<IEvent>(@event, cancellationToken);
             if (result.IsValid)
             {
                 _logger.LogInformation("Event {0} occurence stored successfully.", @event.Id);

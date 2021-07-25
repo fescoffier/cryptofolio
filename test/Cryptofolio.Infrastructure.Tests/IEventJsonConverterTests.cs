@@ -44,22 +44,22 @@ namespace Cryptofolio.Infrastructure.Tests
             // Assert
             @event.Should().BeEquivalentTo(Event);
         }
-    }
 
-    public class FakeEvent : IEvent
-    {
-        public string Id { get; init; }
+        private class FakeEvent : IEvent
+        {
+            public string Id { get; init; }
 
-        public DateTimeOffset Date { get; init; }
+            public DateTimeOffset Date { get; init; }
 
-        public string UserId { get; init; }
+            public string UserId { get; init; }
 
-        public string Username { get; init; }
+            public string Username { get; init; }
 
-        public string Category => "Test";
+            public string Category => "Test";
 
-        public string Property1 { get; init; }
+            public string Property1 { get; init; }
 
-        public string Property2 { get; init; }
+            public string Property2 { get; init; }
+        }
     }
 }

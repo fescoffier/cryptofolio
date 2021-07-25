@@ -12,6 +12,8 @@ services:
       - POSTGRES_USER=cryptofolio
       - POSTGRES_PASSWORD=Pass@word1
       - POSTGRES_DB=cryptofolio
+    volumes:
+      - ./postgres/init_scripts:/docker-entrypoint-initdb.d
     restart: unless-stopped
 
   cryptofolio-kafka:
@@ -27,14 +29,25 @@ services:
     restart: unless-stopped
 
   cryptofolio-elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.4
     ports:
       - "9200:9200"
       - "9300:9300"
     environment:
       - "discovery.type=single-node"
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    restart: unless-stopped
+
+  cryptofolio-kibana:
+    image: docker.elastic.co/kibana/kibana:7.13.4
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://cryptofolio-elasticsearch:9200
+    restart: unless-stopped
 
   cryptofolio-redis:
     image: redis:6.2.4
     ports:
       - "6379:6379"
+    restart: unless-stopped

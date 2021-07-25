@@ -4,6 +4,7 @@ using Confluent.Kafka;
 using Cryptofolio.Collector.Job.Data;
 using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Data;
+using Elasticsearch.Net;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,7 +15,9 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.Options;
+using Nest;
 using StackExchange.Redis;
+using System.Linq;
 
 namespace Cryptofolio.Collector.Job
 {
@@ -81,6 +84,26 @@ namespace Cryptofolio.Collector.Job
             });
             services.AddTransient<IEventDispatcher, KafkaEventDispatcher>();
 
+            // Elasticsearch
+            services.AddSingleton<IConnectionPool>(
+                new StaticConnectionPool(
+                    Configuration.GetSection("Elasticsearch:Nodes")
+                        .Get<string[]>()
+                        .Select(n => new Node(new(n)))
+                        .ToList()
+                )
+            );
+            services.AddSingleton<IConnectionSettingsValues>(p =>
+            {
+                var settings = new ConnectionSettings(p.GetRequiredService<IConnectionPool>());
+                if (Environment.IsDevelopment())
+                {
+                    settings.EnableDebugMode();
+                }
+                return settings;
+            });
+            services.AddSingleton<IElasticClient>(p => new ElasticClient(p.GetRequiredService<IConnectionSettingsValues>()));
+
             // Redis
             services.AddSingleton(ConnectionMultiplexer.Connect(Configuration.GetConnectionString("Redis")));
             services.AddSingleton<IConnectionMultiplexer>(p => p.GetRequiredService<ConnectionMultiplexer>());
@@ -134,9 +157,11 @@ namespace Cryptofolio.Collector.Job
                 .AddNpgSql(Configuration.GetConnectionString("CryptofolioContext"), name: "db")
                 .AddKafka(
                     Configuration.GetSection("Kafka:Producer").Get<ProducerConfig>(),
-                    Configuration.GetSection("Kafka:Topics:HealthChecks").Get<string>()
-                );
-            // TODO: Elasticsearch checks.
+                    Configuration.GetSection("Kafka:Topics:HealthChecks").Get<string>(),
+                    name: "kafka"
+                )
+                .AddRedis(Configuration.GetConnectionString("Redis"), name: "redis")
+                .AddCheck<ElasticsearchHealthCheck>("elasticsearch");
 
             services.TryAddSingleton<ISystemClock, SystemClock>();
         }

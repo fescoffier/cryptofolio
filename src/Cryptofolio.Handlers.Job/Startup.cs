@@ -3,7 +3,6 @@ using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Entities;
 using Elasticsearch.Net;
 using MediatR;
-using MediatR.Pipeline;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Internal;
 using Nest;
 using System.Linq;
+using System.Text.Json;
 
 namespace Cryptofolio.Handlers.Job
 {
@@ -61,10 +61,13 @@ namespace Cryptofolio.Handlers.Job
             services.AddSingleton<IConnectionSettingsValues>(p =>
             {
                 var indexTemplate = Configuration.GetSection($"Elasticsearch:Indices:{typeof(IEvent).FullName}").Get<string>();
-                var settings = new ConnectionSettings(p.GetRequiredService<IConnectionPool>());
-                settings.DefaultMappingFor<AssetInfosUpsertedEvent>(config => config.IndexName(indexTemplate));
-                settings.DefaultMappingFor<AssetTickerUpsertedEvent>(config => config.IndexName(indexTemplate));
-                settings.DefaultMappingFor<ExchangeInfosUpsertedEvent>(config => config.IndexName(indexTemplate));
+                var serializationOptions = Configuration.GetSection("Elasticsearch:SerializationOptions").Get<JsonSerializerOptions>() ?? new();
+                serializationOptions.Converters.Add(new IEventJsonConverter());
+                var settings = new ConnectionSettings(
+                    p.GetRequiredService<IConnectionPool>(),
+                    (builtIn, settings) => new ElasticsearchSerializer(serializationOptions)
+                );
+                settings.DefaultMappingFor<IEvent>(config => config.IndexName(indexTemplate));
                 if (Environment.IsDevelopment())
                 {
                     settings.EnableDebugMode();
@@ -77,6 +80,9 @@ namespace Cryptofolio.Handlers.Job
             services.AddMediatR(typeof(IMediator));
 
             // Events
+            services.AddDefaultEventHandler<AssetInfosUpsertedEvent>();
+            services.AddDefaultEventHandler<AssetTickerUpsertedEvent>();
+            services.AddDefaultEventHandler<ExchangeInfosUpsertedEvent>();
 
             // Healthchecks
             services
@@ -84,9 +90,10 @@ namespace Cryptofolio.Handlers.Job
                 .AddNpgSql(Configuration.GetConnectionString("CryptofolioContext"), name: "db")
                 .AddKafka(
                     Configuration.GetSection("Kafka:Producer").Get<ProducerConfig>(),
-                    Configuration.GetSection("Kafka:Topics:HealthChecks").Get<string>()
-                );
-            // TODO: Elasticsearch checks.
+                    Configuration.GetSection("Kafka:Topics:HealthChecks").Get<string>(),
+                    name: "kafka"
+                )
+                .AddCheck<ElasticsearchHealthCheck>("elasticsearch");
 
             services.TryAddSingleton<ISystemClock, SystemClock>();
         }
