@@ -29,6 +29,11 @@ namespace Cryptofolio.Infrastructure
         public DbSet<Setting> Settings { get; set; }
 
         /// <summary>
+        /// The wallets set.
+        /// </summary>
+        public DbSet<Wallet> Wallets { get; set; }
+
+        /// <summary>
         /// Creates a new instance of <see cref="CryptofolioContext"/>.
         /// </summary>
         /// <param name="options">The options that configures the context.</param>
