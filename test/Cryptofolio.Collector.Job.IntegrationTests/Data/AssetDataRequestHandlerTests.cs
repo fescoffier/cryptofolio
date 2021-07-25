@@ -12,7 +12,7 @@ using Xunit;
 
 namespace Cryptofolio.Collector.Job.IntegrationTests.Data
 {
-    public class AssetDataRequestHandlerTests : IClassFixture<WebApplicationFactory>
+    public class AssetDataRequestHandlerTests : IClassFixture<WebApplicationFactory>, IDisposable
     {
         private readonly IServiceScope _scope;
         private readonly AssetDataRequestHandler _handler;
@@ -26,6 +26,8 @@ namespace Cryptofolio.Collector.Job.IntegrationTests.Data
             _coinsClient = _scope.ServiceProvider.GetRequiredService<ICoinsClient>();
             _context = _scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
         }
+
+        public void Dispose() => _scope.Dispose();
 
         [Fact]
         public async Task Handle_Test()

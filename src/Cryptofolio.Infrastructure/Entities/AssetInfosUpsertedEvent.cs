@@ -1,12 +1,15 @@
 using System;
 
-namespace Cryptofolio.Core.Entities
+namespace Cryptofolio.Infrastructure.Entities
 {
     /// <summary>
     /// Models an inserted or updated event occured on <see cref="Entities.Asset"/>.
     /// </summary>
     public class AssetInfosUpsertedEvent : IEvent
     {
+        /// <inheritdoc/>
+        public string Id { get; init; }
+
         /// <inheritdoc/>
         public DateTimeOffset Date { get; init; }
 
@@ -17,7 +20,7 @@ namespace Cryptofolio.Core.Entities
         public string Username { get; init; }
 
         /// <inheritdoc/>
-        public string Category => EventConstants.Categories.Asset;
+        public string Category => InfrastructureConstants.Events.Categories.Asset;
 
         /// <summary>
         /// The asset that has been inserted/updated.

@@ -1,9 +1,8 @@
 using CoinGecko.Entities.Response.Coins;
 using CoinGecko.Interfaces;
-using Cryptofolio.Core;
-using Cryptofolio.Core.Entities;
 using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Data;
+using Cryptofolio.Infrastructure.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Internal;
@@ -96,6 +95,7 @@ namespace Cryptofolio.Collector.Job.Data
             _logger.LogDebug("Dispatching an {0} event.", nameof(AssetInfosUpsertedEvent));
             await _dispatcher.DispatchAsync(new AssetInfosUpsertedEvent
             {
+                Id = Guid.NewGuid().ToString(),
                 Date = _systemClock.UtcNow,
                 Asset = asset
             });

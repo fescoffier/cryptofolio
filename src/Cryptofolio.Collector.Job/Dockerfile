@@ -7,7 +7,7 @@ RUN dotnet restore "src/Cryptofolio.Collector.Job/Cryptofolio.Collector.Job.cspr
 RUN dotnet build "src/Cryptofolio.Collector.Job/Cryptofolio.Collector.Job.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "src/Cryptofolio.Collector.Job/Cryptofolio.Collector.Job.csproj" -c Release -o /app/publish -r debian.10-x64 -p:PublishReadyToRun=true
+RUN dotnet publish "src/Cryptofolio.Collector.Job/Cryptofolio.Collector.Job.csproj" -c Release -o /app/publish -r alpine.3.13-x64 -p:PublishReadyToRun=true
 
 FROM base AS final
 WORKDIR /app

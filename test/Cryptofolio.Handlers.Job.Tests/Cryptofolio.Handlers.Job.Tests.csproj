@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Cryptofolio.Core\Cryptofolio.Core.csproj" />
+    <ProjectReference Include="..\..\src\Cryptofolio.Handlers.Job\Cryptofolio.Handlers.Job.csproj" />
   </ItemGroup>
 
 </Project>

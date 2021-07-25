@@ -1,5 +1,4 @@
 using Confluent.Kafka;
-using Cryptofolio.Core;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,6 +39,7 @@ namespace Cryptofolio.Infrastructure.IntegrationTests
             // Setup
             var @event = new FakeEvent
             {
+                Id = Guid.NewGuid().ToString(),
                 Date = DateTimeOffset.UtcNow,
                 UserId = Guid.NewGuid().ToString(),
                 Username = "test",
@@ -54,22 +54,25 @@ namespace Cryptofolio.Infrastructure.IntegrationTests
             _consumerWrapper.Consumer.Subscribe(_consumerWrapper.Options.Topic);
             var message = _consumerWrapper.Consumer.Consume();
             _consumerWrapper.Consumer.Unsubscribe();
+            message.Message.Key.Should().Be(@event.Id);
             message.Message.Value.Should().BeEquivalentTo(@event);
         }
-    }
 
-    public class FakeEvent : IEvent
-    {
-        public DateTimeOffset Date { get; init; }
+        private class FakeEvent : IEvent
+        {
+            public string Id { get; init; }
 
-        public string UserId { get; init; }
+            public DateTimeOffset Date { get; init; }
 
-        public string Username { get; init; }
+            public string UserId { get; init; }
 
-        public string Category => "Test";
+            public string Username { get; init; }
 
-        public string Property1 { get; init; }
+            public string Category => "Test";
 
-        public string Property2 { get; init; }
+            public string Property1 { get; init; }
+
+            public string Property2 { get; init; }
+        }
     }
 }

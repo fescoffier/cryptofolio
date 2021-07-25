@@ -1,4 +1,4 @@
-namespace Cryptofolio.Core.Entities
+namespace Cryptofolio.Infrastructure.Entities
 {
     /// <summary>
     /// Models an exchange.

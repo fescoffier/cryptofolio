@@ -19,7 +19,7 @@ namespace Cryptofolio.Infrastructure.Migrations
                 .HasAnnotation("ProductVersion", "5.0.7")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-            modelBuilder.Entity("Cryptofolio.Core.Entities.Asset", b =>
+            modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.Asset", b =>
                 {
                     b.Property<string>("Id")
                         .HasMaxLength(100)
@@ -45,7 +45,7 @@ namespace Cryptofolio.Infrastructure.Migrations
                     b.ToTable("asset");
                 });
 
-            modelBuilder.Entity("Cryptofolio.Core.Entities.AssetTicker", b =>
+            modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.AssetTicker", b =>
                 {
                     b.Property<string>("asset_id")
                         .HasColumnType("character varying(100)");
@@ -72,7 +72,7 @@ namespace Cryptofolio.Infrastructure.Migrations
                     b.ToTable("asset_ticker");
                 });
 
-            modelBuilder.Entity("Cryptofolio.Core.Entities.Exchange", b =>
+            modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.Exchange", b =>
                 {
                     b.Property<string>("Id")
                         .HasMaxLength(100)
@@ -128,9 +128,9 @@ namespace Cryptofolio.Infrastructure.Migrations
                     b.ToTable("setting");
                 });
 
-            modelBuilder.Entity("Cryptofolio.Core.Entities.AssetTicker", b =>
+            modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.AssetTicker", b =>
                 {
-                    b.HasOne("Cryptofolio.Core.Entities.Asset", "Asset")
+                    b.HasOne("Cryptofolio.Infrastructure.Entities.Asset", "Asset")
                         .WithMany()
                         .HasForeignKey("asset_id")
                         .OnDelete(DeleteBehavior.Cascade)

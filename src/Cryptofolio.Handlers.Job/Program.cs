@@ -5,7 +5,7 @@ using Serilog;
 using System;
 using System.Text.Json;
 
-namespace Cryptofolio.Collector.Job
+namespace Cryptofolio.Handlers.Job
 {
     public class Program
     {

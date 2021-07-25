@@ -52,7 +52,7 @@ namespace Cryptofolio.Collector.Job
             _logger.LogInformation("Making a Coingecko API call.");
 
             _logger.LogDebug("Incrementing the counter.");
-            check: var count = _database.StringIncrement(Options.RateLimiterKey);
+        check: var count = _database.StringIncrement(Options.RateLimiterKey);
             if (count == 1)
             {
                 _logger.LogDebug("The counter was just created, setting the expiration.");
@@ -78,7 +78,7 @@ namespace Cryptofolio.Collector.Job
             _logger.LogInformation("Making a Coingecko API call.");
 
             _logger.LogDebug("Incrementing the counter.");
-            check: var count = await _database.StringIncrementAsync(Options.RateLimiterKey);
+        check: var count = await _database.StringIncrementAsync(Options.RateLimiterKey);
             if (count == 1)
             {
                 _logger.LogDebug("The counter was just created, setting the expiration.");
