@@ -11,4 +11,5 @@ RUN dotnet publish "src/Cryptofolio.Collector.Job/Cryptofolio.Collector.Job.cspr
 
 FROM base AS final
 WORKDIR /app
+COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Cryptofolio.Collector.Job.dll"]

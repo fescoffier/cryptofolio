@@ -11,4 +11,5 @@ RUN dotnet publish "src/Cryptofolio.Handlers.Job/Cryptofolio.Handlers.Job.csproj
 
 FROM base AS final
 WORKDIR /app
+COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Cryptofolio.Handlers.Job.dll"]
