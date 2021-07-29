@@ -42,6 +42,11 @@ namespace Cryptofolio.Infrastructure
                 /// The exchange category.
                 /// </summary>
                 public const string Exchange = "Exchange";
+
+                /// <summary>
+                /// The wallet category.
+                /// </summary>
+                public const string Wallet = "Wallet";
             }
         }
     }
