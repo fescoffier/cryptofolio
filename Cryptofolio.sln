@@ -30,9 +30,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Collector.Job.I
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Handlers.Job", "src\Cryptofolio.Handlers.Job\Cryptofolio.Handlers.Job.csproj", "{8FFA5080-B67E-4EBA-8A75-67467EBCFCE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptofolio.Handlers.Job.Tests", "test\Cryptofolio.Handlers.Job.Tests\Cryptofolio.Handlers.Job.Tests.csproj", "{04020BAB-775F-4B54-9C21-9A9DBA1E27EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Handlers.Job.Tests", "test\Cryptofolio.Handlers.Job.Tests\Cryptofolio.Handlers.Job.Tests.csproj", "{04020BAB-775F-4B54-9C21-9A9DBA1E27EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptofolio.Handlers.Job.IntegrationTests", "test\Cryptofolio.Handlers.Job.IntegrationTests\Cryptofolio.Handlers.Job.IntegrationTests.csproj", "{D4F974C2-F442-4A0D-BDE3-1906486DC385}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Handlers.Job.IntegrationTests", "test\Cryptofolio.Handlers.Job.IntegrationTests\Cryptofolio.Handlers.Job.IntegrationTests.csproj", "{D4F974C2-F442-4A0D-BDE3-1906486DC385}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptofolio.Api", "src\Cryptofolio.Api\Cryptofolio.Api.csproj", "{AC1EA147-BE45-43D3-809A-4CB98CBFDCE2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,6 +74,10 @@ Global
 		{D4F974C2-F442-4A0D-BDE3-1906486DC385}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4F974C2-F442-4A0D-BDE3-1906486DC385}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4F974C2-F442-4A0D-BDE3-1906486DC385}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC1EA147-BE45-43D3-809A-4CB98CBFDCE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC1EA147-BE45-43D3-809A-4CB98CBFDCE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC1EA147-BE45-43D3-809A-4CB98CBFDCE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC1EA147-BE45-43D3-809A-4CB98CBFDCE2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,6 +91,7 @@ Global
 		{8FFA5080-B67E-4EBA-8A75-67467EBCFCE8} = {E00D633C-F653-4FFB-AE0D-811CE4827DA7}
 		{04020BAB-775F-4B54-9C21-9A9DBA1E27EA} = {E00D633C-F653-4FFB-AE0D-811CE4827DA7}
 		{D4F974C2-F442-4A0D-BDE3-1906486DC385} = {E00D633C-F653-4FFB-AE0D-811CE4827DA7}
+		{AC1EA147-BE45-43D3-809A-4CB98CBFDCE2} = {FDD6F67D-6FBE-47BF-8FBA-BAEA74EC119D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7F9B8C09-ECC1-413C-92A4-58299272789F}
