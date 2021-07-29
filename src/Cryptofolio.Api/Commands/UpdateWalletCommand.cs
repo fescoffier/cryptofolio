@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Cryptofolio.Api.Commands
 {
     /// <summary>
-    /// Models a command to update a <see cref="Infrastructure.Entities.Wallet"/>
+    /// Models a command to update a <see cref="Infrastructure.Entities.Wallet"/>.
     /// </summary>
     public class UpdateWalletCommand : CommandBase, IRequest<CommandResult>
     {
