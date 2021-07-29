@@ -1,5 +1,4 @@
 using MediatR;
-using System.ComponentModel.DataAnnotations;
 
 namespace Cryptofolio.Api.Commands
 {
@@ -11,7 +10,6 @@ namespace Cryptofolio.Api.Commands
         /// <summary>
         /// The id.
         /// </summary>
-        [Required(ErrorMessage = "The wallet id is required")]
         public string Id { get; set; }
     }
 }
