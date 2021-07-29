@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Nest;
 using StackExchange.Redis;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace Cryptofolio.Api
 {
@@ -28,6 +29,14 @@ namespace Cryptofolio.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
+            // Mvc
+            services
+                .AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull; 
+                });
+
             // EF Core
             services.AddDbContext<CryptofolioContext>(builder =>
             {
