@@ -24,11 +24,6 @@ namespace Cryptofolio.Infrastructure
         public string UserId { get; }
 
         /// <summary>
-        /// The user's username that triggered the event.
-        /// </summary>
-        public string Username { get; }
-
-        /// <summary>
         /// The event category.
         /// </summary>
         public string Category { get; }

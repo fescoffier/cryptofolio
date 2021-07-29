@@ -2,7 +2,6 @@ using Cryptofolio.Infrastructure;
 using FluentAssertions;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Internal;
 using Moq;
 using Nest;
 using System;
@@ -13,19 +12,17 @@ using Xunit;
 
 namespace Cryptofolio.Handlers.Job.IntegrationTests
 {
-    public class EventTraceWriterTests : IClassFixture<WebApplicationFactory>, IDisposable
+    public sealed class EventTraceWriterTests : IClassFixture<WebApplicationFactory>, IDisposable
     {
         private readonly IServiceScope _scope;
         private readonly EventTraceWriter<FakeEvent> _writer;
         private readonly IElasticClient _elasticClient;
-        private readonly Mock<ISystemClock> _systemClockMock;
 
         public EventTraceWriterTests(WebApplicationFactory factory)
         {
             _scope = factory.Services.CreateScope();
             _writer = _scope.ServiceProvider.GetRequiredService<EventTraceWriter<FakeEvent>>();
             _elasticClient = _scope.ServiceProvider.GetRequiredService<IElasticClient>();
-            _systemClockMock = _scope.ServiceProvider.GetRequiredService<Mock<ISystemClock>>();
         }
 
         public void Dispose() => _scope.Dispose();
@@ -39,7 +36,6 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests
                 Id = Guid.NewGuid().ToString(),
                 Date = DateTimeOffset.UtcNow,
                 UserId = Guid.NewGuid().ToString(),
-                Username = "test",
                 Property1 = "value1",
                 Property2 = "value2"
             };
