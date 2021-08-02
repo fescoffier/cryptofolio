@@ -1,4 +1,6 @@
+using IdentityModel;
 using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace Cryptofolio.Api.Commands
 {
@@ -27,7 +29,7 @@ namespace Cryptofolio.Api.Commands
             {
                 RequestId = values.ToString();
             }
-            UserId = httpContext.User.Identity.Name;
+            UserId = httpContext.User.FindFirstValue(JwtClaimTypes.Subject);
         }
     }
 }

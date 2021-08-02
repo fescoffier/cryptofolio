@@ -26,21 +26,13 @@ namespace Cryptofolio.Api.Tests.Controllers
             {
                 ControllerContext = new()
                 {
-                    HttpContext = new DefaultHttpContext
-                    {
-                        User = new(new ClaimsIdentity(new[]
-                        {
-                            new Claim(JwtClaimTypes)
-                        }))
-                    }
+                    HttpContext = TestContext.Instance.HttpContext
                 }
             };
-            var command = new CreateWalletCommand
-            {
-                
-            };
+            var command = new CreateWalletCommand();
             var commandResult = CommandResult<Wallet>.Success(new() { Id = Guid.NewGuid().ToString() });
             var cancellationToken = CancellationToken.None;
+            mediatorMock.Setup(m => m.Send(command, cancellationToken)).ReturnsAsync(commandResult);
 
             // Act
             var result = await controller.Create(command, cancellationToken);
@@ -51,7 +43,7 @@ namespace Cryptofolio.Api.Tests.Controllers
                 .BeOfType<CreatedAtActionResult>()
                 .Which
                 .Should()
-                .BeEquivalentTo(new CreatedAtActionResult("Create", "Wallet", new { id = commandResult.Data.Id }, commandResult.Data));
+                .BeEquivalentTo(new CreatedAtActionResult("Create", null, new { id = commandResult.Data.Id }, commandResult.Data));
         }
     }
 }
