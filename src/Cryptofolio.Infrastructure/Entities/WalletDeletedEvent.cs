@@ -3,9 +3,9 @@ using System;
 namespace Cryptofolio.Infrastructure.Entities
 {
     /// <summary>
-    /// Models an inserted or updated event occured on <see cref="Entities.Exchange"/>.
+    /// Models a deleted event occured on <see cref="Entities.Wallet"/>.
     /// </summary>
-    public class ExchangeInfosUpsertedEvent : IEvent
+    public class WalletDeletedEvent : IEvent
     {
         /// <inheritdoc/>
         public string Id { get; init; }
@@ -17,11 +17,11 @@ namespace Cryptofolio.Infrastructure.Entities
         public string UserId { get; init; }
 
         /// <inheritdoc/>
-        public string Category => InfrastructureConstants.Events.Categories.Asset;
+        public string Category => InfrastructureConstants.Events.Categories.Wallet;
 
         /// <summary>
-        /// The exchange that has been inserted/updated.
+        /// The deleted wallet.
         /// </summary>
-        public Exchange Exchange { get; init; }
+        public Wallet Wallet { get; init; }
     }
 }

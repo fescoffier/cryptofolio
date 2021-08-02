@@ -42,7 +42,6 @@ namespace Cryptofolio.Infrastructure.IntegrationTests
                 Id = Guid.NewGuid().ToString(),
                 Date = DateTimeOffset.UtcNow,
                 UserId = Guid.NewGuid().ToString(),
-                Username = "test",
                 Property1 = "value1",
                 Property2 = "value2"
             };
@@ -65,8 +64,6 @@ namespace Cryptofolio.Infrastructure.IntegrationTests
             public DateTimeOffset Date { get; init; }
 
             public string UserId { get; init; }
-
-            public string Username { get; init; }
 
             public string Category => "Test";
 

@@ -38,8 +38,6 @@ namespace Cryptofolio.Handlers.Job.Tests
 
             public string UserId { get; init; }
 
-            public string Username { get; init; }
-
             public string Category => "Test";
         }
     }
