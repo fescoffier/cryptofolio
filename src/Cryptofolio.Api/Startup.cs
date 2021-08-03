@@ -4,6 +4,7 @@ using Elasticsearch.Net;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -80,9 +81,6 @@ namespace Cryptofolio.Api
             services.AddSingleton<IConnectionMultiplexer>(p => p.GetRequiredService<ConnectionMultiplexer>());
             services.AddTransient(p => p.GetRequiredService<ConnectionMultiplexer>().GetDatabase());
 
-            // MediatR
-            services.AddMediatR(typeof(Startup));
-
             // Healthchecks
             services
                 .AddHealthChecks()
@@ -94,6 +92,13 @@ namespace Cryptofolio.Api
                 )
                 .AddRedis(Configuration.GetConnectionString("Redis"), name: "redis")
                 .AddCheck<ElasticsearchHealthCheck>("elasticsearch");
+
+            // Traceability
+            services.AddHttpContextAccessor();
+            services.AddScoped(p => RequestContext.FromHttpContext(p.GetRequiredService<IHttpContextAccessor>().HttpContext));
+
+            // MediatR
+            services.AddMediatR(typeof(Startup));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

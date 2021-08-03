@@ -8,7 +8,7 @@ namespace Cryptofolio.Api.Commands
     /// </summary>
     public class CommandResult
     {
-        private static readonly CommandResult SuccessCommandResult = new(Enumerable.Empty<string>());
+        private static readonly CommandResult SuccessCommandResult = new(Enumerable.Empty<string>(), true);
 
         /// <summary>
         /// The error list.
@@ -20,10 +20,10 @@ namespace Cryptofolio.Api.Commands
         /// </summary>
         public bool Succeeded { get; }
 
-        protected CommandResult(IEnumerable<string> errors)
+        protected CommandResult(IEnumerable<string> errors, bool succeeded)
         {
             Errors = errors.ToList().AsReadOnly();
-            Succeeded = !Errors.Any();
+            Succeeded = succeeded;
         }
 
         /// <summary>
@@ -37,14 +37,14 @@ namespace Cryptofolio.Api.Commands
         /// </summary>
         /// <param name="errors">The error list.</param>
         /// <returns>The <see cref="CommandResult"/> instance.</returns>
-        public static CommandResult Failed(IEnumerable<string> errors) => new(errors);
+        public static CommandResult Failed(IEnumerable<string> errors) => new(errors, false);
 
         /// <summary>
         /// Creates a failed <see cref="CommandResult"/>.
         /// </summary>
         /// <param name="errors">The error list.</param>
         /// <returns>The <see cref="CommandResult"/> instance.</returns>
-        public static CommandResult Failed(params string[] errors) => new(errors.AsEnumerable());
+        public static CommandResult Failed(params string[] errors) => new(errors.AsEnumerable(), false);
     }
 
     /// <summary>
@@ -58,12 +58,12 @@ namespace Cryptofolio.Api.Commands
         /// </summary>
         public T Data { get; }
 
-        protected CommandResult(T data) : base(Enumerable.Empty<string>())
+        protected CommandResult(T data) : base(Enumerable.Empty<string>(), true)
         {
             Data = data;
         }
 
-        protected CommandResult(IEnumerable<string> errors) : base(errors)
+        protected CommandResult(IEnumerable<string> errors, bool succeeded) : base(errors, succeeded)
         {
         }
 
@@ -79,13 +79,13 @@ namespace Cryptofolio.Api.Commands
         /// </summary>
         /// <param name="errors">The error list.</param>
         /// <returns>The <see cref="CommandResult{T}"/> instance.</returns>
-        public static new CommandResult<T> Failed(IEnumerable<string> errors) => new(errors);
+        public static new CommandResult<T> Failed(IEnumerable<string> errors) => new(errors, false);
 
         /// <summary>
         /// Creates a failed <see cref="CommandResult"/>.
         /// </summary>
         /// <param name="errors">The error list.</param>
         /// <returns>The <see cref="CommandResult{T}"/> instance.</returns>
-        public static new CommandResult<T> Failed(params string[] errors) => new(errors.AsEnumerable());
+        public static new CommandResult<T> Failed(params string[] errors) => new(errors.AsEnumerable(), false);
     }
 }

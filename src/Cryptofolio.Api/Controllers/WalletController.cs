@@ -28,17 +28,17 @@ namespace Cryptofolio.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public Task<Wallet> Get(string id, CancellationToken cancellationToken) =>
-            _context.Wallets.AsNoTracking().SingleOrDefaultAsync(w => w.Id == id, cancellationToken);
+        public Task<Wallet> Get(string id, [FromServices] RequestContext requestContext, CancellationToken cancellationToken) =>
+            _context.Wallets.AsNoTracking().SingleOrDefaultAsync(w => w.Id == id && w.UserId == requestContext.UserId, cancellationToken);
 
         [HttpGet]
-        public Task<List<Wallet>> Get(CancellationToken cancellationToken) =>
-            _context.Wallets.AsNoTracking().Where(w => w.UserId == User.Identity.Name).ToListAsync(cancellationToken);
+        public Task<List<Wallet>> Get([FromServices] RequestContext requestContext, CancellationToken cancellationToken) =>
+            _context.Wallets.AsNoTracking().Where(w => w.UserId == requestContext.UserId).ToListAsync(cancellationToken);
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateWalletCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> Create(CreateWalletCommand command, [FromServices] RequestContext requestContext, CancellationToken cancellationToken)
         {
-            command.EnsureTraceability(HttpContext);
+            command.RequestContext = requestContext;
 
             var result = await _mediator.Send(command, cancellationToken);
             if (result.Succeeded)
@@ -52,9 +52,9 @@ namespace Cryptofolio.Api.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody] UpdateWalletCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> Update(UpdateWalletCommand command, [FromServices] RequestContext requestContext, CancellationToken cancellationToken)
         {
-            command.EnsureTraceability(HttpContext);
+            command.RequestContext = requestContext;
 
             var result = await _mediator.Send(command, cancellationToken);
             if (result.Succeeded)
@@ -68,13 +68,13 @@ namespace Cryptofolio.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Update(string id, CancellationToken cancellationToken)
+        public async Task<IActionResult> Delete(string id, [FromServices] RequestContext requestContext, CancellationToken cancellationToken)
         {
             var command = new DeleteWalletCommand
             {
+                RequestContext = requestContext,
                 Id = id
             };
-            command.EnsureTraceability(HttpContext);
 
             var result = await _mediator.Send(command, cancellationToken);
             if (result.Succeeded)

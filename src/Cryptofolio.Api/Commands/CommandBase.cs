@@ -1,6 +1,4 @@
-using IdentityModel;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
+using System;
 
 namespace Cryptofolio.Api.Commands
 {
@@ -9,27 +7,31 @@ namespace Cryptofolio.Api.Commands
     /// </summary>
     public abstract class CommandBase
     {
+        private RequestContext _requestContext;
+        /// <summary>
+        /// The request context.
+        /// </summary>
+        public RequestContext RequestContext
+        {
+            get => _requestContext;
+            set
+            {
+                if (value is null)
+                {
+                    throw new ArgumentNullException(nameof(value));
+                }
+                _requestContext = value;
+            }
+        }
+
         /// <summary>
         /// The request id.
         /// </summary>
-        public string RequestId { get; private set; }
+        public string RequestId => _requestContext.RequestId;
 
         /// <summary>
         /// The user id.
         /// </summary>
-        public string UserId { get; private set; }
-
-        /// <summary>
-        /// Ensure the traceablity by setting the <see cref="RequestId"/> & <see cref="UserId"/> properties from the current request.
-        /// </summary>
-        /// <param name="httpContext"></param>
-        public void EnsureTraceability(HttpContext httpContext)
-        {
-            if (httpContext.Request.Headers.TryGetValue("x-requestid", out var values))
-            {
-                RequestId = values.ToString();
-            }
-            UserId = httpContext.User.FindFirstValue(JwtClaimTypes.Subject);
-        }
+        public string UserId => _requestContext.UserId;
     }
 }

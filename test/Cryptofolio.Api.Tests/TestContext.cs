@@ -17,6 +17,8 @@ namespace Cryptofolio.Api.Tests
 
         public HttpContext HttpContext { get; }
 
+        public RequestContext RequestContext { get; }
+
         private TestContext()
         {
             RequestId = Guid.NewGuid().ToString();
@@ -29,6 +31,7 @@ namespace Cryptofolio.Api.Tests
             {
                 User = User
             };
+            RequestContext = new(RequestId, UserId);
         }
     }
 }
