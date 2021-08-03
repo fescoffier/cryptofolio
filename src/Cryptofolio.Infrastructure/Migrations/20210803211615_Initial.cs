@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Cryptofolio.Infrastructure.Migrations
 {
@@ -47,7 +47,21 @@ namespace Cryptofolio.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_settings", x => x.key);
+                    table.PrimaryKey("PK_setting", x => x.key);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "wallet",
+                columns: table => new
+                {
+                    id = table.Column<string>(type: "character varying(36)", maxLength: 36, nullable: false),
+                    name = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
+                    description = table.Column<string>(type: "text", nullable: true),
+                    user_id = table.Column<string>(type: "character varying(36)", maxLength: 36, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_wallet", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -91,6 +105,9 @@ namespace Cryptofolio.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "setting");
+
+            migrationBuilder.DropTable(
+                name: "wallet");
 
             migrationBuilder.DropTable(
                 name: "asset");

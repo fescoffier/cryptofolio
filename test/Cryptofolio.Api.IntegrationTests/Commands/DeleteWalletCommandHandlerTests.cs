@@ -13,19 +13,19 @@ using Xunit;
 
 namespace Cryptofolio.Api.IntegrationTests.Commands
 {
-    public class CreateWalletCommandHandlerTests : IClassFixture<WebApplicationFactory>
+    public class DeleteWalletCommandHandlerTests : IClassFixture<WebApplicationFactory>
     {
         private readonly TestData _data = new();
         private readonly IServiceScope _scope;
-        private readonly CreateWalletCommandHandler _handler;
+        private readonly DeleteWalletCommandHandler _handler;
         private readonly CryptofolioContext _context;
         private readonly Mock<ISystemClock> _systemClockMock;
         private readonly Mock<IEventDispatcher> _dispatcherMock;
 
-        public CreateWalletCommandHandlerTests(WebApplicationFactory factory)
+        public DeleteWalletCommandHandlerTests(WebApplicationFactory factory)
         {
             _scope = factory.Services.CreateScope();
-            _handler = _scope.ServiceProvider.GetRequiredService<CreateWalletCommandHandler>();
+            _handler = _scope.ServiceProvider.GetRequiredService<DeleteWalletCommandHandler>();
             _context = _scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
             _systemClockMock = _scope.ServiceProvider.GetRequiredService<Mock<ISystemClock>>();
             _dispatcherMock = _scope.ServiceProvider.GetRequiredService<Mock<IEventDispatcher>>();
@@ -37,11 +37,13 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             // Setup
             var utcNow = DateTimeOffset.UtcNow;
             _systemClockMock.SetupGet(m => m.UtcNow).Returns(utcNow);
-            var command = new CreateWalletCommand
+            _context.Wallets.Add(_data.Wallet1);
+            _context.SaveChanges();
+            _context.ChangeTracker.Clear();
+            var command = new DeleteWalletCommand
             {
                 RequestContext = new(null, _data.UserId1),
-                Name = _data.Wallet1.Name,
-                Description = _data.Wallet1.Description
+                Id = _data.Wallet1.Id
             };
             var cancellationToken = CancellationToken.None;
 
@@ -50,9 +52,8 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
 
             // Assert
             result.Succeeded.Should().BeTrue();
-            result.Data.Should().BeEquivalentTo(_data.Wallet1, options => options.Excluding(m => m.Id));
-            _context.Wallets.Single(w => w.Id == result.Data.Id).Should().BeEquivalentTo(result.Data);
-            _dispatcherMock.Verify(m => m.DispatchAsync(It.IsAny<WalletCreatedEvent>()), Times.Once());
+            _context.Wallets.SingleOrDefault(w => w.Id == _data.Wallet1.Id).Should().BeNull();
+            _dispatcherMock.Verify(m => m.DispatchAsync(It.IsAny<WalletDeletedEvent>()), Times.Once());
         }
 
         [Fact]
@@ -61,9 +62,13 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             // Setup
             var utcNow = DateTimeOffset.UtcNow;
             _systemClockMock.SetupGet(m => m.UtcNow).Returns(utcNow);
-            var command = new CreateWalletCommand
+            _context.Wallets.Add(_data.Wallet1);
+            _context.SaveChanges();
+            _context.ChangeTracker.Clear();
+            var command = new DeleteWalletCommand
             {
-                RequestContext = new(null, _data.UserId1)
+                RequestContext = new(null, _data.UserId1),
+                Id = ""
             };
             var cancellationToken = CancellationToken.None;
 
@@ -72,9 +77,9 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
 
             // Assert
             result.Succeeded.Should().BeFalse();
-            result.Data.Should().BeNull();
-            result.Errors.Should().HaveCount(1).And.Contain(CommandConstants.Wallet.Errors.CreateError);
-            _dispatcherMock.Verify(m => m.DispatchAsync(It.IsAny<WalletCreatedEvent>()), Times.Never());
+            result.Errors.Should().HaveCount(1).And.Contain(CommandConstants.Wallet.Errors.DeleteError);
+            _context.Wallets.SingleOrDefault(w => w.Id == _data.Wallet1.Id).Should().NotBeNull();
+            _dispatcherMock.Verify(m => m.DispatchAsync(It.IsAny<WalletDeletedEvent>()), Times.Never());
         }
     }
 }

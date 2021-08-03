@@ -74,8 +74,7 @@ namespace Cryptofolio.Api.Commands
             catch (Exception e)
             {
                 _logger.LogError(e, "An error has occured while handling the {1} command.", command.RequestId);
-                // TODO: Define errors.
-                return CommandResult.Failed();
+                return CommandResult.Failed(CommandConstants.Wallet.Errors.DeleteError);
             }
         }
     }

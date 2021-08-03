@@ -128,6 +128,34 @@ namespace Cryptofolio.Infrastructure.Migrations
                     b.ToTable("setting");
                 });
 
+            modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.Wallet", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("wallet");
+                });
+
             modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.AssetTicker", b =>
                 {
                     b.HasOne("Cryptofolio.Infrastructure.Entities.Asset", "Asset")

@@ -1,6 +1,7 @@
 using Confluent.Kafka;
 using Cryptofolio.Api.Commands;
 using Cryptofolio.Infrastructure;
+using Cryptofolio.Infrastructure.Entities;
 using Elasticsearch.Net;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -124,10 +125,16 @@ namespace Cryptofolio.Api
 
             // MediatR
             services.AddMediatR(typeof(IMediator));
-            services.Scan(scan => scan
-                .FromEntryAssembly()
-                .AddClasses(c => c.AssignableTo<IRequestHandler<>>
-            );
+            // Wallet
+            services
+                .AddScoped<CreateWalletCommandHandler>()
+                .AddScoped<IRequestHandler<CreateWalletCommand, CommandResult<Wallet>>>(p => p.GetRequiredService<CreateWalletCommandHandler>());
+            services
+                .AddScoped<UpdateWalletCommandHandler>()
+                .AddScoped<IRequestHandler<UpdateWalletCommand, CommandResult>>(p => p.GetRequiredService<UpdateWalletCommandHandler>());
+            services
+                .AddScoped<DeleteWalletCommandHandler>()
+                .AddScoped<IRequestHandler<DeleteWalletCommand, CommandResult>>(p => p.GetRequiredService<DeleteWalletCommandHandler>());
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -12,7 +12,7 @@ namespace Cryptofolio.Api.Commands
     /// <summary>
     /// Provides an <see cref="IRequestHandler{TRequest, TResponse}"/> implementation to handle <see cref="UpdateWalletCommand"/>.
     /// </summary>
-    public class UpdateWalletCommandHanlder : IRequestHandler<UpdateWalletCommand, CommandResult>
+    public class UpdateWalletCommandHandler : IRequestHandler<UpdateWalletCommand, CommandResult>
     {
         private readonly CryptofolioContext _context;
         private readonly IEventDispatcher _dispatcher;
@@ -26,7 +26,7 @@ namespace Cryptofolio.Api.Commands
         /// <param name="dispatcher">The dispatcher.</param>
         /// <param name="systemClock">The system clock.</param>
         /// <param name="logger">The logger.</param>
-        public UpdateWalletCommandHanlder(
+        public UpdateWalletCommandHandler(
             CryptofolioContext context,
             IEventDispatcher dispatcher,
             ISystemClock systemClock,
@@ -81,8 +81,7 @@ namespace Cryptofolio.Api.Commands
             catch (Exception e)
             {
                 _logger.LogError(e, "An error has occured while handling the {1} command.", command.RequestId);
-                // TODO: Define errors.
-                return CommandResult.Failed();
+                return CommandResult.Failed(CommandConstants.Wallet.Errors.UpdateError);
             }
         }
     }
