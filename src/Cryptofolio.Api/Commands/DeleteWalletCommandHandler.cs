@@ -39,9 +39,9 @@ namespace Cryptofolio.Api.Commands
             _logger = logger;
         }
 
-        public async Task<CommandResult> Handle(DeleteWalletCommand request, CancellationToken cancellationToken)
+        public async Task<CommandResult> Handle(DeleteWalletCommand command, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Handling the {1} command.", request.RequestId);
+            _logger.LogInformation("Handling the {1} command.", command.RequestId);
 
             try
             {
@@ -49,16 +49,16 @@ namespace Cryptofolio.Api.Commands
                 using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
                 _logger.LogDebug("Transaction {0} just begun.", transaction.TransactionId);
 
-                var wallet = await _context.Wallets.SingleOrDefaultAsync(w => w.Id == request.Id, cancellationToken);
+                var wallet = await _context.Wallets.SingleOrDefaultAsync(w => w.Id == command.Id, cancellationToken);
                 _context.Wallets.Remove(wallet);
                 _logger.LogDebug("Storing the updated wallet in database.");
                 await _context.SaveChangesAsync(cancellationToken);
 
                 var @event = new WalletDeletedEvent
                 {
-                    Id = request.RequestId,
+                    Id = command.RequestId,
                     Date = _systemClock.UtcNow,
-                    UserId = request.UserId,
+                    UserId = command.UserId,
                     Wallet = wallet
                 };
                 _logger.LogDebug("Dispatching a {0} event.", nameof(WalletDeletedEvent));
@@ -67,13 +67,13 @@ namespace Cryptofolio.Api.Commands
                 _logger.LogDebug("Committing the transaction {0}.", transaction.TransactionId);
                 await transaction.CommitAsync(cancellationToken);
 
-                _logger.LogInformation("Command {0} handled.", request.RequestId);
+                _logger.LogInformation("Command {0} handled.", command.RequestId);
 
                 return CommandResult.Success();
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "An error has occured while handling the {1} command.", request.RequestId);
+                _logger.LogError(e, "An error has occured while handling the {1} command.", command.RequestId);
                 // TODO: Define errors.
                 return CommandResult.Failed();
             }

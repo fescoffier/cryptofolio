@@ -1,4 +1,3 @@
-using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Security.Claims;
@@ -48,7 +47,7 @@ namespace Cryptofolio.Api
                 requestId = Guid.NewGuid().ToString();
             }
 
-            var userId = httpContext.User.FindFirstValue(JwtClaimTypes.Subject) ?? "pine";
+            var userId = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             return new(requestId, userId);
         }
     }

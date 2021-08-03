@@ -39,9 +39,9 @@ namespace Cryptofolio.Api.Commands
         }
 
         /// <inheritdoc/>
-        public async Task<CommandResult<Wallet>> Handle(CreateWalletCommand request, CancellationToken cancellationToken)
+        public async Task<CommandResult<Wallet>> Handle(CreateWalletCommand command, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Handling the {1} command.", request.RequestId);
+            _logger.LogInformation("Handling the {1} command.", command.RequestId);
 
             try
             {
@@ -52,9 +52,9 @@ namespace Cryptofolio.Api.Commands
                 var wallet = new Wallet
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Name = request.Name,
-                    Description = request.Description,
-                    UserId = request.UserId
+                    Name = command.Name,
+                    Description = command.Description,
+                    UserId = command.UserId
                 };
                 _context.Wallets.Add(wallet);
                 _logger.LogDebug("Storing the created wallet in database.");
@@ -62,9 +62,9 @@ namespace Cryptofolio.Api.Commands
 
                 var @event = new WalletCreatedEvent
                 {
-                    Id = request.RequestId,
+                    Id = command.RequestId,
                     Date = _systemClock.UtcNow,
-                    UserId = request.UserId,
+                    UserId = command.UserId,
                     Wallet = wallet
                 };
                 _logger.LogDebug("Dispatching a {0} event.", nameof(WalletCreatedEvent));
@@ -73,13 +73,13 @@ namespace Cryptofolio.Api.Commands
                 _logger.LogDebug("Committing the transaction {0}.", transaction.TransactionId);
                 await transaction.CommitAsync(cancellationToken);
 
-                _logger.LogInformation("Command {0} handled.", request.RequestId);
+                _logger.LogInformation("Command {0} handled.", command.RequestId);
 
                 return CommandResult<Wallet>.Success(wallet);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "An error has occured while handling the {1} command.", request.RequestId);
+                _logger.LogError(e, "An error has occured while handling the {1} command.", command.RequestId);
                 // TODO: Define errors.
                 return CommandResult<Wallet>.Failed();
             }

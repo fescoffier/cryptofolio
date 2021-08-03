@@ -1,8 +1,11 @@
 using Confluent.Kafka;
+using Cryptofolio.Api.Commands;
 using Cryptofolio.Infrastructure;
 using Elasticsearch.Net;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +41,24 @@ namespace Cryptofolio.Api
                 {
                     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                 });
+
+            // Authentification
+            services
+                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.Cookie.Name = InfrastructureConstants.Authentication.CookieName;
+                });
+            var dataProtectionBuilder = services.AddDataProtection();
+            dataProtectionBuilder.PersistKeysToStackExchangeRedis(
+                ConnectionMultiplexer.Connect(Configuration.GetConnectionString("Redis")),
+                InfrastructureConstants.Authentication.RedisKey
+            );
+            dataProtectionBuilder.SetApplicationName(InfrastructureConstants.Authentication.ApplicationName);
+            if (!Environment.IsDevelopment())
+            {
+                // TODO: Configure key protection.
+            }
 
             // EF Core
             services.AddDbContext<CryptofolioContext>(builder =>
@@ -102,7 +123,11 @@ namespace Cryptofolio.Api
             services.AddScoped<RequestContextActionFilter>();
 
             // MediatR
-            services.AddMediatR(typeof(Startup));
+            services.AddMediatR(typeof(IMediator));
+            services.Scan(scan => scan
+                .FromEntryAssembly()
+                .AddClasses(c => c.AssignableTo<IRequestHandler<>>
+            );
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -1,4 +1,3 @@
-using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Security.Claims;
@@ -25,7 +24,7 @@ namespace Cryptofolio.Api.Tests
             UserId = Guid.NewGuid().ToString();
             User = new(new ClaimsIdentity(new[]
             {
-                new Claim(JwtClaimTypes.Subject, UserId)
+                new Claim(ClaimTypes.NameIdentifier, UserId)
             }));
             HttpContext = new DefaultHttpContext
             {

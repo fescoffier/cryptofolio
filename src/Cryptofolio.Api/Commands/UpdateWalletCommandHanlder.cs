@@ -39,9 +39,9 @@ namespace Cryptofolio.Api.Commands
         }
 
         /// <inheritdoc/>
-        public async Task<CommandResult> Handle(UpdateWalletCommand request, CancellationToken cancellationToken)
+        public async Task<CommandResult> Handle(UpdateWalletCommand command, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Handling the {1} command.", request.RequestId);
+            _logger.LogInformation("Handling the {1} command.", command.RequestId);
 
             try
             {
@@ -51,9 +51,9 @@ namespace Cryptofolio.Api.Commands
 
                 var wallet = new Wallet
                 {
-                    Id = request.Id,
-                    Name = request.Name,
-                    Description = request.Description
+                    Id = command.Id,
+                    Name = command.Name,
+                    Description = command.Description
                 };
                 var walletEntry = _context.Wallets.Attach(wallet);
                 walletEntry.Property(p => p.Name).IsModified = true;
@@ -63,9 +63,9 @@ namespace Cryptofolio.Api.Commands
 
                 var @event = new WalletUpdatedEvent
                 {
-                    Id = request.RequestId,
+                    Id = command.RequestId,
                     Date = _systemClock.UtcNow,
-                    UserId = request.UserId,
+                    UserId = command.UserId,
                     Wallet = wallet
                 };
                 _logger.LogDebug("Dispatching a {0} event.", nameof(WalletUpdatedEvent));
@@ -74,13 +74,13 @@ namespace Cryptofolio.Api.Commands
                 _logger.LogDebug("Committing the transaction {0}.", transaction.TransactionId);
                 await transaction.CommitAsync(cancellationToken);
 
-                _logger.LogInformation("Command {0} handled.", request.RequestId);
+                _logger.LogInformation("Command {0} handled.", command.RequestId);
 
                 return CommandResult.Success();
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "An error has occured while handling the {1} command.", request.RequestId);
+                _logger.LogError(e, "An error has occured while handling the {1} command.", command.RequestId);
                 // TODO: Define errors.
                 return CommandResult.Failed();
             }

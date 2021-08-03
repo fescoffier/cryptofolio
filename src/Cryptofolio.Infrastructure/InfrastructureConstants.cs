@@ -23,10 +23,19 @@ namespace Cryptofolio.Infrastructure
             public const string OutputTemplate = "[{Timestamp:HH:mm:ss.fff} {Level:u3} {SourceContext}] {Message:lj}{NewLine}{Exception}";
         }
 
+        public static class Authentication
+        {
+            public const string ApplicationName = "Cryptofolio";
+
+            public const string CookieName = "Cryptofolio";
+
+            public const string RedisKey = "DataProtection";
+        }
+
         /// <summary>
         /// Events constants.
         /// </summary>
-        public class Events
+        public static class Events
         {
             /// <summary>
             /// Categories constants.

@@ -1,5 +1,4 @@
 using FluentAssertions;
-using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Security.Claims;
@@ -26,7 +25,7 @@ namespace Cryptofolio.Api.Tests
                 },
                 User = new(new ClaimsIdentity(new[]
                 {
-                    new Claim(JwtClaimTypes.Subject, userId)
+                    new Claim(ClaimTypes.NameIdentifier, userId)
                 }))
             };
 
@@ -47,7 +46,7 @@ namespace Cryptofolio.Api.Tests
             {
                 User = new(new ClaimsIdentity(new[]
                 {
-                    new Claim(JwtClaimTypes.Subject, userId)
+                    new Claim(ClaimTypes.NameIdentifier, userId)
                 }))
             };
 
