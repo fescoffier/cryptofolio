@@ -38,9 +38,7 @@ namespace Cryptofolio.Api
         /// <returns>The <see cref="RequestContext"/>.</returns>
         public static RequestContext FromHttpContext(HttpContext httpContext)
         {
-            string requestId = null;
-            string userId = null;
-
+            string requestId;
             if (httpContext.Request.Headers.TryGetValue("x-requestid", out var values))
             {
                 requestId = values.ToString();
@@ -50,8 +48,7 @@ namespace Cryptofolio.Api
                 requestId = Guid.NewGuid().ToString();
             }
 
-            userId = httpContext.User.FindFirstValue(JwtClaimTypes.Subject);
-
+            var userId = httpContext.User.FindFirstValue(JwtClaimTypes.Subject) ?? "pine";
             return new(requestId, userId);
         }
     }

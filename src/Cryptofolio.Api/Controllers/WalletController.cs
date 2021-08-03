@@ -36,10 +36,9 @@ namespace Cryptofolio.Api.Controllers
             _context.Wallets.AsNoTracking().Where(w => w.UserId == requestContext.UserId).ToListAsync(cancellationToken);
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateWalletCommand command, [FromServices] RequestContext requestContext, CancellationToken cancellationToken)
+        [ServiceFilter(typeof(RequestContextActionFilter))]
+        public async Task<IActionResult> Create(CreateWalletCommand command, CancellationToken cancellationToken)
         {
-            command.RequestContext = requestContext;
-
             var result = await _mediator.Send(command, cancellationToken);
             if (result.Succeeded)
             {
@@ -52,10 +51,9 @@ namespace Cryptofolio.Api.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(UpdateWalletCommand command, [FromServices] RequestContext requestContext, CancellationToken cancellationToken)
+        [ServiceFilter(typeof(RequestContextActionFilter))]
+        public async Task<IActionResult> Update(UpdateWalletCommand command, CancellationToken cancellationToken)
         {
-            command.RequestContext = requestContext;
-
             var result = await _mediator.Send(command, cancellationToken);
             if (result.Succeeded)
             {
@@ -68,6 +66,7 @@ namespace Cryptofolio.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ServiceFilter(typeof(RequestContextActionFilter))]
         public async Task<IActionResult> Delete(string id, [FromServices] RequestContext requestContext, CancellationToken cancellationToken)
         {
             var command = new DeleteWalletCommand

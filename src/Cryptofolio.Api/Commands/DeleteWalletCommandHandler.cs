@@ -1,8 +1,8 @@
 using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Entities;
 using MediatR;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;

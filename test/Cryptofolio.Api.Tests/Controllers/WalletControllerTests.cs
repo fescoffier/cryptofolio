@@ -143,14 +143,13 @@ namespace Cryptofolio.Api.Tests.Controllers
         public async Task Create_Test()
         {
             // Setup
-            var requestContext = TestContext.Instance.RequestContext;
             var command = new CreateWalletCommand();
             var commandResult = CommandResult<Wallet>.Success(new() { Id = Guid.NewGuid().ToString() });
             var cancellationToken = CancellationToken.None;
             _mediatorMock.Setup(m => m.Send(command, cancellationToken)).ReturnsAsync(commandResult);
 
             // Act
-            var result = await _controller.Create(command, requestContext, cancellationToken);
+            var result = await _controller.Create(command, cancellationToken);
 
             // Assert
             result
@@ -165,14 +164,13 @@ namespace Cryptofolio.Api.Tests.Controllers
         public async Task Create_InternalServerError_Test()
         {
             // Setup
-            var requestContext = TestContext.Instance.RequestContext;
             var command = new CreateWalletCommand();
             var commandResult = CommandResult<Wallet>.Failed();
             var cancellationToken = CancellationToken.None;
             _mediatorMock.Setup(m => m.Send(command, cancellationToken)).ReturnsAsync(commandResult);
 
             // Act
-            var result = await _controller.Create(command, requestContext, cancellationToken);
+            var result = await _controller.Create(command, cancellationToken);
 
             // Assert
             result
@@ -187,14 +185,13 @@ namespace Cryptofolio.Api.Tests.Controllers
         public async Task Update_Test()
         {
             // Setup
-            var requestContext = TestContext.Instance.RequestContext;
             var command = new UpdateWalletCommand();
             var commandResult = CommandResult.Success();
             var cancellationToken = CancellationToken.None;
             _mediatorMock.Setup(m => m.Send(command, cancellationToken)).ReturnsAsync(commandResult);
 
             // Act
-            var result = await _controller.Update(command, requestContext, cancellationToken);
+            var result = await _controller.Update(command, cancellationToken);
 
             // Assert
             result.Should().BeOfType<NoContentResult>();
@@ -204,14 +201,13 @@ namespace Cryptofolio.Api.Tests.Controllers
         public async Task Update_InternalServerError_Test()
         {
             // Setup
-            var requestContext = TestContext.Instance.RequestContext;
             var command = new UpdateWalletCommand();
             var commandResult = CommandResult.Failed();
             var cancellationToken = CancellationToken.None;
             _mediatorMock.Setup(m => m.Send(command, cancellationToken)).ReturnsAsync(commandResult);
 
             // Act
-            var result = await _controller.Update(command, requestContext, cancellationToken);
+            var result = await _controller.Update(command, cancellationToken);
 
             // Assert
             result

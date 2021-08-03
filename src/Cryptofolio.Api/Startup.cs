@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Internal;
 using Nest;
 using StackExchange.Redis;
 using System.Linq;
@@ -35,7 +36,7 @@ namespace Cryptofolio.Api
                 .AddControllers()
                 .AddJsonOptions(options =>
                 {
-                    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull; 
+                    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                 });
 
             // EF Core
@@ -55,6 +56,7 @@ namespace Cryptofolio.Api
                 options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(IEvent).FullName}").Get<string>();
                 options.Config = Configuration.GetSection("Kafka:Producer").Get<ProducerConfig>();
             });
+            services.AddTransient<IEventDispatcher, KafkaEventDispatcher>();
 
             // Elasticsearch
             services.AddSingleton<IConnectionPool>(
@@ -95,7 +97,9 @@ namespace Cryptofolio.Api
 
             // Traceability
             services.AddHttpContextAccessor();
+            services.AddTransient<ISystemClock, SystemClock>();
             services.AddScoped(p => RequestContext.FromHttpContext(p.GetRequiredService<IHttpContextAccessor>().HttpContext));
+            services.AddScoped<RequestContextActionFilter>();
 
             // MediatR
             services.AddMediatR(typeof(Startup));

@@ -27,11 +27,11 @@ namespace Cryptofolio.Api.Commands
         /// <summary>
         /// The request id.
         /// </summary>
-        public string RequestId => _requestContext.RequestId;
+        public string RequestId => _requestContext?.RequestId;
 
         /// <summary>
         /// The user id.
         /// </summary>
-        public string UserId => _requestContext.UserId;
+        public string UserId => _requestContext?.UserId;
     }
 }
