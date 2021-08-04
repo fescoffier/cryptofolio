@@ -15,7 +15,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
 {
     public class UpdateWalletCommandHandlerTests : IClassFixture<WebApplicationFactory>
     {
-        private readonly TestData _data = new();
+        private readonly TestData _data;
         private readonly IServiceScope _scope;
         private readonly UpdateWalletCommandHandler _handler;
         private readonly CryptofolioContext _context;
@@ -24,6 +24,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
 
         public UpdateWalletCommandHandlerTests(WebApplicationFactory factory)
         {
+            _data = factory.Data;
             _scope = factory.Services.CreateScope();
             _handler = _scope.ServiceProvider.GetRequiredService<UpdateWalletCommandHandler>();
             _context = _scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
@@ -42,7 +43,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             _context.ChangeTracker.Clear();
             var command = new UpdateWalletCommand
             {
-                RequestContext = new(null, _data.UserId1),
+                RequestContext = new(null, _data.UserId),
                 Id = _data.Wallet1.Id,
                 Name = _data.Wallet1.Name + " updated",
                 Description = _data.Wallet1.Description
@@ -68,7 +69,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             _systemClockMock.SetupGet(m => m.UtcNow).Returns(utcNow);
             var command = new UpdateWalletCommand
             {
-                RequestContext = new(null, _data.UserId1),
+                RequestContext = new(null, _data.UserId),
                 Id = _data.Wallet1.Id,
                 Name = _data.Wallet1.Name + " updated",
                 Description = _data.Wallet1.Description

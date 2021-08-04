@@ -1,6 +1,7 @@
 using Cryptofolio.Api.Commands;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Linq;
 
 namespace Cryptofolio.Api
@@ -15,7 +16,8 @@ namespace Cryptofolio.Api
         {
             foreach (var command in context.ActionArguments.Where(a => a.Value is CommandBase).Select(a => a.Value as CommandBase))
             {
-                command.RequestContext = context.HttpContext.RequestServices.GetRequiredService<RequestContext>();
+                command.RequestContext = context.HttpContext.RequestServices.GetService<RequestContext>()
+                    ?? throw new InvalidOperationException("Missing request context");
             }
         }
 

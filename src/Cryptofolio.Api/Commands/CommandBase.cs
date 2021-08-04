@@ -1,5 +1,3 @@
-using System;
-
 namespace Cryptofolio.Api.Commands
 {
     /// <summary>
@@ -7,31 +5,19 @@ namespace Cryptofolio.Api.Commands
     /// </summary>
     public abstract class CommandBase
     {
-        private RequestContext _requestContext;
         /// <summary>
         /// The request context.
         /// </summary>
-        public RequestContext RequestContext
-        {
-            get => _requestContext;
-            set
-            {
-                if (value is null)
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
-                _requestContext = value;
-            }
-        }
+        public RequestContext RequestContext { get; set; }
 
         /// <summary>
         /// The request id.
         /// </summary>
-        public string RequestId => _requestContext?.RequestId;
+        public string RequestId => RequestContext?.RequestId;
 
         /// <summary>
         /// The user id.
         /// </summary>
-        public string UserId => _requestContext?.UserId;
+        public string UserId => RequestContext?.UserId;
     }
 }
