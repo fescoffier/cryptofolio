@@ -38,7 +38,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Api", "src\Cryp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Api.Tests", "test\Cryptofolio.Api.Tests\Cryptofolio.Api.Tests.csproj", "{2FE74AE7-86D7-4E43-A277-A045386D96EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptofolio.Api.IntegrationTests", "test\Cryptofolio.Api.IntegrationTests\Cryptofolio.Api.IntegrationTests.csproj", "{FF7D6604-9525-412D-9DDF-496B6B86E9A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Api.IntegrationTests", "test\Cryptofolio.Api.IntegrationTests\Cryptofolio.Api.IntegrationTests.csproj", "{FF7D6604-9525-412D-9DDF-496B6B86E9A6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App", "App", "{3A290A0A-4DDE-4E16-AA04-F5B6C6BCE818}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptofolio.App", "src\Cryptofolio.App\Cryptofolio.App.csproj", "{BE8EAC18-2050-4EFC-BFF8-73992310DEF3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -90,6 +94,10 @@ Global
 		{FF7D6604-9525-412D-9DDF-496B6B86E9A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF7D6604-9525-412D-9DDF-496B6B86E9A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF7D6604-9525-412D-9DDF-496B6B86E9A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE8EAC18-2050-4EFC-BFF8-73992310DEF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE8EAC18-2050-4EFC-BFF8-73992310DEF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE8EAC18-2050-4EFC-BFF8-73992310DEF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE8EAC18-2050-4EFC-BFF8-73992310DEF3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -106,6 +114,7 @@ Global
 		{AC1EA147-BE45-43D3-809A-4CB98CBFDCE2} = {FDD6F67D-6FBE-47BF-8FBA-BAEA74EC119D}
 		{2FE74AE7-86D7-4E43-A277-A045386D96EA} = {FDD6F67D-6FBE-47BF-8FBA-BAEA74EC119D}
 		{FF7D6604-9525-412D-9DDF-496B6B86E9A6} = {FDD6F67D-6FBE-47BF-8FBA-BAEA74EC119D}
+		{BE8EAC18-2050-4EFC-BFF8-73992310DEF3} = {3A290A0A-4DDE-4E16-AA04-F5B6C6BCE818}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7F9B8C09-ECC1-413C-92A4-58299272789F}
