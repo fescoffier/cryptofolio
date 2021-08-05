@@ -1,6 +1,7 @@
 using Confluent.Kafka;
 using Cryptofolio.Infrastructure;
 using Elasticsearch.Net;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -33,8 +34,14 @@ namespace Cryptofolio.App
 
             // Identity
             services
-                .AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddIdentityCore<IdentityUser>()
                 .AddEntityFrameworkStores<IdentityContext>();
+
+            // Authentication
+            services
+                .AddAuthentication()
+                .AddCookie();
+            services.AddAuthorization();
 
             // EF Core
             services.AddDbContext<IdentityContext>(options => options.UseNpgsql(Configuration.GetConnectionString("IdentityContext")));
