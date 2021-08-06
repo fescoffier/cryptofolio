@@ -53,5 +53,15 @@ namespace Cryptofolio.App.Controllers
 
             return View(model);
         }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            _logger.LogInformation("User logged out.");
+            return View("Loggedout");
+        }
     }
 }

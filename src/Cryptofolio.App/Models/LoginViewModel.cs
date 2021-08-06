@@ -9,6 +9,7 @@ namespace Cryptofolio.App.Models
         public string Email { get; set; }
 
         [Required(ErrorMessage = "The password is required")]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
 
         public bool RememberMe { get; set; }

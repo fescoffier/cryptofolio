@@ -1,7 +1,7 @@
 using Confluent.Kafka;
 using Cryptofolio.Infrastructure;
 using Elasticsearch.Net;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -34,14 +34,23 @@ namespace Cryptofolio.App
 
             // Identity
             services
-                .AddIdentityCore<IdentityUser>()
+                .AddIdentityCore<IdentityUser>(options => Configuration.GetSection("Identity").Bind(options))
+                .AddSignInManager()
                 .AddEntityFrameworkStores<IdentityContext>();
 
             // Authentication
             services
-                .AddAuthentication()
-                .AddCookie();
-            services.AddAuthorization();
+                .AddAuthentication(IdentityConstants.ApplicationScheme)
+                .AddCookie(IdentityConstants.ApplicationScheme, options =>
+                {
+                    options.LoginPath = "/auth/login";
+                    options.LogoutPath = "/auth/logout";
+                    options.ReturnUrlParameter = "returnUrl";
+                });
+            services.AddAuthorization(options =>
+            {
+                options.DefaultPolicy = options.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+            });
 
             // EF Core
             services.AddDbContext<IdentityContext>(options => options.UseNpgsql(Configuration.GetConnectionString("IdentityContext")));
@@ -90,15 +99,15 @@ namespace Cryptofolio.App
 
             app.UseStaticFiles();
 
-            if (!env.IsDevelopment())
-            {
-                app.UseSpaStaticFiles();
-            }
-
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            if (!env.IsDevelopment())
+            {
+                app.UseSpaStaticFiles();
+            }
 
             app.UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute());
 
@@ -111,6 +120,24 @@ namespace Cryptofolio.App
                     spa.UseAngularCliServer(npmScript: "start");
                 }
             });
+
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                scope.ServiceProvider.GetRequiredService<IdentityContext>().Database.Migrate();
+
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+                var user = userManager.FindByEmailAsync("admin@cryptofolio.io").ConfigureAwait(false).GetAwaiter().GetResult();
+                if (user == null)
+                {
+                    user = new IdentityUser
+                    {
+                        UserName = "admin@cryptofolio.io",
+                        Email = "admin@cryptofolio.io",
+                        EmailConfirmed = true
+                    };
+                    userManager.CreateAsync(user, "Pass@word1").ConfigureAwait(false).GetAwaiter().GetResult();
+                }
+            }
         }
     }
 }
