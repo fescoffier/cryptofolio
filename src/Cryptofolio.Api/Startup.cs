@@ -69,6 +69,21 @@ namespace Cryptofolio.Api
                 // TODO: Configure key protection.
             }
 
+            // Cors
+            if (Environment.IsDevelopment())
+            {
+                // In development environment, the CORS policy is explicitly permissive.
+                services.AddCors(options =>
+                {
+                    options.AddDefaultPolicy(p => p
+                        .WithOrigins(Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>())
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials()
+                    );
+                });
+            }
+
             // EF Core
             services.AddDbContext<CryptofolioContext>(builder =>
             {
@@ -145,9 +160,9 @@ namespace Cryptofolio.Api
                 .AddScoped<IRequestHandler<DeleteWalletCommand, CommandResult>>(p => p.GetRequiredService<DeleteWalletCommandHandler>());
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
+            if (Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -156,7 +171,10 @@ namespace Cryptofolio.Api
 
             app.UseRouting();
 
-            app.UseCors();
+            if (Environment.IsDevelopment())
+            {
+                app.UseCors();
+            }
 
             app.UseAuthentication();
             app.UseAuthorization();
