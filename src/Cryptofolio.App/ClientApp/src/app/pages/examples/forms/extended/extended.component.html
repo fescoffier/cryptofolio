@@ -1,0 +1,332 @@
+<div class=" content">
+  <div class=" row">
+    <div class=" col-md-4">
+      <div class=" card">
+        <div class=" card-header">
+          <h4 class=" card-title">Date Picker</h4>
+        </div>
+        <div class=" card-body">
+          <div class=" form-group">
+            <input
+              bsDatepicker
+              class="form-control"
+              data-datepicker-color="danger"
+              [bsConfig]="{ isAnimated: true, containerClass: 'theme-red' }"
+              [bsValue]="date"
+              id="datepicker"
+              type="text"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class=" col-md-4">
+      <div class=" card">
+        <div class=" card-header"><h4 class=" card-title">Range Picker</h4></div>
+        <div class=" card-body">
+          <div class=" form-group">
+            <input
+              placeholder="Daterangepicker"
+              class="form-control"
+              bsDaterangepicker
+              [bsConfig]="{ isAnimated: true, containerClass: 'theme-red' }"
+              type="text"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class=" col-md-4">
+      <div class=" card">
+        <div class=" card-header"><h4 class=" card-title">Time Picker</h4></div>
+        <div class=" card-body">
+          <div class=" form-group">
+            <timepicker [(ngModel)]="mytime" type="text"> </timepicker>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class=" row">
+    <div class=" col-md-12">
+      <div class=" card">
+        <div class=" card-body">
+          <div class=" row">
+            <div class=" col-md-6 mb-4">
+              <h4 class=" card-title">Toggle Buttons</h4>
+              <div class=" row mb-3">
+                <div class=" col-md-4">
+                  <p class=" category">Default</p>
+                  <bSwitch
+                    [switch-on-color]="'danger'"
+                    [switch-off-color]="'danger'"
+                    [switch-off-text]="'OFF'"
+                    [switch-on-text]="'ON'"
+                    [(ngModel)]="switch"
+                  >
+                  </bSwitch>
+                  <bSwitch
+                    [switch-on-color]="'danger'"
+                    [switch-off-color]="'danger'"
+                    [switch-off-text]="'OFF'"
+                    [switch-on-text]="'ON'"
+                  >
+                  </bSwitch>
+                </div>
+                <div class=" col-md-4">
+                  <p class=" category">Plain</p>
+                  <bSwitch
+                    [switch-on-color]="'danger'"
+                    [switch-off-color]="'danger'"
+                    [switch-off-text]="' '"
+                    [switch-on-text]="' '"
+                    [(ngModel)]="switch1"
+                  >
+                  </bSwitch
+                  ><bSwitch
+                    [switch-on-color]="'danger'"
+                    [switch-off-color]="'danger'"
+                    [switch-off-text]="' '"
+                    [switch-on-text]="' '"
+                  >
+                  </bSwitch>
+                </div>
+                <div class=" col-md-4">
+                  <p class=" category">With Icons</p>
+                  <bSwitch
+                    [switch-on-color]="'danger'"
+                    [switch-off-color]="'danger'"
+                    [switch-off-text]="iconOff"
+                    [switch-on-text]="iconOn"
+                    [(ngModel)]="switch2"
+                  >
+                  </bSwitch>
+                  <bSwitch
+                    [switch-on-color]="'danger'"
+                    [switch-off-color]="'danger'"
+                    [switch-off-text]="iconOff"
+                    [switch-on-text]="iconOn"
+                  >
+                  </bSwitch>
+                </div>
+              </div>
+            </div>
+            <div class=" col-md-6 mb-4">
+              <h4 class=" card-title">Customisable Select</h4>
+              <div class=" row">
+                <div class=" col-lg-5 col-md-6 col-sm-3">
+                  <angular2-multiselect
+                    [data]="[
+                      { id: '2', itemName: 'Foobar' },
+                      { id: '3', itemName: 'Is great' }
+                    ]"
+                    [ngModel]="[]"
+                    [settings]="{
+                      singleSelection: true,
+                      text: 'Single Select',
+                      classes: 'selectpicker btn-danger',
+                      lazyLoading: true,
+                      maxHeight: 100
+                    }"
+                  >
+                  </angular2-multiselect>
+                </div>
+                <div class=" col-lg-5 col-md-6 col-sm-3">
+                  <angular2-multiselect
+                    [data]="[
+                      { id: '2', itemName: 'Paris ', category: 'All' },
+                      { id: '3', itemName: 'Bucharest', category: 'All' },
+                      { id: '4', itemName: 'Rome', category: 'All' },
+                      { id: '5', itemName: 'New York', category: 'All' },
+                      { id: '6', itemName: 'Miami ', category: 'All' },
+                      { id: '7', itemName: 'Piatra Neamt', category: 'All' },
+                      { id: '8', itemName: 'Paris ', category: 'All' },
+                      { id: '9', itemName: 'Bucharest', category: 'All' },
+                      { id: '10', itemName: 'Rome', category: 'All' },
+                      { id: '11', itemName: 'New York', category: 'All' },
+                      { id: '12', itemName: 'Miami ', category: 'All' },
+                      { id: '13', itemName: 'Piatra Neamt', category: 'All' },
+                      { id: '14', itemName: 'Paris ', category: 'All' },
+                      { id: '15', itemName: 'Bucharest', category: 'All' },
+                      { id: '16', itemName: 'Rome', category: 'All' },
+                      { id: '17', itemName: 'New York', category: 'All' },
+                      { id: '18', itemName: 'Miami ', category: 'All' },
+                      { id: '19', itemName: 'Piatra Neamt', category: 'All' }
+                    ]"
+                    [ngModel]="[]"
+                    [settings]="{
+                      singleSelection: false,
+                      text: 'Choose City',
+                      enableSearchFilter: false,
+                      classes: 'selectpicker btn-danger',
+                      groupBy: 'category'
+                    }"
+                  >
+                  </angular2-multiselect>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class=" row">
+            <div class=" col-md-6 mb-4">
+              <h4 class=" card-title">Tags</h4>
+              <tag-input [(ngModel)]="tags" name="tags" theme="regular-theme">
+              </tag-input>
+            </div>
+            <div class=" col-md-6">
+              <h4 class=" card-title">Dropdown &amp; Dropup</h4>
+              <div class=" row">
+                <div class=" col-lg-4 col-md-6 col-sm-3">
+                  <div class=" dropdown" dropdown>
+                    <button
+                      aria-expanded="false"
+                      aria-haspopup="true"
+                      class=" dropdown-toggle btn btn-primary btn-block dropdown-toggle"
+                      data-toggle="dropdown"
+                      dropdownToggle
+                      id="dropdownMenuButton"
+                      type="button"
+                    >
+                      Dropdown
+                    </button>
+                    <div
+                      aria-labelledby="dropdownMenuButton"
+                      class=" dropdown-menu"
+                      *dropdownMenu
+                    >
+                      <h6 class=" dropdown-header">Dropdown header</h6>
+                      <a class=" dropdown-item" href="#"> Action </a>
+                      <a class=" dropdown-item" href="#"> Another action </a>
+                      <a class=" dropdown-item" href="#">
+                        Something else here
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div class=" col-lg-4 col-md-6 col-sm-3">
+                  <div class="dropup" dropdown [dropup]="isDropup">
+                    <button
+                      aria-expanded="false"
+                      aria-haspopup="true"
+                      class="btn btn-primary dropdown-toggle btn-block dropdown-toggle"
+                      data-toggle="dropdown"
+                      dropdownToggle
+                      id="navbarDropdownMenuLink"
+                    >
+                      Dropup
+                    </button>
+                    <div
+                      aria-labelledby="navbarDropdownMenuLink"
+                      class="dropdown-menu"
+                      *dropdownMenu
+                    >
+                      <a class="dropdown-item" href="javascript:void(0)">
+                        Action
+                      </a>
+                      <a class="dropdown-item" href="javascript:void(0)">
+                        Another action
+                      </a>
+                      <a class="dropdown-item" href="javascript:void(0)">
+                        Something else here
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class=" row">
+            <div class=" col-md-6 mb-4">
+              <h4 class=" card-title">Progress Bars</h4>
+              <div class=" progress-container">
+                <span class=" progress-badge"> Default </span>
+                <div class=" progress">
+                  <progressbar [value]="25">
+                    <span class=" progress-value"> 25% </span>
+                  </progressbar>
+                </div>
+              </div>
+              <div class=" progress-container progress-warning">
+                <span class=" progress-badge"> Primary </span>
+                <div class=" progress">
+                  <progressbar class=" progress-bar-warning" [value]="60">
+                    <span class=" progress-value"> 60% </span>
+                  </progressbar>
+                </div>
+              </div>
+            </div>
+            <div class=" col-md-6">
+              <h4 class=" card-title mt-3">Sliders</h4>
+              <div class=" slider" id="sliderRegular"></div>
+              <br />
+
+              <div class=" slider slider-primary mb-3" id="sliderDouble"></div>
+            </div>
+          </div>
+          <div class=" row">
+            <div class=" col-md-4 col-sm-4">
+              <h4 class=" card-title">Regular Image</h4>
+              <app-picture-upload></app-picture-upload>
+              <!-- <div
+                class=" fileinput fileinput-new text-center"
+                data-provides="fileinput"
+              >
+                <div class=" fileinput-new thumbnail">
+                  <img alt="..." src="assets/img/image_placeholder.jpg" />
+                </div>
+                <div
+                  class=" fileinput-preview fileinput-exists thumbnail"
+                ></div>
+                <div>
+                  <span class=" btn btn-rose btn-round btn-file">
+                    <span class=" fileinput-new"> Select image </span>
+                    <span class=" fileinput-exists"> Change </span>
+                    <input name="..." type="file" />
+                  </span>
+                  <a
+                    class=" btn btn-danger btn-round fileinput-exists"
+                    data-dismiss="fileinput"
+                    href="#pablo"
+                  >
+                    <i class=" fa fa-times"> </i> Remove
+                  </a>
+                </div>
+              </div> -->
+            </div>
+            <div class=" col-md-3 col-sm-4">
+              <h4 class=" card-title">Avatar</h4>
+              <app-picture-upload [avatar]="true"></app-picture-upload>
+              <!-- <div
+                class=" fileinput fileinput-new text-center"
+                data-provides="fileinput"
+              >
+                <div class=" fileinput-new thumbnail img-circle">
+                  <img alt="..." src="assets/img/placeholder.jpg" />
+                </div>
+                <div
+                  class=" fileinput-preview fileinput-exists thumbnail img-circle"
+                ></div>
+                <div>
+                  <span class=" btn btn-round btn-rose btn-file">
+                    <span class=" fileinput-new"> Add Photo </span>
+                    <span class=" fileinput-exists"> Change </span>
+                    <input name="..." type="file" />
+                  </span>
+                  <br />
+
+                  <a
+                    class=" btn btn-danger btn-round fileinput-exists"
+                    data-dismiss="fileinput"
+                    href="#pablo"
+                  >
+                    <i class=" fa fa-times"> </i> Remove
+                  </a>
+                </div>
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+<div class=" content">
+  <div class=" row">
+    <div class=" col-md-12">
+      <div class=" card card-plain">
+        <div class=" card-header">
+          <h4 class=" text-center">World Map <br /></h4>
+          <br />
+        </div>
+        <div class=" card-body">
+          <div class=" map map-big">
+            <dx-vector-map
+              id="vector-map"
+              [bounds]="[-180, 85, 180, -60]"
+              (onClick)="click($event)"
+            >
+              <dxo-size [height]="600" [width]="950"> </dxo-size>
+              <dxo-tooltip
+                [enabled]="true"
+                [customizeTooltip]="customizeTooltip"
+              >
+                <dxo-font color="#fff"></dxo-font>
+                <dxo-border [visible]="false"></dxo-border>
+              </dxo-tooltip>
+              <dxi-layer [dataSource]="worldMap" [customize]="customizeLayers">
+              </dxi-layer>
+            </dx-vector-map>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

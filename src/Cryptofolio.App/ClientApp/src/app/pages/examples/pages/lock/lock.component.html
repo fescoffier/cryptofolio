@@ -1,0 +1,41 @@
+<div class="full-page lock-page">
+  <div class=" content">
+    <div class=" container">
+      <div class=" col-lg-4 col-md-6 ml-auto mr-auto">
+        <div class=" card card-lock card-white text-center">
+          <div class=" card-header">
+            <img alt="..." src="assets/img/emilyz.jpg" />
+          </div>
+          <div class=" card-body">
+            <h4 class=" card-title">Joe Gardner</h4>
+            <div
+              class=" input-group"
+              [ngClass]="{ 'input-group-focus': focus === true }"
+            >
+              <div class=" input-group-prepend">
+                <div class=" input-group-text">
+                  <i class=" tim-icons icon-key-25"> </i>
+                </div>
+              </div>
+              <input
+                class=" form-control"
+                placeholder="Password"
+                type="text"
+                (blur)="focus = false"
+                (focus)="focus = true"
+              />
+            </div>
+          </div>
+          <div class=" card-footer">
+            <a
+              class=" btn btn-primary btn-round btn-lg"
+              href="javascript:void(0)"
+            >
+              Unlock
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

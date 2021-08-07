@@ -1,0 +1,72 @@
+<div class="full-page login-page ">
+  <div class=" content">
+    <div class=" container">
+      <div class=" col-lg-4 col-md-6 ml-auto mr-auto">
+        <form class=" form">
+          <div class=" card card-login card-white">
+            <div class=" card-header">
+              <img alt="" src="assets/img/card-primary.png" />
+
+              <h1 class=" card-title">Log in</h1>
+            </div>
+            <div class=" card-body">
+              <div
+                class=" input-group"
+                [ngClass]="{ 'input-group-focus': focus === true }"
+              >
+                <div class=" input-group-prepend">
+                  <div class=" input-group-text">
+                    <i class=" tim-icons icon-email-85"> </i>
+                  </div>
+                </div>
+                <input
+                  class=" form-control"
+                  placeholder="Email"
+                  type="text"
+                  (blur)="focus = false"
+                  (focus)="focus = true"
+                />
+              </div>
+              <div
+                class=" input-group"
+                [ngClass]="{ 'input-group-focus': focus1 === true }"
+              >
+                <div class=" input-group-prepend">
+                  <div class=" input-group-text">
+                    <i class=" tim-icons icon-lock-circle"> </i>
+                  </div>
+                </div>
+                <input
+                  class=" form-control"
+                  placeholder="Password"
+                  type="text"
+                  (blur)="focus1 = false"
+                  (focus)="focus1 = true"
+                />
+              </div>
+            </div>
+            <div class=" card-footer">
+              <a class=" btn btn-primary btn-lg btn-block mb-3" href="#pablo">
+                Get Started
+              </a>
+              <div class=" pull-left">
+                <h6>
+                  <a class=" link footer-link" href="javascript:void(0)">
+                    Create Account
+                  </a>
+                </h6>
+              </div>
+              <div class=" pull-right">
+                <h6>
+                  <a class=" link footer-link" href="javascript:void(0)">
+                    Need Help?
+                  </a>
+                </h6>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

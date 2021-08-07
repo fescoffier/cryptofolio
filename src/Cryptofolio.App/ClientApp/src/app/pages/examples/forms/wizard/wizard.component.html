@@ -1,0 +1,355 @@
+<div class=" content">
+  <div class=" col-md-10 mr-auto ml-auto">
+    <div class=" wizard-container">
+      <div
+        class="bs-stepper card card-wizard"
+        data-color="red"
+        id="wizardProfile"
+      >
+        <form [formGroup]="formWizard" (ngSubmit)="onRegister()">
+          <div class="card-header text-center">
+            <h3 class=" card-title">Build Your Profile</h3>
+            <h5 class=" description">
+              This information will let us know more about you.
+            </h5>
+            <div class=" wizard-navigation">
+              <div class=" progress-with-circle">
+                <progressbar class="progress-bar" [value]="value">
+                </progressbar>
+              </div>
+              <ul class="nav nav-pills nav-pills-danger bs-stepper-header">
+                <li class="step nav-item" data-target="#about">
+                  <a
+                    class="step-trigger nav-link active"
+                    [ngClass]="{ checked: checked }"
+                    (click)="
+                      value = 15; $event.preventDefault(); checked = true
+                    "
+                  >
+                    <i
+                      class=" tim-icons icon-single-02"
+                      (click)="checked = true"
+                    >
+                    </i>
+                    <p (click)="checked = true">About</p>
+                  </a>
+                </li>
+                <li class="step nav-item" data-target="#account">
+                  <a
+                    class="step-trigger nav-link"
+                    [ngClass]="{ checked: checked1 }"
+                    (click)="
+                      value = 50; $event.preventDefault(); checked1 = true
+                    "
+                  >
+                    <i
+                      class=" tim-icons icon-settings-gear-63"
+                      (click)="checked1 = true"
+                    >
+                    </i>
+                    <p (click)="checked1 = true">Account</p>
+                  </a>
+                </li>
+                <li class="step nav-item" data-target="#address">
+                  <a
+                    class="step-trigger nav-link"
+                    [ngClass]="{ checked: checked2 }"
+                    (click)="
+                      value = 85; $event.preventDefault(); checked2 = true
+                    "
+                  >
+                    <i
+                      class=" tim-icons icon-delivery-fast"
+                      (click)="checked2 = true"
+                    >
+                    </i>
+                    <p (click)="checked2 = true">Address</p>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="bs-stepper-content card-body">
+            <div class=" tab-content">
+              <div class=" tab-pane show" id="about">
+                <h5 class=" info-text">
+                  Let's start with the basic information (with validation)
+                </h5>
+                <div class=" row justify-content-center mt-5">
+                  <div class=" col-sm-5">
+                    <div
+                      class=" input-group"
+                      [ngClass]="{
+                        'input-group-focus': focus === true,
+                        'has-danger':
+                          ((focusTouched || wizard) &&
+                            registerF.firstName.errors) ||
+                          (registerF.firstName.value != '' &&
+                            registerF.firstName.errors),
+                        'has-success': !registerF.firstName.errors
+                      }"
+                    >
+                      <div class=" input-group-prepend">
+                        <div class=" input-group-text">
+                          <i class=" tim-icons icon-single-02"> </i>
+                        </div>
+                      </div>
+                      <input
+                        class=" form-control"
+                        name="firstname"
+                        placeholder="First Name..."
+                        type="text"
+                        formControlName="firstName"
+                        (focus)="focus = true; focusTouched = true"
+                        (blur)="focus = false"
+                      />
+                      <label
+                        class="error"
+                        *ngIf="
+                          ((focusTouched || wizard) &&
+                            registerF.firstName.errors) ||
+                          (registerF.firstName.value != '' &&
+                            registerF.firstName.errors)
+                        "
+                        >This field is required.</label
+                      >
+                    </div>
+                    <div
+                      class=" input-group"
+                      [ngClass]="{
+                        'input-group-focus': focus1 === true,
+                        'has-danger':
+                          ((focus1Touched || wizard) &&
+                            registerF.email.errors) ||
+                          (registerF.email.value != '' &&
+                            registerF.email.errors),
+                        'has-success': !registerF.email.errors
+                      }"
+                    >
+                      <div class=" input-group-prepend">
+                        <div class=" input-group-text">
+                          <i class=" tim-icons icon-email-85"> </i>
+                        </div>
+                      </div>
+                      <input
+                        class=" form-control"
+                        name="email"
+                        placeholder="Email..."
+                        required=""
+                        formControlName="email"
+                        type="email"
+                        (focus)="focus1 = true; focus1Touched = true"
+                        (blur)="focus1 = false"
+                      />
+                      <label
+                        class="error"
+                        *ngIf="
+                          ((focus1Touched || wizard) &&
+                            registerF.email.errors) ||
+                          (registerF.email.value != '' &&
+                            registerF.email.errors)
+                        "
+                        >This field is required.</label
+                      >
+                    </div>
+                  </div>
+                  <div class=" col-sm-5">
+                    <div
+                      class=" input-group"
+                      [ngClass]="{
+                        'input-group-focus': focus2 === true,
+                        'has-danger':
+                          ((focus2Touched || wizard) &&
+                            registerF.lastName.errors) ||
+                          (registerF.lastName.value != '' &&
+                            registerF.lastName.errors),
+                        'has-success': !registerF.lastName.errors
+                      }"
+                    >
+                      <div class=" input-group-prepend">
+                        <div class=" input-group-text">
+                          <i class=" tim-icons icon-caps-small"> </i>
+                        </div>
+                      </div>
+                      <input
+                        class=" form-control"
+                        name="lastname"
+                        formControlName="lastName"
+                        placeholder="Last Name..."
+                        type="text"
+                        (focus)="focus2 = true; focus2Touched = true"
+                        (blur)="focus2 = false"
+                      />
+                      <label
+                        class="error"
+                        *ngIf="
+                          ((focus2Touched || wizard) &&
+                            registerF.lastName.errors) ||
+                          (registerF.lastName.value != '' &&
+                            registerF.lastName.errors)
+                        "
+                        >This field is required.</label
+                      >
+                    </div>
+                    <div
+                      class=" input-group"
+                      [ngClass]="{
+                        'input-group-focus': focus3 === true,
+                        'has-danger':
+                          ((focus3Touched || wizard) &&
+                            registerF.phone.errors) ||
+                          (registerF.phone.value != '' &&
+                            registerF.phone.errors),
+                        'has-success': !registerF.phone.errors
+                      }"
+                    >
+                      <div class=" input-group-prepend">
+                        <div class=" input-group-text">
+                          <i class=" tim-icons icon-mobile"> </i>
+                        </div>
+                      </div>
+                      <input
+                        class=" form-control"
+                        name="number"
+                        placeholder="Phone..."
+                        formControlName="phone"
+                        type="number"
+                        (focus)="focus3 = true; focus3Touched = true"
+                        (blur)="focus3 = false"
+                      />
+                      <label
+                        class="error"
+                        *ngIf="
+                          ((focus3Touched || wizard) &&
+                            registerF.phone.errors) ||
+                          (registerF.phone.value != '' &&
+                            registerF.phone.errors)
+                        "
+                        >This field is required.</label
+                      >
+                    </div>
+                  </div>
+                  <div class=" col-sm-10">
+                    <div
+                      class=" input-group"
+                      [ngClass]="{ 'input-group-focus': focus4 === true }"
+                    >
+                      <div class=" input-group-prepend">
+                        <div class=" input-group-text">
+                          <i class=" tim-icons icon-square-pin"> </i>
+                        </div>
+                      </div>
+                      <input
+                        class=" form-control"
+                        name="address"
+                        placeholder="Address"
+                        type="text"
+                        (focus)="focus4 = true"
+                        (blur)="focus4 = false"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="show tab-pane" id="account">
+                <h5 class=" info-text">Who are you? (Fileinput)</h5>
+                <div class=" row justify-content-center">
+                  <div class=" col-lg-10 text-center">
+                    <app-picture-upload></app-picture-upload>
+                  </div>
+                </div>
+              </div>
+              <div class="show tab-pane" id="address">
+                <div class=" row justify-content-center">
+                  <div class=" col-sm-12">
+                    <h5 class=" info-text">Are you living in a nice area?</h5>
+                  </div>
+                  <div class=" col-sm-7">
+                    <div class=" form-group">
+                      <label> Street Name </label>
+                      <input class=" form-control" type="text" />
+                    </div>
+                  </div>
+                  <div class=" col-sm-3">
+                    <div class=" form-group">
+                      <label> Street No. </label>
+                      <input class=" form-control" type="text" />
+                    </div>
+                  </div>
+                  <div class=" col-sm-5">
+                    <div class=" form-group">
+                      <label> City </label>
+                      <input class=" form-control" type="text" />
+                    </div>
+                  </div>
+                  <div class=" col-sm-5">
+                    <div class=" form-group">
+                      <label> Country </label>
+                      <angular2-multiselect
+                        [data]="[
+                          {
+                            id: 'Afghanistan',
+                            itemName: ' Afghanistan '
+                          },
+                          { id: 'Albania', itemName: ' Albania ' },
+                          { id: 'Algeria', itemName: ' Algeria ' },
+                          {
+                            id: 'American Samoa',
+                            itemName: ' American Samoa '
+                          },
+                          { id: 'Andorra', itemName: ' Andorra ' },
+                          { id: 'Angola', itemName: ' Angola ' },
+                          { id: 'Anguilla', itemName: ' Anguilla ' },
+                          { id: 'Antarctica', itemName: ' Antarctica ' }
+                        ]"
+                        [ngModel]="multiselect"
+                        formControlName="select"
+                        [settings]="{
+                          singleSelection: true,
+                          text: 'Single Select',
+                          enableSearchFilter: false,
+                          classes: 'selectpicker btn-danger',
+                          lazyLoading: true,
+                          maxHeight: 100
+                        }"
+                      >
+                      </angular2-multiselect>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class=" card-footer">
+            <div class=" pull-right">
+              <input
+                class=" btn btn-next btn-fill btn-danger btn-wd"
+                name="next"
+                type="submit"
+                value="Next"
+                (click)="next()"
+              />
+
+              <input
+                class=" btn btn-finish btn-fill btn-primary btn-wd"
+                name="finish"
+                type="button"
+                value="Finish"
+              />
+            </div>
+            <div class=" pull-left">
+              <input
+                class=" btn btn-previous btn-fill btn-default btn-wd"
+                name="previous"
+                type="button"
+                (click)="previous()"
+                value="Previous"
+              />
+            </div>
+            <div class=" clearfix"></div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
