@@ -3,6 +3,7 @@ using Cryptofolio.Infrastructure;
 using Elasticsearch.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
@@ -46,11 +47,23 @@ namespace Cryptofolio.App
                     options.LoginPath = "/auth/login";
                     options.LogoutPath = "/auth/logout";
                     options.ReturnUrlParameter = "returnUrl";
+
+                    options.Cookie.Name = InfrastructureConstants.Authentication.CookieName;
                 });
             services.AddAuthorization(options =>
             {
                 options.DefaultPolicy = options.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
             });
+            var dataProtectionBuilder = services.AddDataProtection();
+            dataProtectionBuilder.PersistKeysToStackExchangeRedis(
+                ConnectionMultiplexer.Connect(Configuration.GetConnectionString("Redis")),
+                InfrastructureConstants.Authentication.RedisKey
+            );
+            dataProtectionBuilder.SetApplicationName(InfrastructureConstants.Authentication.ApplicationName);
+            if (!Environment.IsDevelopment())
+            {
+                // TODO: Configure key protection.
+            }
 
             // EF Core
             services.AddDbContext<IdentityContext>(options => options.UseNpgsql(Configuration.GetConnectionString("IdentityContext")));

@@ -4,11 +4,11 @@ using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Entities;
 using Elasticsearch.Net;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +18,7 @@ using Nest;
 using StackExchange.Redis;
 using System.Linq;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace Cryptofolio.Api
 {
@@ -45,11 +46,18 @@ namespace Cryptofolio.Api
 
             // Authentification
             services
-                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
+                .AddAuthentication(IdentityConstants.ApplicationScheme)
+                .AddCookie(IdentityConstants.ApplicationScheme, options =>
                 {
                     options.Cookie.Name = InfrastructureConstants.Authentication.CookieName;
+                    // This disables automatic authentication challenge.
+                    options.Events.OnRedirectToLogin = ctx =>
+                    {
+                        ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        return Task.CompletedTask;
+                    };
                 });
+            services.AddAuthorization();
             var dataProtectionBuilder = services.AddDataProtection();
             dataProtectionBuilder.PersistKeysToStackExchangeRedis(
                 ConnectionMultiplexer.Connect(Configuration.GetConnectionString("Redis")),
@@ -154,6 +162,11 @@ namespace Cryptofolio.Api
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute());
+
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                scope.ServiceProvider.GetRequiredService<CryptofolioContext>().Database.Migrate();
+            }
         }
     }
 }

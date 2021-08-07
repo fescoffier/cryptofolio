@@ -41,9 +41,11 @@ namespace Cryptofolio.Infrastructure
         {
         }
 
+        /// <inheritdoc/>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.HasDefaultSchema("data");
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(CryptofolioContext).Assembly);
         }
     }

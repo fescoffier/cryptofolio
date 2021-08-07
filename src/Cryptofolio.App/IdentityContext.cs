@@ -15,5 +15,12 @@ namespace Cryptofolio.App
         public IdentityContext(DbContextOptions options) : base(options)
         {
         }
+
+        /// <inheritdoc/>
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.HasDefaultSchema("identity");
+        }
     }
 }

@@ -7,8 +7,12 @@ namespace Cryptofolio.Infrastructure.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "data");
+
             migrationBuilder.CreateTable(
                 name: "asset",
+                schema: "data",
                 columns: table => new
                 {
                     id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
@@ -23,6 +27,7 @@ namespace Cryptofolio.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "exchange",
+                schema: "data",
                 columns: table => new
                 {
                     id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
@@ -39,6 +44,7 @@ namespace Cryptofolio.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "setting",
+                schema: "data",
                 columns: table => new
                 {
                     key = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
@@ -52,6 +58,7 @@ namespace Cryptofolio.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "wallet",
+                schema: "data",
                 columns: table => new
                 {
                     id = table.Column<string>(type: "character varying(36)", maxLength: 36, nullable: false),
@@ -66,6 +73,7 @@ namespace Cryptofolio.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "asset_ticker",
+                schema: "data",
                 columns: table => new
                 {
                     timestamp = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
@@ -79,6 +87,7 @@ namespace Cryptofolio.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_asset_ticker_asset_asset_id",
                         column: x => x.asset_id,
+                        principalSchema: "data",
                         principalTable: "asset",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -86,11 +95,13 @@ namespace Cryptofolio.Infrastructure.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_asset_ticker_timestamp",
+                schema: "data",
                 table: "asset_ticker",
                 column: "timestamp");
 
             migrationBuilder.CreateIndex(
                 name: "IX_asset_ticker_vs_currency",
+                schema: "data",
                 table: "asset_ticker",
                 column: "vs_currency");
         }
@@ -98,19 +109,24 @@ namespace Cryptofolio.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "asset_ticker");
+                name: "asset_ticker",
+                schema: "data");
 
             migrationBuilder.DropTable(
-                name: "exchange");
+                name: "exchange",
+                schema: "data");
 
             migrationBuilder.DropTable(
-                name: "setting");
+                name: "setting",
+                schema: "data");
 
             migrationBuilder.DropTable(
-                name: "wallet");
+                name: "wallet",
+                schema: "data");
 
             migrationBuilder.DropTable(
-                name: "asset");
+                name: "asset",
+                schema: "data");
         }
     }
 }
