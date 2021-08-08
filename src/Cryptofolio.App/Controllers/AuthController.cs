@@ -1,4 +1,5 @@
 using Cryptofolio.App.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,7 @@ namespace Cryptofolio.App.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
+        [HttpGet("/login")]
         [AllowAnonymous]
         public IActionResult Login(string returnUrl = null)
         {
@@ -32,7 +33,7 @@ namespace Cryptofolio.App.Controllers
             return View(new LoginViewModel { ReturnUrl = returnUrl });
         }
 
-        [HttpPost]
+        [HttpPost("/login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -54,12 +55,12 @@ namespace Cryptofolio.App.Controllers
             return View(model);
         }
 
-        [HttpPost]
+        [HttpPost("/logout")]
         [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            await _signInManager.SignOutAsync();
+            await HttpContext.SignOutAsync();
             _logger.LogInformation("User logged out.");
             return View("Loggedout");
         }

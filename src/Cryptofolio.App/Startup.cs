@@ -44,8 +44,8 @@ namespace Cryptofolio.App
                 .AddAuthentication(IdentityConstants.ApplicationScheme)
                 .AddCookie(IdentityConstants.ApplicationScheme, options =>
                 {
-                    options.LoginPath = "/auth/login";
-                    options.LogoutPath = "/auth/logout";
+                    options.LoginPath = "/login";
+                    options.LogoutPath = "/logout";
                     options.ReturnUrlParameter = "returnUrl";
 
                     options.Cookie.Name = InfrastructureConstants.Authentication.CookieName;

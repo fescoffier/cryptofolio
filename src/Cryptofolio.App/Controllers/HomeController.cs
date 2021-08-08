@@ -23,6 +23,7 @@ namespace Cryptofolio.App.Controllers
                 api = optionsSnapshot.Value,
                 antiforgery = new
                 {
+                    logoutEndpoint = "/logout",
                     formFieldName = antiforgeryTokenSet.FormFieldName,
                     token = antiforgeryTokenSet.RequestToken
                 }

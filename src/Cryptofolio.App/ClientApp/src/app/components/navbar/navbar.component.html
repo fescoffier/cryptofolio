@@ -125,7 +125,7 @@
             </li>
             <li class=" dropdown-divider"></li>
             <li class=" nav-link">
-              <a class=" nav-item dropdown-item" href="javascript:void(0)">
+              <a class=" nav-item dropdown-item" href="javascript:void(0)" (click)="logout()">
                 Log out
               </a>
             </li>
@@ -168,3 +168,6 @@
     </div>
   </div>
 </div>
+<form #logoutForm [action]="antiforgery.logoutEndpoint" method="POST" style="display: none;">
+  <input type="hidden" [name]="antiforgery.formFieldName" [value]="antiforgery.token" />
+</form>

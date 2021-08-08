@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, OnDestroy } from "@angular/core";
+import { Component, OnInit, ElementRef, OnDestroy, ViewChild } from "@angular/core";
 import { ROUTES } from "../sidebar/sidebar.component";
 import { Location } from "@angular/common";
 import { ToastrService } from "ngx-toastr";
@@ -19,6 +19,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private toggleButton: any;
   public isCollapsed = true;
 
+  public antiforgery: {
+    logoutEndpoint: string;
+    formFieldName: string;
+    token: string;
+  };
+
+  @ViewChild('logoutForm') logoutForm!: ElementRef<HTMLFormElement>;
+
   constructor(
     location: Location,
     private element: ElementRef,
@@ -26,6 +34,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     public toastr: ToastrService
   ) {
     this.location = location;
+    this.antiforgery = (window as any)['__me']['antiforgery'];
   }
   // function that adds color white/transparent to the navbar on resize (this is for the collapse)
   updateColor = () => {
@@ -162,5 +171,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
     }
     html.classList.remove("nav-open");
+  }
+  logout() {
+    this.logoutForm.nativeElement.submit();
   }
 }
