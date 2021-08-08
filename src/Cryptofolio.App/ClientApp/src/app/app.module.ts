@@ -3,6 +3,7 @@ import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { ToastrModule } from "ngx-toastr";
 
 import { AppComponent } from "./app.component";
@@ -11,6 +12,9 @@ import { AuthLayoutComponent } from "./layouts/auth-layout/auth-layout.component
 
 import { AppRoutingModule } from "./app-routing.module";
 import { ComponentsModule } from "./components/components.module";
+
+import { ApiOptions } from "./api-options";
+import { AuthenticationInterceptor } from "./authentication.interceptor";
 
 @NgModule({
   declarations: [
@@ -27,7 +31,10 @@ import { ComponentsModule } from "./components/components.module";
     ToastrModule.forRoot(),
     ComponentsModule
   ],
-  providers: [],
+  providers: [
+    ApiOptions,
+    { provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

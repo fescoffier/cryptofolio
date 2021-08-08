@@ -1,7 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import swal from "sweetalert2";
-import { Wallet } from "src/app/models/wallet";
+
+import { Wallet } from "../../../models/wallet";
 import { WalletService } from "../wallet.service";
 
 @Component({

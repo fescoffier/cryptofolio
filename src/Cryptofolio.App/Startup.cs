@@ -99,6 +99,8 @@ namespace Cryptofolio.App
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            services.Configure<ApiOptions>(Configuration.GetSection("Api"));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
