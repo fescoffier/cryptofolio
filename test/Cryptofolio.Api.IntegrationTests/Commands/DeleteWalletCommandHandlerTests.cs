@@ -38,6 +38,31 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             // Setup
             var utcNow = DateTimeOffset.UtcNow;
             _systemClockMock.SetupGet(m => m.UtcNow).Returns(utcNow);
+            _context.Wallets.Add(_data.Wallet2);
+            _context.SaveChanges();
+            _context.ChangeTracker.Clear();
+            var command = new DeleteWalletCommand
+            {
+                RequestContext = new(null, _data.UserId),
+                Id = _data.Wallet2.Id
+            };
+            var cancellationToken = CancellationToken.None;
+
+            // Act
+            var result = await _handler.Handle(command, cancellationToken);
+
+            // Assert
+            result.Succeeded.Should().BeTrue();
+            _context.Wallets.SingleOrDefault(w => w.Id == _data.Wallet2.Id).Should().BeNull();
+            _dispatcherMock.Verify(m => m.DispatchAsync(It.Is<WalletDeletedEvent>(w => w.Date == utcNow)), Times.Once());
+        }
+
+        [Fact]
+        public async Task Handle_Selected_Test()
+        {
+            // Setup
+            var utcNow = DateTimeOffset.UtcNow;
+            _systemClockMock.SetupGet(m => m.UtcNow).Returns(utcNow);
             _context.Wallets.Add(_data.Wallet1);
             _context.SaveChanges();
             _context.ChangeTracker.Clear();
@@ -52,9 +77,10 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             var result = await _handler.Handle(command, cancellationToken);
 
             // Assert
-            result.Succeeded.Should().BeTrue();
-            _context.Wallets.SingleOrDefault(w => w.Id == _data.Wallet1.Id).Should().BeNull();
-            _dispatcherMock.Verify(m => m.DispatchAsync(It.Is<WalletDeletedEvent>(w => w.Date == utcNow)), Times.Once());
+            result.Succeeded.Should().BeFalse();
+            result.Errors.Should().HaveCount(1).And.Contain(CommandConstants.Wallet.Errors.DeleteSelectedError);
+            _context.Wallets.SingleOrDefault(w => w.Id == _data.Wallet1.Id).Should().NotBeNull();
+            _dispatcherMock.Verify(m => m.DispatchAsync(It.Is<WalletDeletedEvent>(w => w.Date == utcNow)), Times.Never());
         }
 
         [Fact]
@@ -63,7 +89,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             // Setup
             var utcNow = DateTimeOffset.UtcNow;
             _systemClockMock.SetupGet(m => m.UtcNow).Returns(utcNow);
-            _context.Wallets.Add(_data.Wallet2);
+            _context.Wallets.Add(_data.Wallet3);
             _context.SaveChanges();
             _context.ChangeTracker.Clear();
             var command = new DeleteWalletCommand
@@ -79,7 +105,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             // Assert
             result.Succeeded.Should().BeFalse();
             result.Errors.Should().HaveCount(1).And.Contain(CommandConstants.Wallet.Errors.DeleteError);
-            _context.Wallets.SingleOrDefault(w => w.Id == _data.Wallet2.Id).Should().NotBeNull();
+            _context.Wallets.SingleOrDefault(w => w.Id == _data.Wallet3.Id).Should().NotBeNull();
             _dispatcherMock.Verify(m => m.DispatchAsync(It.Is<WalletDeletedEvent>(w => w.Date == utcNow)), Times.Never());
         }
     }

@@ -123,6 +123,15 @@ export class WalletsComponent implements OnInit {
         },
         icon: "warning"
       });
+    } else if (wallet.selected) {
+      swal.fire({
+        title: "Sorry! You can't delete your selected wallet.",
+        buttonsStyling: false,
+        customClass: {
+          confirmButton: "btn btn-success",
+        },
+        icon: "warning"
+      });
     } else {
       swal.fire({
         title: `Do you really want to delete the wallet \"${wallet.name}\" and its associated transactions?`,

@@ -20,6 +20,8 @@ namespace Cryptofolio.Api.Commands
                 public const string UpdateError = "An error has occured while updating the wallet.";
 
                 public const string DeleteError = "An error has occured while deleting the wallet.";
+
+                public const string DeleteSelectedError = "The selected wallet can't be deleted.";
             }
         }
     }

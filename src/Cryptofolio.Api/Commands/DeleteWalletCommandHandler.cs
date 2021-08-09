@@ -50,6 +50,12 @@ namespace Cryptofolio.Api.Commands
                 _logger.LogDebug("Transaction {0} just begun.", transaction.TransactionId);
 
                 var wallet = await _context.Wallets.SingleOrDefaultAsync(w => w.Id == command.Id, cancellationToken);
+                if (wallet.Selected)
+                {
+                    _logger.LogWarning("Can't delete the wallet as it's the user selected wallet.");
+                    return CommandResult.Failed(CommandConstants.Wallet.Errors.DeleteSelectedError);
+                }
+
                 _context.Wallets.Remove(wallet);
                 _logger.LogDebug("Storing the updated wallet in database.");
                 await _context.SaveChangesAsync(cancellationToken);
