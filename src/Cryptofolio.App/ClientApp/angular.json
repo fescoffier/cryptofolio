@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "black-dashboard-pro-angular": {
+    "cryptofolio-app": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -37,7 +37,7 @@
               "node_modules/@swimlane/ngx-datatable/assets/icons.css",
               "node_modules/ngx-toastr/toastr.css"
             ],
-            "scripts": [],
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -73,18 +73,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "black-dashboard-pro-angular:build"
+            "browserTarget": "cryptofolio-app:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "black-dashboard-pro-angular:build:production"
+              "browserTarget": "cryptofolio-app:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "black-dashboard-pro-angular:build"
+            "browserTarget": "cryptofolio-app:build"
           }
         },
         "test": {
@@ -118,7 +118,7 @@
         }
       }
     },
-    "black-dashboard-pro-angular-e2e": {
+    "cryptofolio-app-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "prefix": "",
@@ -127,11 +127,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "black-dashboard-pro-angular:serve"
+            "devServerTarget": "cryptofolio-app:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "black-dashboard-pro-angular:serve:production"
+              "devServerTarget": "cryptofolio-app:serve:production"
             }
           }
         },
@@ -147,7 +147,7 @@
       }
     }
   },
-  "defaultProject": "black-dashboard-pro-angular",
+  "defaultProject": "cryptofolio-app",
   "cli": {
     "analytics": false
   }
