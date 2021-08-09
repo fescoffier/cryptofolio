@@ -51,9 +51,9 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
 
             // Assert
             result.Succeeded.Should().BeTrue();
-            result.Data.Should().BeEquivalentTo(_data.Wallet1, options => options.Excluding(m => m.Id));
-            _context.Wallets.Single(w => w.Id == result.Data.Id).Should().BeEquivalentTo(result.Data);
-            _dispatcherMock.Verify(m => m.DispatchAsync(It.IsAny<WalletCreatedEvent>()), Times.Once());
+            result.Data.Should().BeEquivalentTo(_data.Wallet1, options => options.Excluding(m => m.Id).Excluding(m => m.Selected));
+            _context.Wallets.Single(w => w.Id == result.Data.Id).Should().BeEquivalentTo(result.Data, options => options.Excluding(m => m.Selected));
+            _dispatcherMock.Verify(m => m.DispatchAsync(It.Is<WalletCreatedEvent>(w => w.Date == utcNow)), Times.Once());
         }
 
         [Fact]
@@ -75,7 +75,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             result.Succeeded.Should().BeFalse();
             result.Data.Should().BeNull();
             result.Errors.Should().HaveCount(1).And.Contain(CommandConstants.Wallet.Errors.CreateError);
-            _dispatcherMock.Verify(m => m.DispatchAsync(It.IsAny<WalletCreatedEvent>()), Times.Never());
+            _dispatcherMock.Verify(m => m.DispatchAsync(It.Is<WalletCreatedEvent>(w => w.Date == utcNow)), Times.Never());
         }
     }
 }

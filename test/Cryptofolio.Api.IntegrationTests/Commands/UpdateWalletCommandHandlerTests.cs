@@ -58,7 +58,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             var wallet = _context.Wallets.Single(w => w.Id == _data.Wallet1.Id);
             wallet.Name.Should().Be(command.Name);
             wallet.Description.Should().Be(command.Description);
-            _dispatcherMock.Verify(m => m.DispatchAsync(It.IsAny<WalletUpdatedEvent>()), Times.Once());
+            _dispatcherMock.Verify(m => m.DispatchAsync(It.Is<WalletUpdatedEvent>(w => w.Date == utcNow)), Times.Once());
         }
 
         [Fact]
@@ -82,7 +82,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             // Assert
             result.Succeeded.Should().BeFalse();
             result.Errors.Should().HaveCount(1).And.Contain(CommandConstants.Wallet.Errors.UpdateError);
-            _dispatcherMock.Verify(m => m.DispatchAsync(It.IsAny<WalletUpdatedEvent>()), Times.Never());
+            _dispatcherMock.Verify(m => m.DispatchAsync(It.Is<WalletUpdatedEvent>(w => w.Date == utcNow)), Times.Never());
         }
     }
 }

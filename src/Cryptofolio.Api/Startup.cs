@@ -156,6 +156,9 @@ namespace Cryptofolio.Api
                 .AddScoped<UpdateWalletCommandHandler>()
                 .AddScoped<IRequestHandler<UpdateWalletCommand, CommandResult>>(p => p.GetRequiredService<UpdateWalletCommandHandler>());
             services
+                .AddScoped<SetSelectedWalletCommandHandler>()
+                .AddScoped<IRequestHandler<SetSelectedWalletCommand, CommandResult>>(p => p.GetRequiredService<SetSelectedWalletCommandHandler>());
+            services
                 .AddScoped<DeleteWalletCommandHandler>()
                 .AddScoped<IRequestHandler<DeleteWalletCommand, CommandResult>>(p => p.GetRequiredService<DeleteWalletCommandHandler>());
         }

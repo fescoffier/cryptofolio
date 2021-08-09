@@ -46,6 +46,24 @@ export class WalletsComponent implements OnInit {
         .subscribe(wallet => {
           this.wallets.push(wallet);
           this.resetForm();
+          swal.fire({
+            title: `Would you like to define your newly created wallet as your selected wallet?`,
+            text: "You can change your selected wallet anytime.",
+            icon: "info",
+            showCancelButton: true,
+            customClass: {
+              cancelButton: "btn btn-danger",
+              confirmButton: "btn btn-success mr-1",
+            },
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            buttonsStyling: false
+          })
+          .then(result => {
+            if (result.value) {
+              this.select(wallet);
+            }
+          });
         });
     } else if (this.formMode === "edit") {
       this.service
@@ -84,6 +102,15 @@ export class WalletsComponent implements OnInit {
     this.formSubmitted = false;
     this.formMode = "";
     this.form.reset();
+  }
+
+  select(wallet: Wallet) {
+    this.service
+      .select(wallet)
+      .subscribe(() => {
+        this.wallets.forEach(w => w.selected = false);
+        wallet.selected = true;
+      });
   }
 
   delete(wallet: Wallet) {

@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Cryptofolio.Infrastructure.Migrations
 {
     [DbContext(typeof(CryptofolioContext))]
-    [Migration("20210807011956_Initial")]
-    partial class Initial
+    [Migration("20210809090236_Inital")]
+    partial class Inital
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -147,6 +147,10 @@ namespace Cryptofolio.Infrastructure.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)")
                         .HasColumnName("name");
+
+                    b.Property<bool>("Selected")
+                        .HasColumnType("boolean")
+                        .HasColumnName("selected");
 
                     b.Property<string>("UserId")
                         .IsRequired()

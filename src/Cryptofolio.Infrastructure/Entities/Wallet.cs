@@ -21,6 +21,11 @@ namespace Cryptofolio.Infrastructure.Entities
         public string Description { get; set; }
 
         /// <summary>
+        /// Defines if it's user selected wallet.
+        /// </summary>
+        public bool Selected { get; set; }
+
+        /// <summary>
         /// The user id that owns the wallet.
         /// </summary>
         public string UserId { get; set; }

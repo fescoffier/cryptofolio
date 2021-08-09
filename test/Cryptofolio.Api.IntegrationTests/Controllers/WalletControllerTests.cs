@@ -3,6 +3,7 @@ using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Entities;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using System.Net.Http.Json;
@@ -21,6 +22,9 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
         {
             _factory = factory;
             _data = factory.Data;
+
+            using var scope = _factory.Services.CreateScope();
+            scope.ServiceProvider.GetRequiredService<CryptofolioContext>().Database.ExecuteSqlRaw("delete from \"data\".\"wallet\"");
         }
 
         [Fact]
@@ -152,6 +156,64 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             document.RootElement.GetProperty("errors").EnumerateArray().Should().HaveCount(1);
             document.RootElement.GetProperty("errors").EnumerateArray().First().GetString().Should().Be(CommandConstants.Wallet.Errors.UpdateError);
             document.RootElement.GetProperty("succeeded").GetBoolean().Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task Select_Test()
+        {
+            // Setup
+            var client = _factory.CreateClient();
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
+                context.Wallets.AddRange(_data.Wallet1, _data.Wallet2, _data.Wallet3);
+                context.SaveChanges();
+            }
+
+            // Act
+            var response = await client.PutAsync($"/wallets/{_data.Wallet2.Id}/select", null);
+
+            // Assert
+            response.StatusCode.Should().Be(StatusCodes.Status204NoContent);
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
+                var wallets = context.Wallets.ToList();
+                wallets.Single(w => w.Id == _data.Wallet1.Id).Selected.Should().BeFalse();
+                wallets.Single(w => w.Id == _data.Wallet2.Id).Selected.Should().BeTrue();
+                wallets.Single(w => w.Id == _data.Wallet3.Id).Selected.Should().BeFalse();
+            }
+        }
+
+        [Fact]
+        public async Task Select_InternalServerError_Test()
+        {
+            // Setup
+            var client = _factory.CreateClient();
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
+                context.Wallets.AddRange(_data.Wallet1, _data.Wallet2, _data.Wallet3);
+                context.SaveChanges();
+            }
+
+            // Act
+            var response = await client.PutAsync($"/wallets/none/select", null);
+
+            // Assert
+            response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
+            var document = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+            document.RootElement.GetProperty("errors").EnumerateArray().Should().HaveCount(1);
+            document.RootElement.GetProperty("errors").EnumerateArray().First().GetString().Should().Be(CommandConstants.Wallet.Errors.UpdateError);
+            document.RootElement.GetProperty("succeeded").GetBoolean().Should().BeFalse();
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
+                var wallets = context.Wallets.ToList();
+                wallets.Single(w => w.Id == _data.Wallet1.Id).Selected.Should().BeTrue();
+                wallets.Single(w => w.Id == _data.Wallet2.Id).Selected.Should().BeFalse();
+                wallets.Single(w => w.Id == _data.Wallet3.Id).Selected.Should().BeFalse();
+            }
         }
 
         [Fact]

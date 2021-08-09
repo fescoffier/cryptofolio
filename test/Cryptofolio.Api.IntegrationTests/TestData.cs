@@ -23,6 +23,7 @@ namespace Cryptofolio.Api.IntegrationTests
                 Id = Guid.NewGuid().ToString(),
                 Name = "Wallet 1",
                 Description = "Lorem ipsum dolor sit amet",
+                Selected = true,
                 UserId = UserId
             };
             Wallet2 = new()

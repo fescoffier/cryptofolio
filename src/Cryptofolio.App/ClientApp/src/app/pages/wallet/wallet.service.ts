@@ -21,6 +21,10 @@ export class WalletService {
     return this.http.put<void>(this.api.walletsEndpoint, wallet);
   }
 
+  select(wallet: Wallet): Observable<void> {
+    return this.http.put<void>(`${this.api.walletsEndpoint}/${wallet.id}/select`, wallet);
+  }
+
   delete(wallet: Wallet): Observable<void> {
     return this.http.delete<void>(`${this.api.walletsEndpoint}/${wallet.id}`);
   }

@@ -3,7 +3,7 @@ using System;
 
 namespace Cryptofolio.Infrastructure.Migrations
 {
-    public partial class Initial : Migration
+    public partial class Inital : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -64,6 +64,7 @@ namespace Cryptofolio.Infrastructure.Migrations
                     id = table.Column<string>(type: "character varying(36)", maxLength: 36, nullable: false),
                     name = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
                     description = table.Column<string>(type: "text", nullable: true),
+                    selected = table.Column<bool>(type: "boolean", nullable: false),
                     user_id = table.Column<string>(type: "character varying(36)", maxLength: 36, nullable: false)
                 },
                 constraints: table =>

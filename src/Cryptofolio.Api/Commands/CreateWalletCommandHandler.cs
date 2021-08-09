@@ -17,7 +17,7 @@ namespace Cryptofolio.Api.Commands
         private readonly CryptofolioContext _context;
         private readonly IEventDispatcher _dispatcher;
         private readonly ISystemClock _systemClock;
-        private readonly ILogger<CreateWalletCommand> _logger;
+        private readonly ILogger<CreateWalletCommandHandler> _logger;
 
         /// <summary>
         /// Creates a new instance of <see cref="CreateWalletCommandHandler"/>.
@@ -30,7 +30,7 @@ namespace Cryptofolio.Api.Commands
             CryptofolioContext context,
             IEventDispatcher dispatcher,
             ISystemClock systemClock,
-            ILogger<CreateWalletCommand> logger)
+            ILogger<CreateWalletCommandHandler> logger)
         {
             _context = context;
             _dispatcher = dispatcher;

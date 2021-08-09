@@ -146,6 +146,10 @@ namespace Cryptofolio.Infrastructure.Migrations
                         .HasColumnType("character varying(250)")
                         .HasColumnName("name");
 
+                    b.Property<bool>("Selected")
+                        .HasColumnType("boolean")
+                        .HasColumnName("selected");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasMaxLength(36)

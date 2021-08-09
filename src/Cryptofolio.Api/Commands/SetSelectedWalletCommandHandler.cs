@@ -1,6 +1,7 @@
 using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.Logging;
 using System;
@@ -10,14 +11,14 @@ using System.Threading.Tasks;
 namespace Cryptofolio.Api.Commands
 {
     /// <summary>
-    /// Provides an <see cref="IRequestHandler{TRequest, TResponse}"/> implementation to handle <see cref="UpdateWalletCommand"/>.
+    /// Provides an <see cref="IRequestHandler{TRequest, TResponse}"/> implementation to handle <see cref="SetSelectedWalletCommand"/>.
     /// </summary>
-    public class UpdateWalletCommandHandler : IRequestHandler<UpdateWalletCommand, CommandResult>
+    public class SetSelectedWalletCommandHandler : IRequestHandler<SetSelectedWalletCommand, CommandResult>
     {
         private readonly CryptofolioContext _context;
         private readonly IEventDispatcher _dispatcher;
         private readonly ISystemClock _systemClock;
-        private readonly ILogger<UpdateWalletCommandHandler> _logger;
+        private readonly ILogger<SetSelectedWalletCommandHandler> _logger;
 
         /// <summary>
         /// Creates a new instance of <see cref="CreateWalletCommandHandler"/>.
@@ -26,11 +27,11 @@ namespace Cryptofolio.Api.Commands
         /// <param name="dispatcher">The dispatcher.</param>
         /// <param name="systemClock">The system clock.</param>
         /// <param name="logger">The logger.</param>
-        public UpdateWalletCommandHandler(
+        public SetSelectedWalletCommandHandler(
             CryptofolioContext context,
             IEventDispatcher dispatcher,
             ISystemClock systemClock,
-            ILogger<UpdateWalletCommandHandler> logger)
+            ILogger<SetSelectedWalletCommandHandler> logger)
         {
             _context = context;
             _dispatcher = dispatcher;
@@ -38,8 +39,7 @@ namespace Cryptofolio.Api.Commands
             _logger = logger;
         }
 
-        /// <inheritdoc/>
-        public async Task<CommandResult> Handle(UpdateWalletCommand command, CancellationToken cancellationToken)
+        public async Task<CommandResult> Handle(SetSelectedWalletCommand command, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Handling the {1} command.", command.RequestId);
 
@@ -49,26 +49,23 @@ namespace Cryptofolio.Api.Commands
                 using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
                 _logger.LogDebug("Transaction {0} just begun.", transaction.TransactionId);
 
-                var wallet = new Wallet
+                _logger.LogDebug("Updating the unselected wallet in database.");
+                await _context.Database.ExecuteSqlInterpolatedAsync($"update \"data\".\"wallet\" set selected = false where user_id = {command.UserId}", cancellationToken: cancellationToken);
+                _logger.LogDebug("Updating the selected wallet in database.");
+                var rowsAffected = await _context.Database.ExecuteSqlInterpolatedAsync($"update \"data\".\"wallet\" set selected = true where user_id = {command.UserId} and id = {command.Id}", cancellationToken: cancellationToken);
+                if (rowsAffected != 1)
                 {
-                    Id = command.Id,
-                    Name = command.Name,
-                    Description = command.Description
-                };
-                var walletEntry = _context.Wallets.Attach(wallet);
-                walletEntry.Property(p => p.Name).IsModified = true;
-                walletEntry.Property(p => p.Description).IsModified = true;
-                _logger.LogDebug("Storing the updated wallet in database.");
-                await _context.SaveChangesAsync(cancellationToken);
+                    throw new InvalidOperationException("The number of updated rows should be exactly one.");
+                }
 
-                var @event = new WalletUpdatedEvent
+                var @event = new WalletSelectedEvent
                 {
                     Id = command.RequestId,
                     Date = _systemClock.UtcNow,
                     UserId = command.UserId,
-                    Wallet = wallet
+                    Wallet = await _context.Wallets.AsNoTracking().SingleOrDefaultAsync(w => w.Id == command.Id, cancellationToken)
                 };
-                _logger.LogDebug("Dispatching a {0} event.", nameof(WalletUpdatedEvent));
+                _logger.LogDebug("Dispatching a {0} event.", nameof(WalletSelectedEvent));
                 await _dispatcher.DispatchAsync(@event);
 
                 _logger.LogDebug("Committing the transaction {0}.", transaction.TransactionId);

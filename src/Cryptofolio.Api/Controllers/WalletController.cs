@@ -65,8 +65,26 @@ namespace Cryptofolio.Api.Controllers
             }
         }
 
+        [HttpPut("{id}/select")]
+        public async Task<IActionResult> Select(string id, [FromServices] RequestContext requestContext, CancellationToken cancellationToken)
+        {
+            var command = new SetSelectedWalletCommand
+            {
+                RequestContext = requestContext,
+                Id = id
+            };
+            var result = await _mediator.Send(command, cancellationToken);
+            if (result.Succeeded)
+            {
+                return NoContent();
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, result);
+            }
+        }
+
         [HttpDelete("{id}")]
-        [ServiceFilter(typeof(RequestContextActionFilter))]
         public async Task<IActionResult> Delete(string id, [FromServices] RequestContext requestContext, CancellationToken cancellationToken)
         {
             var command = new DeleteWalletCommand
@@ -74,7 +92,6 @@ namespace Cryptofolio.Api.Controllers
                 RequestContext = requestContext,
                 Id = id
             };
-
             var result = await _mediator.Send(command, cancellationToken);
             if (result.Succeeded)
             {

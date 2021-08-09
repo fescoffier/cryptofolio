@@ -3,7 +3,7 @@
     <div class=" col-md-12">
       <div class=" card">
         <div class=" card-header">
-          <div class= "card-title d-flex flex-row justify-content-between">
+          <div class="card-title d-flex flex-row justify-content-between">
             <button (click)="create()" class=" btn btn-primary btn-round btn-icon" title="Add a new wallet">
               <i class=" tim-icons icon-simple-add"> </i>
             </button>
@@ -29,16 +29,22 @@
                 <col style="width: 100px;" />
                 <col />
                 <col />
-                <col style="width: 100px;" />
+                <col style="width: 150px;" />
               </colgroup>
               <tbody>
                 <tr *ngFor="let wallet of wallets">
                   <td>{{ wallet.name }}</td>
                   <td>{{ wallet.description }}</td>
-                  <td></td>
+                  <td class="text-center">
+                    <input [checked]="wallet.selected" class=" form-check-input" type="checkbox" />
+                  </td>
                   <td></td>
                   <td></td>
                   <td class=" text-right">
+                    <button (click)="select(wallet)" class=" btn btn-round btn-icon mr-2"
+                      title="Set this wallet as your seleted wallet">
+                      <i class=" tim-icons icon-check-2"> </i>
+                    </button>
                     <button (click)="edit(wallet)" class=" btn btn-info btn-round btn-icon mr-2"
                       title="Edit this wallet">
                       <i class=" tim-icons icon-pencil"> </i>
