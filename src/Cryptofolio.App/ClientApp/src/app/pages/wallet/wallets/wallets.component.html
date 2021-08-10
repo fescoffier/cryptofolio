@@ -1,0 +1,101 @@
+<div class=" content">
+  <div class=" row">
+    <div class=" col-md-12">
+      <div class=" card">
+        <div class=" card-header">
+          <div class="card-title d-flex flex-row justify-content-between">
+            <button (click)="create()" class=" btn btn-primary btn-round btn-icon" title="Add a new wallet">
+              <i class=" tim-icons icon-simple-add"> </i>
+            </button>
+            <h4>Your wallets worth $100,000.00</h4>
+          </div>
+        </div>
+        <div class=" card-body">
+          <div class=" table-responsive">
+            <table class=" table tablesorter">
+              <thead class=" text-primary">
+                <tr>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th>Selected</th>
+                  <th>Balance</th>
+                  <th>Profits/Losses</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <colgroup>
+                <col />
+                <col />
+                <col style="width: 100px;" />
+                <col />
+                <col />
+                <col style="width: 150px;" />
+              </colgroup>
+              <tbody>
+                <tr *ngFor="let wallet of wallets">
+                  <td>{{ wallet.name }}</td>
+                  <td>{{ wallet.description }}</td>
+                  <td class="text-center">
+                    <input [checked]="wallet.selected" class=" form-check-input" type="checkbox" />
+                  </td>
+                  <td></td>
+                  <td></td>
+                  <td class=" text-right">
+                    <button (click)="select(wallet)" class=" btn btn-round btn-icon mr-2"
+                      title="Set this wallet as your seleted wallet">
+                      <i class=" tim-icons icon-check-2"> </i>
+                    </button>
+                    <button (click)="edit(wallet)" class=" btn btn-info btn-round btn-icon mr-2"
+                      title="Edit this wallet">
+                      <i class=" tim-icons icon-pencil"> </i>
+                    </button>
+                    <button (click)="delete(wallet)" class=" btn btn-danger btn-round btn-icon"
+                      title="Delete this wallet">
+                      <i class=" tim-icons icon-simple-remove"> </i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class=" col-md-6" *ngIf="formDisplayed">
+      <form [formGroup]="form" (ngSubmit)="onFormSubmit()">
+        <div class=" card">
+          <div class=" card-header">
+            <span *ngIf="formMode === 'create'; then createTitle else editTitle"></span>
+            <ng-template #createTitle>
+              <h4 class=" card-title">Create a new wallet</h4>
+            </ng-template>
+            <ng-template #editTitle>
+              <h4 class=" card-title">Edit wallet</h4>
+            </ng-template>
+          </div>
+          <div class=" card-body">
+            <div class=" form-group has-label" [ngClass]="{
+              'has-danger': (formSubmitted && formControls.name.errors) || (formControls.name.value != null && formControls.name.errors),
+              'has-success': !formControls.name.errors
+            }">
+              <label> Name * </label>
+              <input class=" form-control" name="name" formControlName="name" required autofocus />
+              <label class="error"
+                *ngIf="(formSubmitted && formControls.name.errors) || (formControls.name.value != null && formControls.name.errors)">
+                Please enter a valid name.</label>
+            </div>
+            <div class=" form-group has-label">
+              <label> Description </label>
+              <input class=" form-control" name="description" formControlName="description" />
+            </div>
+            <div class=" category form-category">* Required fields</div>
+          </div>
+          <div class=" card-footer text-right">
+            <button class=" btn btn-success mr-2" type="submit">Validate</button>
+            <button class=" btn btn-warning" (click)="cancelEdit()">Cancel</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

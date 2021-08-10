@@ -1,8 +1,9 @@
+using Elasticsearch.Net;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Sinks.Elasticsearch;
-using System;
+using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -36,10 +37,16 @@ namespace Cryptofolio.Infrastructure
 
                     if (!context.HostingEnvironment.IsDevelopment())
                     {
+                        var connectionPool = new StaticConnectionPool(
+                            context.Configuration
+                                .GetValue<string[]>("Serilog:Elasticsearch:Nodes")
+                                .Select(n => new Node(new(n)))
+                                .ToArray()
+                        );
                         var assembly = Assembly.GetEntryAssembly();
                         loggerConfig.Enrich.WithProperty("Assembly", assembly.GetName().Name);
                         loggerConfig.Enrich.WithProperty("Version", $"{assembly.GetName().Version.Major}.{assembly.GetName().Version.Minor}.{assembly.GetName().Version.Build}");
-                        loggerConfig.WriteTo.Elasticsearch(new(new Uri(context.Configuration.GetValue<string>("Serilog:Elasticsearch:Url")))
+                        loggerConfig.WriteTo.Elasticsearch(new(connectionPool)
                         {
                             AutoRegisterTemplate = true,
                             AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv7,

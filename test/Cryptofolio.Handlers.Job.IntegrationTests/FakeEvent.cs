@@ -11,8 +11,6 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests
 
         public string UserId { get; init; }
 
-        public string Username { get; init; }
-
         public string Category => "Test";
 
         public string Property1 { get; init; }

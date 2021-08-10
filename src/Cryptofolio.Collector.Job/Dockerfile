@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/aspnet:5.0.7-alpine3.13 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:5.0.8-alpine3.13 AS base
 WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0.301-alpine3.13 AS build
@@ -12,4 +12,5 @@ RUN dotnet publish "src/Cryptofolio.Collector.Job/Cryptofolio.Collector.Job.cspr
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
 ENTRYPOINT ["dotnet", "Cryptofolio.Collector.Job.dll"]

@@ -17,9 +17,6 @@ namespace Cryptofolio.Infrastructure.Entities
         public string UserId { get; init; }
 
         /// <inheritdoc/>
-        public string Username { get; init; }
-
-        /// <inheritdoc/>
         public string Category => InfrastructureConstants.Events.Categories.Asset;
 
         /// <summary>

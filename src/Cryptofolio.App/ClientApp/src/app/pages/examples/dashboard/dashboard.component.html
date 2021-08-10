@@ -1,0 +1,808 @@
+<div class=" content">
+  <div class=" row">
+    <div class=" col-12">
+      <div class=" card card-chart">
+        <div class=" card-header">
+          <div class=" row">
+            <div class=" col-sm-6 text-left">
+              <h5 class=" card-category">Total Shipments</h5>
+              <h2 class=" card-title">Performance</h2>
+            </div>
+            <div class=" col-sm-6">
+              <div
+                class=" btn-group btn-group-toggle float-right"
+                data-toggle="buttons"
+              >
+                <label
+                  class=" btn btn-sm btn-danger btn-simple"
+                  (click)="
+                    data = datasets[0];
+                    updateOptions();
+                    clicked = true;
+                    clicked1 = false;
+                    clicked2 = false
+                  "
+                  [ngClass]="{ active: clicked === true }"
+                >
+                  <input checked="checked" name="options" type="radio" />
+
+                  <span
+                    class=" d-none d-sm-block d-md-block d-lg-block d-xl-block"
+                  >
+                    Accounts
+                  </span>
+                  <span class=" d-block d-sm-none">
+                    <i class=" tim-icons icon-single-02"> </i>
+                  </span>
+                </label>
+                <label
+                  class=" btn btn-sm btn-danger btn-simple"
+                  (click)="
+                    data = datasets[1];
+                    updateOptions();
+                    clicked = false;
+                    clicked1 = true;
+                    clicked2 = false
+                  "
+                  [ngClass]="{ active: clicked1 === true }"
+                >
+                  <input
+                    class=" d-none d-sm-none"
+                    name="options"
+                    type="radio"
+                  />
+
+                  <span
+                    class=" d-none d-sm-block d-md-block d-lg-block d-xl-block"
+                  >
+                    Purchases
+                  </span>
+                  <span class=" d-block d-sm-none">
+                    <i class=" tim-icons icon-gift-2"> </i>
+                  </span>
+                </label>
+                <label
+                  class=" btn btn-sm btn-danger btn-simple"
+                  (click)="
+                    data = datasets[2];
+                    updateOptions();
+                    clicked = false;
+                    clicked1 = false;
+                    clicked2 = true
+                  "
+                  [ngClass]="{ active: clicked2 === true }"
+                >
+                  <input class=" d-none" name="options" type="radio" />
+
+                  <span
+                    class=" d-none d-sm-block d-md-block d-lg-block d-xl-block"
+                  >
+                    Sessions
+                  </span>
+                  <span class=" d-block d-sm-none">
+                    <i class=" tim-icons icon-tap-02"> </i>
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class=" card-body">
+          <div class=" chart-area"><canvas id="chartBig1"> </canvas></div>
+        </div>
+      </div>
+    </div>
+    <div class=" col-lg-3 col-md-6">
+      <div class=" card card-stats">
+        <div class=" card-body">
+          <div class=" row">
+            <div class=" col-5">
+              <div class=" info-icon text-center icon-warning">
+                <i class=" tim-icons icon-chat-33"> </i>
+              </div>
+            </div>
+            <div class=" col-7">
+              <div class=" numbers">
+                <p class=" card-category">Number</p>
+                <h3 class=" card-title">150GB</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class=" card-footer">
+          <hr />
+
+          <div class=" stats">
+            <i class=" tim-icons icon-refresh-01"> </i> Update Now
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class=" col-lg-3 col-md-6">
+      <div class=" card card-stats">
+        <div class=" card-body">
+          <div class=" row">
+            <div class=" col-5">
+              <div class=" info-icon text-center icon-primary">
+                <i class=" tim-icons icon-shape-star"> </i>
+              </div>
+            </div>
+            <div class=" col-7">
+              <div class=" numbers">
+                <p class=" card-category">Followers</p>
+                <h3 class=" card-title">+45k</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class=" card-footer">
+          <hr />
+
+          <div class=" stats">
+            <i class=" tim-icons icon-sound-wave"> </i> Last Research
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class=" col-lg-3 col-md-6">
+      <div class=" card card-stats">
+        <div class=" card-body">
+          <div class=" row">
+            <div class=" col-5">
+              <div class=" info-icon text-center icon-success">
+                <i class=" tim-icons icon-single-02"> </i>
+              </div>
+            </div>
+            <div class=" col-7">
+              <div class=" numbers">
+                <p class=" card-category">Users</p>
+                <h3 class=" card-title">150,000</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class=" card-footer">
+          <hr />
+
+          <div class=" stats">
+            <i class=" tim-icons icon-trophy"> </i> Customers feedback
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class=" col-lg-3 col-md-6">
+      <div class=" card card-stats">
+        <div class=" card-body">
+          <div class=" row">
+            <div class=" col-5">
+              <div class=" info-icon text-center icon-danger">
+                <i class=" tim-icons icon-molecule-40"> </i>
+              </div>
+            </div>
+            <div class=" col-7">
+              <div class=" numbers">
+                <p class=" card-category">Errors</p>
+                <h3 class=" card-title">12</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class=" card-footer">
+          <hr />
+
+          <div class=" stats">
+            <i class=" tim-icons icon-watch-time"> </i> In the last hours
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class=" col-lg-4">
+      <div class=" card card-chart">
+        <div class=" card-header">
+          <h5 class=" card-category">Total Shipments</h5>
+          <h3 class=" card-title">
+            <i class=" tim-icons icon-bell-55 text-primary"> </i> 763,215
+          </h3>
+        </div>
+        <div class=" card-body">
+          <div class=" chart-area"><canvas id="chartLineRed"> </canvas></div>
+        </div>
+      </div>
+    </div>
+    <div class=" col-lg-4">
+      <div class=" card card-chart">
+        <div class=" card-header">
+          <h5 class=" card-category">Daily Sales</h5>
+          <h3 class=" card-title">
+            <i class=" tim-icons icon-delivery-fast text-info"> </i> 3,500€
+          </h3>
+        </div>
+        <div class=" card-body">
+          <div class=" chart-area"><canvas id="CountryChart"> </canvas></div>
+        </div>
+      </div>
+    </div>
+    <div class=" col-lg-4">
+      <div class=" card card-chart">
+        <div class=" card-header">
+          <h5 class=" card-category">Completed Tasks</h5>
+          <h3 class=" card-title">
+            <i class=" tim-icons icon-send text-success"> </i> 12,100K
+          </h3>
+        </div>
+        <div class=" card-body">
+          <div class=" chart-area"><canvas id="chartLineGreen"> </canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class=" row">
+    <div class=" col-lg-5">
+      <div class=" card card-tasks">
+        <div class=" card-header">
+          <h6 class=" title d-inline">Tasks(5)</h6>
+          <p class=" card-category d-inline">today</p>
+          <div class=" dropdown" dropdown>
+            <button
+              class=" btn btn-link dropdown-toggle btn-icon dropdown-toggle"
+              data-toggle="dropdown"
+              dropdownToggle
+              type="button"
+            >
+              <i class=" tim-icons icon-settings-gear-63"> </i>
+            </button>
+            <div class=" dropdown-menu dropdown-menu-right" *dropdownMenu>
+              <a class=" dropdown-item" href="#pablo"> Action </a>
+              <a class=" dropdown-item" href="#pablo"> Another action </a>
+              <a class=" dropdown-item" href="#pablo"> Something else </a>
+            </div>
+          </div>
+        </div>
+        <div class=" card-body">
+          <div class=" table-full-width table-responsive">
+            <table class=" table">
+              <tbody>
+                <tr>
+                  <td>
+                    <div class=" form-check">
+                      <label class=" form-check-label">
+                        <input
+                          class=" form-check-input"
+                          type="checkbox"
+                          value=""
+                        />
+
+                        <span class=" form-check-sign">
+                          <span class=" check"> </span>
+                        </span>
+                      </label>
+                    </div>
+                  </td>
+                  <td>
+                    <p class=" title">Update the Documentation</p>
+                    <p class=" text-muted">
+                      Dwuamish Head, Seattle, WA 8:47 AM
+                    </p>
+                  </td>
+                  <td class=" td-actions text-right">
+                    <button
+                      class=" btn btn-link"
+                      type="button"
+                      tooltip="Edit Task"
+                      placement="left"
+                    >
+                      <i class=" tim-icons icon-pencil"> </i>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class=" form-check">
+                      <label class=" form-check-label">
+                        <input
+                          checked=""
+                          class=" form-check-input"
+                          type="checkbox"
+                          value=""
+                        />
+
+                        <span class=" form-check-sign">
+                          <span class=" check"> </span>
+                        </span>
+                      </label>
+                    </div>
+                  </td>
+                  <td>
+                    <p class=" title">GDPR Compliance</p>
+                    <p class=" text-muted">
+                      The GDPR is a regulation that requires businesses to
+                      protect the personal data and privacy of Europe citizens
+                      for transactions that occur within EU member states.
+                    </p>
+                  </td>
+                  <td class=" td-actions text-right">
+                    <button
+                      class=" btn btn-link"
+                      type="button"
+                      tooltip="Edit Task"
+                      placement="left"
+                    >
+                      <i class=" tim-icons icon-pencil"> </i>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class=" form-check">
+                      <label class=" form-check-label">
+                        <input
+                          class=" form-check-input"
+                          type="checkbox"
+                          value=""
+                        />
+
+                        <span class=" form-check-sign">
+                          <span class=" check"> </span>
+                        </span>
+                      </label>
+                    </div>
+                  </td>
+                  <td>
+                    <p class=" title">Solve the issues</p>
+                    <p class=" text-muted">
+                      Fifty percent of all respondents said they would be more
+                      likely to shop at a company
+                    </p>
+                  </td>
+                  <td class=" td-actions text-right">
+                    <button
+                      class=" btn btn-link"
+                      type="button"
+                      tooltip="Edit Task"
+                      placement="left"
+                    >
+                      <i class=" tim-icons icon-pencil"> </i>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class=" form-check">
+                      <label class=" form-check-label">
+                        <input
+                          class=" form-check-input"
+                          type="checkbox"
+                          value=""
+                        />
+
+                        <span class=" form-check-sign">
+                          <span class=" check"> </span>
+                        </span>
+                      </label>
+                    </div>
+                  </td>
+                  <td>
+                    <p class=" title">Release v2.0.0</p>
+                    <p class=" text-muted">
+                      Ra Ave SW, Seattle, WA 98116, SUA 11:19 AM
+                    </p>
+                  </td>
+                  <td class=" td-actions text-right">
+                    <button
+                      class=" btn btn-link"
+                      type="button"
+                      tooltip="Edit Task"
+                      placement="left"
+                    >
+                      <i class=" tim-icons icon-pencil"> </i>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class=" form-check">
+                      <label class=" form-check-label">
+                        <input
+                          class=" form-check-input"
+                          type="checkbox"
+                          value=""
+                        />
+
+                        <span class=" form-check-sign">
+                          <span class=" check"> </span>
+                        </span>
+                      </label>
+                    </div>
+                  </td>
+                  <td>
+                    <p class=" title">Export the processed files</p>
+                    <p class=" text-muted">
+                      The report also shows that consumers will not easily
+                      forgive a company once a breach exposing their personal
+                      data occurs.
+                    </p>
+                  </td>
+                  <td class=" td-actions text-right">
+                    <button
+                      class=" btn btn-link"
+                      type="button"
+                      tooltip="Edit Task"
+                      placement="left"
+                    >
+                      <i class=" tim-icons icon-pencil"> </i>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class=" form-check">
+                      <label class=" form-check-label">
+                        <input
+                          class=" form-check-input"
+                          type="checkbox"
+                          value=""
+                        />
+
+                        <span class=" form-check-sign">
+                          <span class=" check"> </span>
+                        </span>
+                      </label>
+                    </div>
+                  </td>
+                  <td>
+                    <p class=" title">Arival at export process</p>
+                    <p class=" text-muted">
+                      Capitol Hill, Seattle, WA 12:34 AM
+                    </p>
+                  </td>
+                  <td class=" td-actions text-right">
+                    <button
+                      class=" btn btn-link"
+                      type="button"
+                      tooltip="Edit Task"
+                      placement="left"
+                    >
+                      <i class=" tim-icons icon-pencil"> </i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class=" col-lg-7">
+      <div class=" card">
+        <div class=" card-header">
+          <div class=" tools float-right">
+            <div class=" dropdown" dropdown>
+              <button
+                class=" btn btn-link dropdown-toggle btn-icon dropdown-toggle"
+                data-toggle="dropdown"
+                dropdownToggle
+                type="button"
+              >
+                <i class=" tim-icons icon-settings-gear-63"> </i>
+              </button>
+              <div class=" dropdown-menu dropdown-menu-right" *dropdownMenu>
+                <a class=" dropdown-item" href="#pablo"> Action </a>
+                <a class=" dropdown-item" href="#pablo"> Another action </a>
+                <a class=" dropdown-item" href="#pablo"> Something else </a>
+                <a class=" dropdown-item text-danger" href="#pablo">
+                  Remove Data
+                </a>
+              </div>
+            </div>
+          </div>
+          <h5 class=" card-title">Management Table</h5>
+        </div>
+        <div class=" card-body">
+          <div class=" table-responsive">
+            <table class=" table">
+              <thead class=" text-primary">
+                <tr>
+                  <th class=" text-center">#</th>
+                  <th>Name</th>
+                  <th>Job Position</th>
+                  <th>Milestone</th>
+                  <th class=" text-right">Salary</th>
+                  <th class=" text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class=" text-center">
+                    <div class=" photo">
+                      <img alt="photo" src="assets/img/tania.jpg" />
+                    </div>
+                  </td>
+                  <td>Tania Mike</td>
+                  <td>Develop</td>
+                  <td class=" text-center">
+                    <div class=" progress-container progress-sm">
+                      <div class=" progress">
+                        <span class=" progress-value"> 25% </span>
+                        <progressbar [value]="25"> </progressbar>
+                      </div>
+                    </div>
+                  </td>
+                  <td class=" text-right">€ 99,225</td>
+                  <td class=" text-right">
+                    <button
+                      class=" btn btn-success btn-link btn-icon btn-sm btn-simple"
+                      tooltip="Refresh"
+                      type="button"
+                    >
+                      <i class=" tim-icons icon-refresh-01"> </i>
+                    </button>
+                    <button
+                      class=" btn btn-danger btn-link btn-icon btn-sm btn-simple"
+                      tooltip="Delete"
+                      type="button"
+                    >
+                      <i class=" tim-icons icon-simple-remove"> </i>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class=" text-center">
+                    <div class=" photo">
+                      <img alt="photo" src="assets/img/robi.jpg" />
+                    </div>
+                  </td>
+                  <td>John Doe</td>
+                  <td>CEO</td>
+                  <td class=" text-center">
+                    <div class=" progress-container progress-sm">
+                      <div class=" progress">
+                        <span class=" progress-value"> 77% </span>
+                        <progressbar [value]="77"> </progressbar>
+                      </div>
+                    </div>
+                  </td>
+                  <td class=" text-right">€ 89,241</td>
+                  <td class=" text-right">
+                    <button
+                      class=" btn btn-success btn-link btn-sm btn-icon btn-simple"
+                      tooltip="Refresh"
+                      type="button"
+                    >
+                      <i class=" tim-icons icon-refresh-01"> </i>
+                    </button>
+                    <button
+                      class=" btn btn-danger btn-link btn-sm btn-icon btn-simple"
+                      tooltip="Delete"
+                      type="button"
+                    >
+                      <i class=" tim-icons icon-simple-remove"> </i>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class=" text-center">
+                    <div class=" photo">
+                      <img alt="photo" src="assets/img/lora.jpg" />
+                    </div>
+                  </td>
+                  <td>Alexa Mike</td>
+                  <td>Design</td>
+                  <td class=" text-center">
+                    <div class=" progress-container progress-sm">
+                      <div class=" progress">
+                        <span class=" progress-value"> 41% </span>
+                        <progressbar [value]="41"> </progressbar>
+                      </div>
+                    </div>
+                  </td>
+                  <td class=" text-right">€ 92,144</td>
+                  <td class=" text-right">
+                    <button
+                      class=" btn btn-success btn-link btn-icon btn-sm btn-simple"
+                      tooltip="Refresh"
+                      type="button"
+                    >
+                      <i class=" tim-icons icon-refresh-01"> </i>
+                    </button>
+                    <button
+                      class=" btn btn-danger btn-link btn-icon btn-sm btn-simple"
+                      tooltip="Delete"
+                      type="button"
+                    >
+                      <i class=" tim-icons icon-simple-remove"> </i>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class=" text-center">
+                    <div class=" photo">
+                      <img alt="photo" src="assets/img/jana.jpg" />
+                    </div>
+                  </td>
+                  <td>Jana Monday</td>
+                  <td>Marketing</td>
+                  <td class=" text-center">
+                    <div class=" progress-container progress-sm">
+                      <div class=" progress">
+                        <span class=" progress-value"> 50% </span>
+                        <progressbar [value]="50"> </progressbar>
+                      </div>
+                    </div>
+                  </td>
+                  <td class=" text-right">€ 49,990</td>
+                  <td class=" text-right">
+                    <button
+                      class=" btn btn-success btn-link btn-sm btn-icon"
+                      tooltip="Refresh"
+                      type="button"
+                    >
+                      <i class=" tim-icons icon-refresh-01"> </i>
+                    </button>
+                    <button
+                      class=" btn btn-danger btn-link btn-sm btn-icon"
+                      tooltip="Delete"
+                      type="button"
+                    >
+                      <i class=" tim-icons icon-simple-remove"> </i>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class=" text-center">
+                    <div class=" photo">
+                      <img alt="photo" src="assets/img/mike.jpg" />
+                    </div>
+                  </td>
+                  <td>Paul Dickens</td>
+                  <td>Develop</td>
+                  <td class=" text-center">
+                    <div class=" progress-container progress-sm">
+                      <div class=" progress">
+                        <span class=" progress-value"> 100% </span>
+                        <progressbar [value]="100"> </progressbar>
+                      </div>
+                    </div>
+                  </td>
+                  <td class=" text-right">€ 69,201</td>
+                  <td class=" text-right">
+                    <button
+                      class=" btn btn-success btn-link btn-sm btn-icon"
+                      tooltip="Refresh"
+                      type="button"
+                    >
+                      <i class=" tim-icons icon-refresh-01"> </i>
+                    </button>
+                    <button
+                      class=" btn btn-danger btn-link btn-sm btn-icon"
+                      tooltip="Delete"
+                      type="button"
+                    >
+                      <i class=" tim-icons icon-simple-remove"> </i>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class=" text-center">
+                    <div class=" photo">
+                      <img alt="photo" src="assets/img/emilyz.jpg" />
+                    </div>
+                  </td>
+                  <td>Manuela Rico</td>
+                  <td>Manager</td>
+                  <td class=" text-center">
+                    <div class=" progress-container progress-sm">
+                      <div class=" progress">
+                        <span class=" progress-value"> 15% </span>
+                        <progressbar [value]="15"> </progressbar>
+                      </div>
+                    </div>
+                  </td>
+                  <td class=" text-right">€ 99,201</td>
+                  <td class=" text-right">
+                    <button
+                      class=" btn btn-success btn-link btn-sm btn-icon"
+                      tooltip="Refresh"
+                      type="button"
+                    >
+                      <i class=" tim-icons icon-refresh-01"> </i>
+                    </button>
+                    <button
+                      class=" btn btn-danger btn-link btn-sm btn-icon"
+                      tooltip="Delete"
+                      type="button"
+                    >
+                      <i class=" tim-icons icon-simple-remove"> </i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class=" col-lg-12">
+      <div class=" card">
+        <div class=" card-header">
+          <h4 class=" card-title">Global Sales by Top Locations</h4>
+          <p class=" card-category">All products that were shipped</p>
+        </div>
+        <div class=" card-body">
+          <div class=" row">
+            <div class=" col-md-6">
+              <div class=" table-responsive">
+                <table class=" table">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div class=" flag">
+                          <img alt="flag" src="assets/img/US.png" />
+                        </div>
+                      </td>
+                      <td>USA</td>
+                      <td class=" text-right">2.920</td>
+                      <td class=" text-right">53.23%</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class=" flag">
+                          <img alt="flag" src="assets/img/DE.png" />
+                        </div>
+                      </td>
+                      <td>Germany</td>
+                      <td class=" text-right">1.300</td>
+                      <td class=" text-right">20.43%</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class=" flag">
+                          <img alt="flag" src="assets/img/AU.png" />
+                        </div>
+                      </td>
+                      <td>Australia</td>
+                      <td class=" text-right">760</td>
+                      <td class=" text-right">10.35%</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class=" flag">
+                          <img alt="flag" src="assets/img/GB.png" />
+                        </div>
+                      </td>
+                      <td>United Kingdom</td>
+                      <td class=" text-right">690</td>
+                      <td class=" text-right">7.87%</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class=" flag">
+                          <img alt="flag" src="assets/img/RO.png" />
+                        </div>
+                      </td>
+                      <td>Romania</td>
+                      <td class=" text-right">600</td>
+                      <td class=" text-right">5.94%</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class=" flag">
+                          <img alt="flag" src="assets/img/BR.png" />
+                        </div>
+                      </td>
+                      <td>Brasil</td>
+                      <td class=" text-right">550</td>
+                      <td class=" text-right">4.34%</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class=" col-md-6 ml-auto mr-auto">
+              <app-vector-map-component></app-vector-map-component>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

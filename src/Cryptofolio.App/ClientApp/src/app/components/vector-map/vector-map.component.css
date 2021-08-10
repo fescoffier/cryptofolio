@@ -1,0 +1,11 @@
+::ng-deep #vector-map {
+    min-height: 220px;
+    width: 100%;
+    display: block;
+}
+::ng-deep #vector-map > svg > rect{
+  display: none;
+}
+::ng-deep #vector-map .dxm-control-buttons{
+  display: none;
+}

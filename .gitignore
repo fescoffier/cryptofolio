@@ -11,10 +11,10 @@ obj/
 node_modules/
 BenchmarkDotNet.Artifacts/
 .gradle/
-src/SignalR/clients/**/dist/
 modules/
 .ionide/
 TestResults/
+src/Cryptofolio.App/ClientApp/dist
 
 # File extensions
 *.aps
