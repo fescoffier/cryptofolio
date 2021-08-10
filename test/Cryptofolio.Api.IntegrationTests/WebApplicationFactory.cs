@@ -2,7 +2,6 @@ using Cryptofolio.Infrastructure;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -47,15 +46,6 @@ namespace Cryptofolio.Api.IntegrationTests
                     .AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>(TestAuthenticationHandler.AuthenticationScheme, options => { });
                 services.AddSingleton(Data);
             });
-        }
-
-        protected override IHost CreateHost(IHostBuilder builder)
-        {
-            var host = base.CreateHost(builder);
-            using var scope = host.Services.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
-            context.Database.Migrate();
-            return host;
         }
     }
 }

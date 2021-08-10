@@ -1,7 +1,6 @@
 using Cryptofolio.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -38,15 +37,6 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests
                 services.AddSingleton<EventTraceWriter<FakeEvent>>();
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<IEvent>)));
             });
-        }
-
-        protected override IHost CreateHost(IHostBuilder builder)
-        {
-            var host = base.CreateHost(builder);
-            using var scope = host.Services.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
-            context.Database.Migrate();
-            return host;
         }
     }
 }

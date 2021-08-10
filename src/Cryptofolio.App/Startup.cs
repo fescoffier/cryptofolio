@@ -66,7 +66,16 @@ namespace Cryptofolio.App
             }
 
             // EF Core
-            services.AddDbContext<IdentityContext>(options => options.UseNpgsql(Configuration.GetConnectionString("IdentityContext")));
+            services.AddDbContext<IdentityContext>(builder =>
+            {
+                builder.UseNpgsql(Configuration.GetConnectionString("IdentityContext"));
+                if (Environment.IsDevelopment())
+                {
+                    builder.EnableSensitiveDataLogging();
+                    builder.EnableDetailedErrors();
+                }
+            });
+            services.AddHostedService<DatabaseMigrationService<IdentityContext>>();
 
             // Elasticsearch
             services.AddSingleton<IConnectionPool>(

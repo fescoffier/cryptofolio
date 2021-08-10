@@ -94,6 +94,7 @@ namespace Cryptofolio.Api
                     builder.EnableDetailedErrors();
                 }
             });
+            services.AddHostedService<DatabaseMigrationService<CryptofolioContext>>();
 
             // Kafka
             services.AddProducer<IEvent>(options =>

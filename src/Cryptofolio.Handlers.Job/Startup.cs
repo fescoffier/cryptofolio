@@ -41,6 +41,7 @@ namespace Cryptofolio.Handlers.Job
                     builder.EnableDetailedErrors();
                 }
             });
+            services.AddHostedService<DatabaseMigrationService<CryptofolioContext>>();
 
             // Kafka
             services.AddConsumer<IEvent>(options =>
