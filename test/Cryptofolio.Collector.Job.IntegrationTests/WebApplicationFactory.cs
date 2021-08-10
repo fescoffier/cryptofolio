@@ -66,7 +66,7 @@ namespace Cryptofolio.Collector.Job.IntegrationTests
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<ExchangeDataRequest>)));
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(ExchangeDataRequestScheduler)));
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<TestDataRequest>)));
-
+                services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(DatabaseMigrationService<CryptofolioContext>)));
                 services.AddSingleton<TestDataRequestScheduler>();
             });
         }

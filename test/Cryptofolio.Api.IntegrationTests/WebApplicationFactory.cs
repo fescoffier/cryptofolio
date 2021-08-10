@@ -46,6 +46,7 @@ namespace Cryptofolio.Api.IntegrationTests
                     .AddAuthentication(TestAuthenticationHandler.AuthenticationScheme)
                     .AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>(TestAuthenticationHandler.AuthenticationScheme, options => { });
                 services.AddSingleton(Data);
+                services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(DatabaseMigrationService<CryptofolioContext>)));
             });
         }
 

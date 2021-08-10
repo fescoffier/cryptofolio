@@ -37,6 +37,7 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests
                 services.AddSingleton(systemClockMock);
                 services.AddSingleton<EventTraceWriter<FakeEvent>>();
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<IEvent>)));
+                services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(DatabaseMigrationService<CryptofolioContext>)));
             });
         }
 
