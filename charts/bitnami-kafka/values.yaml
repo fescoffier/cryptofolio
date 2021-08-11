@@ -1,0 +1,13 @@
+replicaCount: 3
+podAntiAffinityPreset: hard
+resources:
+  requests:
+    memory: 1G
+  limits:
+    memory: 2G
+heapOpts: -Xmx1024m -Xms1024m
+deleteTopicEnable: true
+autoCreateTopicsEnable: false
+maxMessageBytes: _104857600
+persistence:
+  size: 30G
