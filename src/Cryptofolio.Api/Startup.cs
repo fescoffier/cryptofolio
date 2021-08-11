@@ -184,11 +184,6 @@ namespace Cryptofolio.Api
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute());
-
-            using (var scope = app.ApplicationServices.CreateScope())
-            {
-                scope.ServiceProvider.GetRequiredService<CryptofolioContext>().Database.Migrate();
-            }
         }
     }
 }
