@@ -110,6 +110,8 @@ namespace Cryptofolio.App
             });
 
             services.Configure<ApiOptions>(Configuration.GetSection("Api"));
+            services.Configure<IdentityUserServiceOptions>(Configuration.GetSection("Identity"));
+            services.AddHostedService<IdentityUserService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -144,24 +146,6 @@ namespace Cryptofolio.App
                     spa.UseAngularCliServer(npmScript: "start");
                 }
             });
-
-            using (var scope = app.ApplicationServices.CreateScope())
-            {
-                scope.ServiceProvider.GetRequiredService<IdentityContext>().Database.Migrate();
-
-                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-                var user = userManager.FindByEmailAsync("admin@cryptofolio.io").ConfigureAwait(false).GetAwaiter().GetResult();
-                if (user == null)
-                {
-                    user = new IdentityUser
-                    {
-                        UserName = "admin@cryptofolio.io",
-                        Email = "admin@cryptofolio.io",
-                        EmailConfirmed = true
-                    };
-                    userManager.CreateAsync(user, "Pass@word1").ConfigureAwait(false).GetAwaiter().GetResult();
-                }
-            }
         }
     }
 }
