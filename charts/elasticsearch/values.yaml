@@ -1,0 +1,9 @@
+clusterName: cryptofolio
+nameOverride: elasticsearch
+fullnameOverride: elasticsearch
+healthNameOverride: elasticsearch
+esJavaOpts: -Xmx1g -Xms1g
+volumeClaimTemplate:
+  resources:
+    requests:
+      storage: 30Gi

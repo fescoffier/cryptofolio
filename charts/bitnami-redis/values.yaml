@@ -1,0 +1,16 @@
+auth:
+  enabled: false
+  sentinel: false
+master:
+  resources:
+    limits:
+      memory: 1Gi
+    requests:
+      memory: 128Mi
+replica:
+  replicaCount: 2
+  resources:
+    limits:
+      memory: 1Gi
+    requests:
+      memory: 128Mi

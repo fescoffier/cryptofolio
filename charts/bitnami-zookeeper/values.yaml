@@ -1,0 +1,9 @@
+replicaCount: 3
+podAntiAffinityPreset: hard
+resources:
+  limits:
+    memory: 1Gi
+persistence:
+  size: 30Gi
+serviceAccount:
+  create: false

@@ -1,19 +1,12 @@
 global:
   postgresql:
     existingSecret: postgres-passwords
-
 postgresql:
   username: cryptofolio
   database: cryptofolio
   podAntiAffinityPreset: hard
   resources:
-    requests:
-      memory: 1G
     limits:
-      memory: 1G
-
-serviceAccount:
-  enabled: true
-
+      memory: 1Gi
 persistence:
-  size: 30G
+  size: 30Gi

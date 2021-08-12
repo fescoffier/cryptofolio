@@ -1,13 +1,20 @@
 replicaCount: 3
 podAntiAffinityPreset: hard
 resources:
-  requests:
-    memory: 1G
   limits:
-    memory: 2G
-heapOpts: -Xmx1024m -Xms1024m
+    memory: 2Gi
+heapOpts: -Xmx1g -Xms1g
 deleteTopicEnable: true
 autoCreateTopicsEnable: false
 maxMessageBytes: _104857600
 persistence:
-  size: 30G
+  size: 30Gi
+serviceAccount:
+  create: false
+zookeeper:
+  enabled: false
+externalZookeeper:
+  servers:
+    - zookeeper-0.zookeeper-headless.default.svc.cluster.local
+    - zookeeper-1.zookeeper-headless.default.svc.cluster.local
+    - zookeeper-2.zookeeper-headless.default.svc.cluster.local
