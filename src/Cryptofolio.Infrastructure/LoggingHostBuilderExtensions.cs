@@ -39,7 +39,8 @@ namespace Cryptofolio.Infrastructure
                     {
                         var connectionPool = new StaticConnectionPool(
                             context.Configuration
-                                .GetValue<string[]>("Serilog:Elasticsearch:Nodes")
+                                .GetSection("Serilog:Elasticsearch:Nodes")
+                                .Get<string[]>()
                                 .Select(n => new Node(new(n)))
                                 .ToArray()
                         );
