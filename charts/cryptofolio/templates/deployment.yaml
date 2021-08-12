@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cryptofolio-collector-job.fullname" . }}
+  labels:
+    {{- include "cryptofolio-collector-job.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.jobs.collector.autoscaling.enabled }}
+  replicas: {{ .Values.jobs.collector.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "cryptofolio-collector-job.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.jobs.collector.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "cryptofolio-collector-job.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.jobs.collector.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "cryptofolio-collector-job.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.jobs.collector.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.jobs.collector.securityContext | nindent 12 }}
+          image: "{{ .Values.jobs.collector.image.repository }}:{{ .Values.jobs.collector.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.jobs.collector.image.pullPolicy }}
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: {{ .Values.jobs.collector.environment }}
+            - name: ASPNETCORE_URLS
+              value: http://+
+            - name: ConnectionStrings__CryptofolioContext
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.jobs.collector.config.secrets.connectionStrings.name }}
+                  key: {{ .Values.jobs.collector.config.secrets.connectionStrings.data.cryptofolioContext }}
+          volumeMounts:
+            - name: config
+              mountPath: /app/appsettings.{{ .Values.jobs.collector.environment }}.json
+              subPath: appsettings.{{ .Values.jobs.collector.environment }}.json
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            {{- toYaml .Values.jobs.collector.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.jobs.collector.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.jobs.collector.resources | nindent 12 }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "cryptofolio-collector-job.fullname" . }}-config
+            items:
+              - key: appsettings.{{ .Values.jobs.collector.environment }}.json
+                path: appsettings.{{ .Values.jobs.collector.environment }}.json
+      {{- with .Values.jobs.collector.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.jobs.collector.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.jobs.collector.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

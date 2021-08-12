@@ -14,3 +14,5 @@ replica:
       memory: 1Gi
     requests:
       memory: 128Mi
+serviceAccount:
+  create: false
