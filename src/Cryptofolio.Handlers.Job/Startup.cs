@@ -51,6 +51,7 @@ namespace Cryptofolio.Handlers.Job
             });
 
             // Elasticsearch
+            services.Configure<ElasticsearchOptions>(Configuration.GetSection("Elasticsearch"));
             services.AddSingleton<IConnectionPool>(
                 new StaticConnectionPool(
                     Configuration.GetSection("Elasticsearch:Nodes")
@@ -68,9 +69,9 @@ namespace Cryptofolio.Handlers.Job
                     p.GetRequiredService<IConnectionPool>(),
                     (builtIn, settings) => new ElasticsearchSerializer(serializationOptions)
                 );
-                settings.DefaultMappingFor<IEvent>(config => config.IndexName(indexTemplate));
                 if (Environment.IsDevelopment())
                 {
+                    settings.DefaultMappingFor<IEvent>(config => config.IndexName(indexTemplate));
                     settings.EnableDebugMode();
                 }
                 return settings;
