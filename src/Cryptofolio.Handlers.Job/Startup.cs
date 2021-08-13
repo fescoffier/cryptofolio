@@ -71,6 +71,7 @@ namespace Cryptofolio.Handlers.Job
                 );
                 if (Environment.IsDevelopment())
                 {
+                    settings.DefaultMappingFor<IEvent>(config => config.IndexName(indexTemplate));
                     settings.EnableDebugMode();
                 }
                 return settings;
