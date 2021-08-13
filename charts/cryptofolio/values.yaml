@@ -143,22 +143,31 @@ jobs:
       connectionStrings:
         redis: redis-master-0.redis-headless.default.svc.cluster.local:6379,redis-replicas-0.redis-headless.default.svc.cluster.local:6379,redis-replicas-1.redis-headless.default.svc.cluster.local:6379
       kafka:
-        bootstrapServers:
-          - kafka-0.kafka-headless.default.svc.cluster.local:9200
-          - kafka-1.kafka-headless.default.svc.cluster.local:9200
-          - kafka-2.kafka-headless.default.svc.cluster.local:9200
+        producerConfig:
+          {
+            "BootstrapServers": "kafka-0.kafka-headless.default.svc.cluster.local:9092,kafka-1.kafka-headless.default.svc.cluster.local:9092,kafka-2.kafka-headless.default.svc.cluster.local:9092"
+          }
+        consumerConfig:
+          {
+            "BootstrapServers": "kafka-0.kafka-headless.default.svc.cluster.local:9092,kafka-1.kafka-headless.default.svc.cluster.local:9092,kafka-2.kafka-headless.default.svc.cluster.local:9092",
+            "GroupId": "job-collector",
+            "AutoOffsetReset": "Earliest",
+            "EnablePartitionEof": true,
+            "EnableAutoCommit": false,
+            "MaxPollIntervalMs": 300000
+          }
       elasticsearch:
         nodes:
-          - https://elasticsearch-0.elasticsearch-headless.default.svc.cluster.local:9200
-          - https://elasticsearch-1.elasticsearch-headless.default.svc.cluster.local:9200
-          - https://elasticsearch-2.elasticsearch-headless.default.svc.cluster.local:9200
+          - http://elasticsearch-0.elasticsearch-headless.default.svc.cluster.local:9200
+          - http://elasticsearch-1.elasticsearch-headless.default.svc.cluster.local:9200
+          - http://elasticsearch-2.elasticsearch-headless.default.svc.cluster.local:9200
       data:
         cronCheckIntervalMs: 1000
         invalidCronCheckIntervalMs: 60000
         schedules:
-          assetDataRequest: "* * * * *"
-          assetTickerDataRequest: "0 0 * * *"
-          exchangeDataRequest: "* * * * *"
+          assetDataRequest: "0 0 1 1 1"
+          assetTickerDataRequest: "0 0 1 1 1"
+          exchangeDataRequest: "0 0 1 1 1"
       coingecko:
         apiUri: https://api.coingeck.com/api/v3
         rateLimiterKey: Coingecko:Calls
@@ -174,7 +183,7 @@ jobs:
     nameOverride: cryptofolio-collector-job
     fullnameOverride: cryptofolio-collector-job
     serviceAccount:
-      create: true
+      create: false
       name: cryptofolio-collector-job
       annotations: {}
       imagePullSecrets:
@@ -201,12 +210,14 @@ jobs:
         port: http
       initialDelaySeconds: 10
       periodSeconds: 10
+      timeoutSeconds: 5
     readinessProbe:
       httpGet:
         path: /health
         port: http
       initialDelaySeconds: 10
       periodSeconds: 10
+      timeoutSeconds: 5
     autoscaling:
       enabled: false
       # minReplicas: 1

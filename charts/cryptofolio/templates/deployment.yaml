@@ -24,7 +24,9 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.jobs.collector.serviceAccount.enabled }}
       serviceAccountName: {{ include "cryptofolio-collector-job.serviceAccountName" . }}
+      {{- end }}
       securityContext:
         {{- toYaml .Values.jobs.collector.podSecurityContext | nindent 8 }}
       containers:

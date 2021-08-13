@@ -19,12 +19,8 @@ data:
         "Redis": "{{ .Values.jobs.collector.config.connectionStrings.redis }}"
       },
       "Kafka": {
-        "Producer": {
-          "BootstrapServers": "{{ .Values.jobs.collector.config.kafka.bootstrapServers | join "," }}"
-        },
-        "Consumer": {
-          "BootstrapServers": "{{ .Values.jobs.collector.config.kafka.bootstrapServers | join "," }}"
-        }
+        "Producer": {{ .Values.jobs.collector.config.kafka.producerConfig | toJson }},
+        "Consumer": {{ .Values.jobs.collector.config.kafka.consumerConfig | toJson }}
       },
       "Elasticsearch": {
         "Nodes": {{ .Values.jobs.collector.config.elasticsearch.nodes | toJson }}
