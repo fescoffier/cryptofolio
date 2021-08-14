@@ -1,7 +1,11 @@
 replicaCount: 3
 podAntiAffinityPreset: hard
 resources:
+  requests:
+    cpu: 10m
+    memory: 1Gi
   limits:
+    cpu: 1
     memory: 2Gi
 heapOpts: -Xmx1g -Xms1g
 deleteTopicEnable: true
