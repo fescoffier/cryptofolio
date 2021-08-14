@@ -157,10 +157,13 @@ jobs:
             "MaxPollIntervalMs": 300000
           }
       elasticsearch:
-        nodes:
-          - http://elasticsearch-0.elasticsearch-headless.default.svc.cluster.local:9200
-          - http://elasticsearch-1.elasticsearch-headless.default.svc.cluster.local:9200
-          - http://elasticsearch-2.elasticsearch-headless.default.svc.cluster.local:9200
+        {
+          "Nodes": [
+            "http://elasticsearch-0.elasticsearch-headless.default.svc.cluster.local:9200",
+            "http://elasticsearch-1.elasticsearch-headless.default.svc.cluster.local:9200",
+            "http://elasticsearch-2.elasticsearch-headless.default.svc.cluster.local:9200"
+          ]
+        }
       data:
         cronCheckIntervalMs: 1000
         invalidCronCheckIntervalMs: 60000
@@ -174,7 +177,7 @@ jobs:
         rateLimiterKeyExiprationSeconds: 90
         rateLimiterMaxValue: 50
         rateLimiterCheckIntervalMs: 1000
-    replicaCount: 3
+    replicaCount: 2
     image:
       repository: registry.digitalocean.com/cryptofolio/jobs/collector
       pullPolicy: Always
@@ -199,11 +202,12 @@ jobs:
       # runAsNonRoot: true
       # runAsUser: 1000
     resources:
+      requests:
+        cpu: 10m
+        memory: 128Mi
       limits:
         cpu: 1
         memory: 1G
-      requests:
-        memory: 128Mi
     livenessProbe:
       httpGet:
         path: /health
@@ -228,8 +232,43 @@ jobs:
     tolerations: []
     affinity: {}
   handlers:
-    collector:
-    replicaCount: 3
+    environment: Production
+    config:
+      logLevel: Information
+      secrets:
+        connectionStrings:
+          name: connection-strings
+          data:
+            cryptofolioContext: cryptofolio-context
+      connectionStrings:
+        redis: redis-master-0.redis-headless.default.svc.cluster.local:6379,redis-replicas-0.redis-headless.default.svc.cluster.local:6379,redis-replicas-1.redis-headless.default.svc.cluster.local:6379
+      kafka:
+        producerConfig:
+          {
+            "BootstrapServers": "kafka-0.kafka-headless.default.svc.cluster.local:9092,kafka-1.kafka-headless.default.svc.cluster.local:9092,kafka-2.kafka-headless.default.svc.cluster.local:9092"
+          }
+        consumerConfig:
+          {
+            "BootstrapServers": "kafka-0.kafka-headless.default.svc.cluster.local:9092,kafka-1.kafka-headless.default.svc.cluster.local:9092,kafka-2.kafka-headless.default.svc.cluster.local:9092",
+            "GroupId": "job-handlers",
+            "AutoOffsetReset": "Earliest",
+            "EnablePartitionEof": true,
+            "EnableAutoCommit": false,
+            "MaxPollIntervalMs": 300000
+          }
+      elasticsearch:
+        {
+          "Nodes": [
+            "http://elasticsearch-0.elasticsearch-headless.default.svc.cluster.local:9200",
+            "http://elasticsearch-1.elasticsearch-headless.default.svc.cluster.local:9200",
+            "http://elasticsearch-2.elasticsearch-headless.default.svc.cluster.local:9200"
+          ],
+          "Indices": {
+            "Cryptofolio.Infrastructure.IEvent": "events-{0:yyyy.MM}"
+          },
+          "SerializationOptions": {}
+        }
+    replicaCount: 6
     image:
       repository: registry.digitalocean.com/cryptofolio/jobs/handlers
       pullPolicy: Always
@@ -252,13 +291,14 @@ jobs:
       # runAsNonRoot: true
       # runAsUser: 1000
     resources:
+      requests:
+        cpu: 10m
+        memory: 128Mi
       limits:
         cpu: 1
         memory: 512Mi
-      requests:
-        memory: 128Mi
     autoscaling:
-      enabled: true
+      enabled: false
       # minReplicas: 1
       # maxReplicas: 100
       # targetCPUUtilizationPercentage: 80

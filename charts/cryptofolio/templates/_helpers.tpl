@@ -58,3 +58,57 @@ Create the name of the collector job service account to use.
 {{- default "default" .Values.jobs.collector.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Handlers job name.
+*/}}
+{{- define "cryptofolio-handlers-job.name" -}}
+{{- .Values.jobs.handlers.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{/*
+Handlers job fullname.
+*/}}
+{{- define "cryptofolio-handlers-job.fullname" -}}
+{{- if .Values.jobs.handlers.fullnameOverride }}
+{{- .Values.jobs.handlers.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $name := .Values.jobs.handlers.nameOverride }}
+{{- if contains $name .Release.Name }}
+{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+Handlers job common labels.
+*/}}
+{{- define "cryptofolio-handlers-job.labels" -}}
+helm.sh/chart: {{ include "cryptofolio.chart" . }}
+{{ include "cryptofolio-handlers-job.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+Handlers job selector labels.
+*/}}
+{{- define "cryptofolio-handlers-job.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "cryptofolio-handlers-job.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
+Create the name of the handlers job service account to use.
+*/}}
+{{- define "cryptofolio-handlers-job.serviceAccountName" -}}
+{{- if .Values.jobs.handlers.serviceAccount.create }}
+{{- default (include "cryptofolio-handlers-job.fullname" .) .Values.jobs.handlers.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.jobs.handlers.serviceAccount.name }}
+{{- end }}
+{{- end }}

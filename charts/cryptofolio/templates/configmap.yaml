@@ -11,9 +11,7 @@ data:
         "MinimumLevel": {
           "Default": "{{ .Values.jobs.collector.config.logLevel }}"
         },
-        "Elasticsearch": {
-          "Nodes": {{ .Values.jobs.collector.config.elasticsearch.nodes | toJson }}
-        }
+        "Elasticsearch": {{ .Values.jobs.collector.config.elasticsearch | toJson }}
       },
       "ConnectionStrings": {
         "Redis": "{{ .Values.jobs.collector.config.connectionStrings.redis }}"
@@ -22,9 +20,7 @@ data:
         "Producer": {{ .Values.jobs.collector.config.kafka.producerConfig | toJson }},
         "Consumer": {{ .Values.jobs.collector.config.kafka.consumerConfig | toJson }}
       },
-      "Elasticsearch": {
-        "Nodes": {{ .Values.jobs.collector.config.elasticsearch.nodes | toJson }}
-      },
+      "Elasticsearch": {{ .Values.jobs.collector.config.elasticsearch | toJson }},
       "Data": {
         "CronCheckIntervalMs": {{ .Values.jobs.collector.config.data.cronCheckIntervalMs }},
         "InvalidCronCheckIntervalMs": {{ .Values.jobs.collector.config.data.invalidCronCheckIntervalMs }},
@@ -41,4 +37,31 @@ data:
         "RateLimiterMaxValue": {{ .Values.jobs.collector.config.coingecko.rateLimiterMaxValue }},
         "RateLimiterCheckIntervalMs": {{ .Values.jobs.collector.config.coingecko.rateLimiterCheckIntervalMs }}
       }
+    }
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cryptofolio-handlers-job.fullname" . }}-config
+  labels:
+    {{- include "cryptofolio-handlers-job.labels" . | nindent 4 }}
+data:
+  appsettings.{{ .Values.jobs.handlers.environment }}.json: |
+    {
+      "Serilog": {
+        "MinimumLevel": {
+          "Default": "{{ .Values.jobs.handlers.config.logLevel }}"
+        },
+        "Elasticsearch": {{ .Values.jobs.handlers.config.elasticsearch | toJson }}
+      },
+      "ConnectionStrings": {
+        "Redis": "{{ .Values.jobs.handlers.config.connectionStrings.redis }}"
+      },
+      "Kafka": {
+        "Producer": {{ .Values.jobs.handlers.config.kafka.producerConfig | toJson }},
+        "Consumer": {{ .Values.jobs.handlers.config.kafka.consumerConfig | toJson }}
+      },
+      "Elasticsearch": {{ .Values.jobs.handlers.config.elasticsearch | toJson }}
     }
