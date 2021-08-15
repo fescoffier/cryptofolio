@@ -1,5 +1,6 @@
 using Cryptofolio.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using System;
@@ -38,6 +39,10 @@ namespace Cryptofolio.App
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration(configBuilder =>
+                {
+                    configBuilder.AddJsonFile("appsettings.Users.json", true);
+                })
                 .ConfigureLogging(new JsonSerializerOptions
                 {
                     Converters =

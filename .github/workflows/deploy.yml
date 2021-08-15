@@ -1,0 +1,28 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_run:
+    workflows:
+      - Build
+    branches:
+      - main
+    types: 
+      - completed
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Deploy chart
+        uses: WyriHaximus/github-action-helm3@v2.0
+        with:
+          exec: helm upgrade --install cryptofolio charts/cryptofolio
+          kubeConfig: "${{ secrets.KUBECONFIG }}"

@@ -110,6 +110,11 @@ namespace Cryptofolio.App
                 app.UseDeveloperExceptionPage();
             }
 
+            foreach (var path in Configuration.GetSection("Paths").Get<string[]>())
+            {
+                app.UsePathBase(path);
+            }
+
             app.UseHealthChecks("/health");
 
             app.UseStaticFiles();

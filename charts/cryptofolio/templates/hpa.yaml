@@ -1,0 +1,121 @@
+{{- if .Values.api.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "cryptofolio-api.fullname" . }}
+  labels:
+    {{- include "cryptofolio-api.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "cryptofolio-api.fullname" . }}
+  minReplicas: {{ .Values.api.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.api.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.api.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.api.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.api.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.api.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}
+
+---
+
+{{- if .Values.app.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "cryptofolio-app.fullname" . }}
+  labels:
+    {{- include "cryptofolio-app.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "cryptofolio-app.fullname" . }}
+  minReplicas: {{ .Values.app.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.app.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.app.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.app.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.app.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.app.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}
+
+---
+
+{{- if .Values.jobs.collector.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "cryptofolio-collector-job.fullname" . }}
+  labels:
+    {{- include "cryptofolio-collector-job.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "cryptofolio-collector-job.fullname" . }}
+  minReplicas: {{ .Values.jobs.collector.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.jobs.collector.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.jobs.collector.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.jobs.collector.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.jobs.collector.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.jobs.collector.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}
+
+---
+
+{{- if .Values.jobs.handlers.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "cryptofolio-handlers-job.fullname" . }}
+  labels:
+    {{- include "cryptofolio-handlers-job.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "cryptofolio-handlers-job.fullname" . }}
+  minReplicas: {{ .Values.jobs.handlers.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.jobs.handlers.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.jobs.handlers.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.jobs.handlers.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.jobs.handlers.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.jobs.handlers.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}

@@ -1,0 +1,129 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cryptofolio-api.fullname" . }}-config
+  labels:
+    {{- include "cryptofolio-api.labels" . | nindent 4 }}
+data:
+  appsettings.{{ .Values.api.environment }}.json: |
+    {
+      "Serilog": {
+        "MinimumLevel": {
+          "Default": "{{ .Values.api.config.logLevel }}"
+        },
+        "Elasticsearch": {{ .Values.api.config.elasticsearch | toJson }}
+      },
+      "Paths": {{ .Values.api.ingress.paths | toJson }},
+      "ConnectionStrings": {
+        "Redis": "{{ .Values.api.config.connectionStrings.redis }}"
+      },
+      "Kafka": {
+        "Producer": {{ .Values.api.config.kafka.producerConfig | toJson }},
+        "Consumer": {{ .Values.api.config.kafka.consumerConfig | toJson }}
+      },
+      "Elasticsearch": {{ .Values.api.config.elasticsearch | toJson }}
+    }
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cryptofolio-app.fullname" . }}-config
+  labels:
+    {{- include "cryptofolio-app.labels" . | nindent 4 }}
+data:
+  appsettings.{{ .Values.app.environment }}.json: |
+    {
+      "Serilog": {
+        "MinimumLevel": {
+          "Default": "{{ .Values.app.config.logLevel }}"
+        },
+        "Elasticsearch": {{ .Values.app.config.elasticsearch | toJson }}
+      },
+      "Paths": {{ .Values.app.ingress.paths | toJson }},
+      "ConnectionStrings": {
+        "Redis": "{{ .Values.app.config.connectionStrings.redis }}"
+      },
+      "Kafka": {
+        "Producer": {{ .Values.app.config.kafka.producerConfig | toJson }},
+        "Consumer": {{ .Values.app.config.kafka.consumerConfig | toJson }}
+      },
+      "Api": {
+        "Url": "{{ .Values.app.config.api.url }}"
+      }
+    }
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cryptofolio-collector-job.fullname" . }}-config
+  labels:
+    {{- include "cryptofolio-collector-job.labels" . | nindent 4 }}
+data:
+  appsettings.{{ .Values.jobs.collector.environment }}.json: |
+    {
+      "Serilog": {
+        "MinimumLevel": {
+          "Default": "{{ .Values.jobs.collector.config.logLevel }}"
+        },
+        "Elasticsearch": {{ .Values.jobs.collector.config.elasticsearch | toJson }}
+      },
+      "ConnectionStrings": {
+        "Redis": "{{ .Values.jobs.collector.config.connectionStrings.redis }}"
+      },
+      "Kafka": {
+        "Producer": {{ .Values.jobs.collector.config.kafka.producerConfig | toJson }},
+        "Consumer": {{ .Values.jobs.collector.config.kafka.consumerConfig | toJson }}
+      },
+      "Elasticsearch": {{ .Values.jobs.collector.config.elasticsearch | toJson }},
+      "Data": {
+        "CronCheckIntervalMs": {{ .Values.jobs.collector.config.data.cronCheckIntervalMs }},
+        "Schedules": {
+          "Cryptofolio.Infrastructure.Data.AssetDataRequest": "{{ .Values.jobs.collector.config.data.schedules.assetDataRequest }}",
+          "Cryptofolio.Infrastructure.Data.AssetTickerDataRequest": "{{ .Values.jobs.collector.config.data.schedules.assetTickerDataRequest }}",
+          "Cryptofolio.Infrastructure.Data.ExchangeDataRequest": "{{ .Values.jobs.collector.config.data.schedules.exchangeDataRequest }}"
+        },
+        "SchedulersLockKey": "{{ .Values.jobs.collector.config.data.schedulersLockKey }}",
+        "SchedulersLockExpiration": "{{ .Values.jobs.collector.config.data.schedulersLockExpiration }}",
+        "SchedulersLockCheckInterval": "{{ .Values.jobs.collector.config.data.schedulersLockCheckInterval }}",
+        "SchedulersHashKey": "{{ .Values.jobs.collector.config.data.schedulersHashKey }}",
+        "SchedulesHashKeyFormat": "{{ .Values.jobs.collector.config.data.schedulesHashKeyFormat }}"
+      },
+      "Coingecko": {
+        "ApiUri": "{{ .Values.jobs.collector.config.coingecko.apiUri }}",
+        "RateLimiterKey": "{{ .Values.jobs.collector.config.coingecko.rateLimiterKey }}",
+        "RateLimiterKeyExiprationSeconds": {{ .Values.jobs.collector.config.coingecko.rateLimiterKeyExiprationSeconds }},
+        "RateLimiterMaxValue": {{ .Values.jobs.collector.config.coingecko.rateLimiterMaxValue }},
+        "RateLimiterCheckIntervalMs": {{ .Values.jobs.collector.config.coingecko.rateLimiterCheckIntervalMs }}
+      }
+    }
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cryptofolio-handlers-job.fullname" . }}-config
+  labels:
+    {{- include "cryptofolio-handlers-job.labels" . | nindent 4 }}
+data:
+  appsettings.{{ .Values.jobs.handlers.environment }}.json: |
+    {
+      "Serilog": {
+        "MinimumLevel": {
+          "Default": "{{ .Values.jobs.handlers.config.logLevel }}"
+        },
+        "Elasticsearch": {{ .Values.jobs.handlers.config.elasticsearch | toJson }}
+      },
+      "ConnectionStrings": {
+        "Redis": "{{ .Values.jobs.handlers.config.connectionStrings.redis }}"
+      },
+      "Kafka": {
+        "Producer": {{ .Values.jobs.handlers.config.kafka.producerConfig | toJson }},
+        "Consumer": {{ .Values.jobs.handlers.config.kafka.consumerConfig | toJson }}
+      },
+      "Elasticsearch": {{ .Values.jobs.handlers.config.elasticsearch | toJson }}
+    }

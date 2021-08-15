@@ -1,0 +1,16 @@
+clusterName: cryptofolio
+nameOverride: elasticsearch
+fullnameOverride: elasticsearch
+healthNameOverride: elasticsearch
+esJavaOpts: -Xmx512m -Xms512m
+resources:
+  requests:
+    cpu: 10m
+    memory: 1Gi
+  limits:
+    cpu: 1
+    memory: 1Gi
+volumeClaimTemplate:
+  resources:
+    requests:
+      storage: 30Gi
