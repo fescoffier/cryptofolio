@@ -217,7 +217,7 @@ namespace Cryptofolio.Collector.Job.Data
             var f2 = hash.SingleOrDefault(h => h.Name == SchedulesHashScheduledAtField);
             if (f1.Value.HasValue)
             {
-                return (f1.Value.ToString(), JsonSerializer.Deserialize<DateTimeOffset>(f2.Value.ToString()).Trim('"'));
+                return (f1.Value.ToString(), JsonSerializer.Deserialize<DateTimeOffset>(f2.Value.ToString()));
             }
             return (null, default);
         }
