@@ -1,6 +1,5 @@
 using Confluent.Kafka;
 using Cryptofolio.Infrastructure;
-using Elasticsearch.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
@@ -12,7 +11,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using StackExchange.Redis;
-using System.Linq;
 
 namespace Cryptofolio.App
 {
@@ -76,16 +74,6 @@ namespace Cryptofolio.App
                 }
             });
             services.AddHostedService<DatabaseMigrationService<IdentityContext>>();
-
-            // Elasticsearch
-            services.AddSingleton<IConnectionPool>(
-                new StaticConnectionPool(
-                    Configuration.GetSection("Elasticsearch:Nodes")
-                        .Get<string[]>()
-                        .Select(n => new Node(new(n)))
-                        .ToList()
-                )
-            );
 
             // Redis
             services.AddSingleton(ConnectionMultiplexer.Connect(Configuration.GetConnectionString("Redis")));
