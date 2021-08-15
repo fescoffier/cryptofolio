@@ -1,0 +1,3 @@
+metadata:
+  annotations:
+    service.beta.kubernetes.io/do-loadbalancer-hostname: "lestencrypt.cryptofolio.dev"

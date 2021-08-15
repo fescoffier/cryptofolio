@@ -3,23 +3,52 @@
 # Declare variables to be passed into your templates.
 
 api:
-  replicaCount: 1
+  environment: Production
+  config:
+    logLevel: Information
+    secrets:
+      connectionStrings:
+        name: connection-strings
+        data:
+          cryptofolioContext: cryptofolio-context
+    connectionStrings:
+      redis: redis-master-0.redis-headless.default.svc.cluster.local:6379,redis-replicas-0.redis-headless.default.svc.cluster.local:6379,redis-replicas-1.redis-headless.default.svc.cluster.local:6379
+    kafka:
+      producerConfig:
+        {
+          "BootstrapServers": "kafka-0.kafka-headless.default.svc.cluster.local:9092,kafka-1.kafka-headless.default.svc.cluster.local:9092,kafka-2.kafka-headless.default.svc.cluster.local:9092"
+        }
+      consumerConfig:
+        {
+          "BootstrapServers": "kafka-0.kafka-headless.default.svc.cluster.local:9092,kafka-1.kafka-headless.default.svc.cluster.local:9092,kafka-2.kafka-headless.default.svc.cluster.local:9092",
+          "GroupId": "job-collector",
+          "AutoOffsetReset": "Earliest",
+          "EnablePartitionEof": true,
+          "EnableAutoCommit": false,
+          "MaxPollIntervalMs": 300000
+        }
+    elasticsearch:
+      {
+        "Nodes": [
+          "http://elasticsearch-0.elasticsearch-headless.default.svc.cluster.local:9200",
+          "http://elasticsearch-1.elasticsearch-headless.default.svc.cluster.local:9200",
+          "http://elasticsearch-2.elasticsearch-headless.default.svc.cluster.local:9200"
+        ]
+      }
+  replicaCount: 2
   image:
-    repository: nginx
-    pullPolicy: IfNotPresent
-    # Overrides the image tag whose default is the chart appVersion.
-    tag: ""
+    repository: registry.digitalocean.com/cryptofolio/api
+    pullPolicy: Always
+    tag: latest
   imagePullSecrets: []
-  nameOverride: ""
-  fullnameOverride: ""
+  nameOverride: "cryptofolio-api"
+  fullnameOverride: "cryptofolio-api"
   serviceAccount:
-    # Specifies whether a service account should be created
-    create: true
-    # Annotations to add to the service account
+    create: false
+    name: "cryptofolio-api"
     annotations: {}
-    # The name of the service account to use.
-    # If not set and create is true, a name is generated using the fullname template
-    name: ""
+    imagePullSecrets:
+      - name: cryptofolio
   podAnnotations: {}
   podSecurityContext: {}
     # fsGroup: 2000
@@ -34,33 +63,44 @@ api:
     type: ClusterIP
     port: 80
   ingress:
-    enabled: false
-    annotations: {}
-      # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
     hosts:
-      - host: chart-example.local
-        paths: []
-    tls: []
-    #  - secretName: chart-example-tls
-    #    hosts:
-    #      - chart-example.local
-  resources: {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    # requests:
-    #   cpu: 100m
-    #   memory: 128Mi
+      - host: api.cryptofolio.dev
+        paths:
+          - value: /
+            type: Prefix
+    tls:
+     - secretName: cryptofolio-tls
+       hosts:
+         - api.cryptofolio.dev
+  resources:
+    requests:
+      cpu: 10m
+      memory: 265Mi
+    limits:
+      cpu: 1
+      memory: 1Gi
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: http
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+  readinessProbe:
+    httpGet:
+      path: /health
+      port: http
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
   autoscaling:
     enabled: false
-    minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
+    # minReplicas: 1
+    # maxReplicas: 100
+    # targetCPUUtilizationPercentage: 80
     # targetMemoryUtilizationPercentage: 80
   nodeSelector: {}
   tolerations: []
@@ -168,7 +208,7 @@ jobs:
         cronCheckIntervalMs: 1000
         schedules:
           assetDataRequest: "0 0 1 1 1"
-          assetTickerDataRequest: "0 0 1 1 1"
+          assetTickerDataRequest: "* * * * *"
           exchangeDataRequest: "0 0 1 1 1"
         schedulersLockKey: Collector:SchedulersLock
         schedulersLockExpiration: "00:01:00"
@@ -281,7 +321,7 @@ jobs:
     nameOverride: cryptofolio-handlers-job
     fullnameOverride: cryptofolio-handlers-job
     serviceAccount:
-      create: true
+      create: false
       annotations: {}
       name: cryptofolio-handlers-job
     podAnnotations: {}
