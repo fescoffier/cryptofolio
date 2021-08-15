@@ -1,6 +1,5 @@
 using Confluent.Kafka;
 using Cryptofolio.Infrastructure;
-using Elasticsearch.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
@@ -77,16 +76,6 @@ namespace Cryptofolio.App
             });
             services.AddHostedService<DatabaseMigrationService<IdentityContext>>();
 
-            // Elasticsearch
-            services.AddSingleton<IConnectionPool>(
-                new StaticConnectionPool(
-                    Configuration.GetSection("Elasticsearch:Nodes")
-                        .Get<string[]>()
-                        .Select(n => new Node(new(n)))
-                        .ToList()
-                )
-            );
-
             // Redis
             services.AddSingleton(ConnectionMultiplexer.Connect(Configuration.GetConnectionString("Redis")));
             services.AddSingleton<IConnectionMultiplexer>(p => p.GetRequiredService<ConnectionMultiplexer>());
@@ -100,8 +89,7 @@ namespace Cryptofolio.App
                     Configuration.GetSection("Kafka:Topics:HealthChecks").Get<string>(),
                     name: "kafka"
                 )
-                .AddRedis(Configuration.GetConnectionString("Redis"), name: "redis")
-                .AddCheck<ElasticsearchHealthCheck>("elasticsearch");
+                .AddRedis(Configuration.GetConnectionString("Redis"), name: "redis");
 
             // Angular
             services.AddSpaStaticFiles(configuration =>
@@ -111,6 +99,7 @@ namespace Cryptofolio.App
 
             services.Configure<ApiOptions>(Configuration.GetSection("Api"));
             services.Configure<IdentityUserServiceOptions>(Configuration.GetSection("Identity"));
+            services.PostConfigure<IdentityUserServiceOptions>(options => options.Users ??= Enumerable.Empty<IdentityUser>());
             services.AddHostedService<IdentityUserService>();
         }
 
