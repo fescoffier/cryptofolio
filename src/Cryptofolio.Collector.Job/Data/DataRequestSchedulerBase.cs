@@ -101,7 +101,7 @@ namespace Cryptofolio.Collector.Job.Data
         public override async Task StartAsync(CancellationToken cancellationToken)
         {
             Logger.LogInformation("Updating the scheduler hash with {0}.", Environment.MachineName);
-            await Database.HashSetAsync(Options.SchedulersHashKey, Environment.MachineName, JsonSerializer.Serialize(SystemClock.UtcNow).Trim('"'));
+            await Database.HashSetAsync(Options.SchedulersHashKey, Environment.MachineName, JsonSerializer.Serialize(SystemClock.UtcNow));
             Logger.LogInformation("Scheduler list updated.");
             await ComputeNextExecution();
             await base.StartAsync(cancellationToken);
@@ -195,7 +195,7 @@ namespace Cryptofolio.Collector.Job.Data
                         new HashEntry[]
                         {
                             new(SchedulesHashScheduledForField, nextScheduler),
-                            new(SchedulesHashScheduledAtField, JsonSerializer.Serialize(new DateTimeOffset(nextExecution.Value)).Trim('"'))
+                            new(SchedulesHashScheduledAtField, JsonSerializer.Serialize(new DateTimeOffset(nextExecution.Value)))
                         }
                     );
                 }
