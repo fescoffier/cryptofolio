@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,15 +25,17 @@ namespace Cryptofolio.Collector.Job.Data
         /// <param name="provider">The service provider.</param>
         /// <param name="producerWrapper">The producer wrapper.</param>
         /// <param name="optionsMonitor">The options monitor.</param>
+        /// <param name="database">The Redis database.</param>
         /// <param name="systemClock">The system clock.</param>
         /// <param name="logger">The logger.</param>
         public AssetTickerDataRequestScheduler(
             IServiceProvider provider,
             KafkaProducerWrapper<string, AssetTickerDataRequest> producerWrapper,
             IOptionsMonitor<DataRequestSchedulerOptions> optionsMonitor,
+            IDatabase database,
             ISystemClock systemClock,
             ILogger<AssetTickerDataRequestScheduler> logger
-        ) : base(provider, producerWrapper, optionsMonitor, systemClock, logger)
+        ) : base(provider, producerWrapper, optionsMonitor, database, systemClock, logger)
         {
         }
 

@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -88,9 +89,10 @@ namespace Cryptofolio.Collector.Job.IntegrationTests.Data
             IServiceProvider provider,
             KafkaProducerWrapper<string, TestDataRequest> producerWrapper,
             IOptionsMonitor<DataRequestSchedulerOptions> optionsMonitor,
+            IDatabase database,
             ISystemClock systemClock,
             ILogger<TestDataRequestScheduler> logger
-        ) : base(provider, producerWrapper, optionsMonitor, systemClock, logger)
+        ) : base(provider, producerWrapper, optionsMonitor, database, systemClock, logger)
         {
         }
 
