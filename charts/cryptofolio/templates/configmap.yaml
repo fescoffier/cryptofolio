@@ -23,12 +23,16 @@ data:
       "Elasticsearch": {{ .Values.jobs.collector.config.elasticsearch | toJson }},
       "Data": {
         "CronCheckIntervalMs": {{ .Values.jobs.collector.config.data.cronCheckIntervalMs }},
-        "InvalidCronCheckIntervalMs": {{ .Values.jobs.collector.config.data.invalidCronCheckIntervalMs }},
         "Schedules": {
           "Cryptofolio.Infrastructure.Data.AssetDataRequest": "{{ .Values.jobs.collector.config.data.schedules.assetDataRequest }}",
           "Cryptofolio.Infrastructure.Data.AssetTickerDataRequest": "{{ .Values.jobs.collector.config.data.schedules.assetTickerDataRequest }}",
           "Cryptofolio.Infrastructure.Data.ExchangeDataRequest": "{{ .Values.jobs.collector.config.data.schedules.exchangeDataRequest }}"
-        }
+        },
+        "SchedulersLockKey": "{{ .Values.jobs.collector.config.data.schedulersLockKey }}",
+        "SchedulersLockExpiration": "{{ .Values.jobs.collector.config.data.schedulersLockExpiration }}",
+        "SchedulersLockCheckInterval": "{{ .Values.jobs.collector.config.data.schedulersLockCheckInterval }}",
+        "SchedulersHashKey": "{{ .Values.jobs.collector.config.data.schedulersHashKey }}",
+        "SchedulesHashKeyFormat": "{{ .Values.jobs.collector.config.data.schedulesHashKeyFormat }}"
       },
       "Coingecko": {
         "ApiUri": "{{ .Values.jobs.collector.config.coingecko.apiUri }}",

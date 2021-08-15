@@ -166,11 +166,15 @@ jobs:
         }
       data:
         cronCheckIntervalMs: 1000
-        invalidCronCheckIntervalMs: 60000
         schedules:
           assetDataRequest: "0 0 1 1 1"
           assetTickerDataRequest: "0 0 1 1 1"
           exchangeDataRequest: "0 0 1 1 1"
+        schedulersLockKey: Collector:SchedulersLock
+        schedulersLockExpiration: "00:01:00"
+        schedulersLockCheckInterval: "00:00:01"
+        schedulersHashKey: Collector:Schedulers
+        schedulesHashKeyFormat: Collector:Schedules:{0}
       coingecko:
         apiUri: https://api.coingeck.com/api/v3
         rateLimiterKey: Coingecko:Calls
