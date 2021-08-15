@@ -9,18 +9,50 @@ data:
     {
       "Serilog": {
         "MinimumLevel": {
-          "Default": "{{ .Values.jobs.collector.config.logLevel }}"
+          "Default": "{{ .Values.api.config.logLevel }}"
         },
-        "Elasticsearch": {{ .Values.jobs.collector.config.elasticsearch | toJson }}
+        "Elasticsearch": {{ .Values.api.config.elasticsearch | toJson }}
+      },
+      "Cors": {
+        "AllowedOrigins": {{ .Values.api.config.cors.allowedOrigins | toJson }}
       },
       "ConnectionStrings": {
-        "Redis": "{{ .Values.jobs.collector.config.connectionStrings.redis }}"
+        "Redis": "{{ .Values.api.config.connectionStrings.redis }}"
       },
       "Kafka": {
-        "Producer": {{ .Values.jobs.collector.config.kafka.producerConfig | toJson }},
-        "Consumer": {{ .Values.jobs.collector.config.kafka.consumerConfig | toJson }}
+        "Producer": {{ .Values.api.config.kafka.producerConfig | toJson }},
+        "Consumer": {{ .Values.api.config.kafka.consumerConfig | toJson }}
       },
-      "Elasticsearch": {{ .Values.jobs.collector.config.elasticsearch | toJson }}
+      "Elasticsearch": {{ .Values.api.config.elasticsearch | toJson }}
+    }
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cryptofolio-app.fullname" . }}-config
+  labels:
+    {{- include "cryptofolio-app.labels" . | nindent 4 }}
+data:
+  appsettings.{{ .Values.app.environment }}.json: |
+    {
+      "Serilog": {
+        "MinimumLevel": {
+          "Default": "{{ .Values.app.config.logLevel }}"
+        },
+        "Elasticsearch": {{ .Values.app.config.elasticsearch | toJson }}
+      },
+      "ConnectionStrings": {
+        "Redis": "{{ .Values.app.config.connectionStrings.redis }}"
+      },
+      "Kafka": {
+        "Producer": {{ .Values.app.config.kafka.producerConfig | toJson }},
+        "Consumer": {{ .Values.app.config.kafka.consumerConfig | toJson }}
+      },
+      "Api": {
+        "Url": "{{ .Values.app.config.api.url }}"
+      }
     }
 
 ---

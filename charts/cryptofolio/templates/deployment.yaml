@@ -84,6 +84,98 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: {{ include "cryptofolio-app.fullname" . }}
+  labels:
+    {{- include "cryptofolio-app.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.app.autoscaling.enabled }}
+  replicas: {{ .Values.app.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "cryptofolio-app.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.app.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "cryptofolio-app.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.app.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.app.serviceAccount.enabled }}
+      serviceAccountName: {{ include "cryptofolio-app.serviceAccountName" . }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.app.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.app.securityContext | nindent 12 }}
+          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.app.image.pullPolicy }}
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: {{ .Values.app.environment }}
+            - name: ASPNETCORE_URLS
+              value: http://+
+            - name: ConnectionStrings__IdentityContext
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.app.config.secrets.connectionStrings.name }}
+                  key: {{ .Values.app.config.secrets.connectionStrings.data.identityContext }}
+          volumeMounts:
+            - name: config
+              mountPath: /app/appsettings.{{ .Values.app.environment }}.json
+              subPath: appsettings.{{ .Values.app.environment }}.json
+            - name: users
+              mountPath: /app/{{ .Values.app.config.secrets.users.data.fileName }}
+              subPath: {{ .Values.app.config.secrets.users.data.fileName }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            {{- toYaml .Values.app.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.app.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.app.resources | nindent 12 }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "cryptofolio-app.fullname" . }}-config
+            items:
+              - key: appsettings.{{ .Values.app.environment }}.json
+                path: appsettings.{{ .Values.app.environment }}.json
+        - name: users
+          secret:
+            secretName: {{ .Values.app.config.secrets.users.name }}
+            items:
+              - key: {{ .Values.app.config.secrets.users.data.fileName }}
+                path: {{ .Values.app.config.secrets.users.data.fileName }}
+      {{- with .Values.app.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.app.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.app.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
   name: {{ include "cryptofolio-collector-job.fullname" . }}
   labels:
     {{- include "cryptofolio-collector-job.labels" . | nindent 4 }}

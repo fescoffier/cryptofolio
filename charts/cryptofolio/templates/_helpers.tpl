@@ -49,13 +49,67 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
-Create the name of the handlers job service account to use.
+Create the name of the API service account to use.
 */}}
 {{- define "cryptofolio-api.serviceAccountName" -}}
 {{- if .Values.api.serviceAccount.create }}
 {{- default (include "cryptofolio-api.fullname" .) .Values.api.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.api.serviceAccount.name }}
+{{- end }}
+{{- end }}
+
+{{/*
+App name.
+*/}}
+{{- define "cryptofolio-app.name" -}}
+{{- .Values.app.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{/*
+App fullname.
+*/}}
+{{- define "cryptofolio-app.fullname" -}}
+{{- if .Values.app.fullnameOverride }}
+{{- .Values.app.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $name := .Values.app.nameOverride }}
+{{- if contains $name .Release.Name }}
+{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+App common labels.
+*/}}
+{{- define "cryptofolio-app.labels" -}}
+helm.sh/chart: {{ include "cryptofolio.chart" . }}
+{{ include "cryptofolio-app.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+App selector labels.
+*/}}
+{{- define "cryptofolio-app.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "cryptofolio-app.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
+Create the name of the app service account to use.
+*/}}
+{{- define "cryptofolio-app.serviceAccountName" -}}
+{{- if .Values.app.serviceAccount.create }}
+{{- default (include "cryptofolio-app.fullname" .) .Values.app.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.app.serviceAccount.name }}
 {{- end }}
 {{- end }}
 
