@@ -70,19 +70,15 @@ namespace Cryptofolio.Api
             }
 
             // Cors
-            if (Environment.IsDevelopment())
+            services.AddCors(options =>
             {
-                // In development environment, the CORS policy is explicitly permissive.
-                services.AddCors(options =>
-                {
-                    options.AddDefaultPolicy(p => p
-                        .WithOrigins(Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>())
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials()
-                    );
-                });
-            }
+                options.AddDefaultPolicy(p => p
+                    .WithOrigins(Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>())
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials()
+                );
+            });
 
             // EF Core
             services.AddDbContext<CryptofolioContext>(builder =>
