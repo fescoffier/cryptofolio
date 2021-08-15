@@ -11,9 +11,6 @@ api:
         name: connection-strings
         data:
           cryptofolioContext: cryptofolio-context
-    cors:
-      allowedOrigins:
-        - https://app.cryptofolio.dev
     connectionStrings:
       redis: redis-master-0.redis-headless.default.svc.cluster.local:6379,redis-replicas-0.redis-headless.default.svc.cluster.local:6379,redis-replicas-1.redis-headless.default.svc.cluster.local:6379
     kafka:
@@ -70,14 +67,16 @@ api:
     annotations:
       cert-manager.io/cluster-issuer: "letsencrypt-prod"
     hosts:
-      - host: api.cryptofolio.dev
+      - host: app.cryptofolio.dev
         paths:
-          - value: /
+          - value: /api
             type: Prefix
+    paths:
+      - /api
     tls:
-     - secretName: cryptofolio-api-tls
+     - secretName: cryptofolio-tls
        hosts:
-         - api.cryptofolio.dev
+         - app.cryptofolio.dev
   resources:
     requests:
       cpu: 10m
@@ -184,8 +183,10 @@ app:
         paths:
           - value: /
             type: Prefix
+    paths:
+      - /
     tls:
-     - secretName: cryptofolio-app-tls
+     - secretName: cryptofolio-tls
        hosts:
          - app.cryptofolio.dev
   resources:

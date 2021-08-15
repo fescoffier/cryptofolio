@@ -13,9 +13,7 @@ data:
         },
         "Elasticsearch": {{ .Values.api.config.elasticsearch | toJson }}
       },
-      "Cors": {
-        "AllowedOrigins": {{ .Values.api.config.cors.allowedOrigins | toJson }}
-      },
+      "Paths": {{ .Values.api.ingress.paths | toJson }},
       "ConnectionStrings": {
         "Redis": "{{ .Values.api.config.connectionStrings.redis }}"
       },
@@ -43,6 +41,7 @@ data:
         },
         "Elasticsearch": {{ .Values.app.config.elasticsearch | toJson }}
       },
+      "Paths": {{ .Values.app.ingress.paths | toJson }},
       "ConnectionStrings": {
         "Redis": "{{ .Values.app.config.connectionStrings.redis }}"
       },

@@ -70,15 +70,18 @@ namespace Cryptofolio.Api
             }
 
             // Cors
-            services.AddCors(options =>
+            if (Environment.IsDevelopment())
             {
-                options.AddDefaultPolicy(p => p
-                    .WithOrigins(Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>())
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowCredentials()
-                );
-            });
+                services.AddCors(options =>
+                {
+                    options.AddDefaultPolicy(p => p
+                        .WithOrigins(Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>())
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials()
+                    );
+                });
+            }
 
             // EF Core
             services.AddDbContext<CryptofolioContext>(builder =>
@@ -165,6 +168,11 @@ namespace Cryptofolio.Api
             if (Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }
+
+            foreach (var path in Configuration.GetSection("Paths").Get<string[]>())
+            {
+                app.UsePathBase(path);
             }
 
             app.UseHealthChecks("/health");
