@@ -89,8 +89,7 @@ namespace Cryptofolio.App
                     Configuration.GetSection("Kafka:Topics:HealthChecks").Get<string>(),
                     name: "kafka"
                 )
-                .AddRedis(Configuration.GetConnectionString("Redis"), name: "redis")
-                .AddCheck<ElasticsearchHealthCheck>("elasticsearch");
+                .AddRedis(Configuration.GetConnectionString("Redis"), name: "redis");
 
             // Angular
             services.AddSpaStaticFiles(configuration =>
