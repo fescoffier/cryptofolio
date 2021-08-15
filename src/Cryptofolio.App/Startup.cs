@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using StackExchange.Redis;
+using System.Linq;
 
 namespace Cryptofolio.App
 {
@@ -99,6 +100,7 @@ namespace Cryptofolio.App
 
             services.Configure<ApiOptions>(Configuration.GetSection("Api"));
             services.Configure<IdentityUserServiceOptions>(Configuration.GetSection("Identity"));
+            services.PostConfigure<IdentityUserServiceOptions>(options => options.Users ??= Enumerable.Empty<IdentityUser>());
             services.AddHostedService<IdentityUserService>();
         }
 
