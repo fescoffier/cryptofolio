@@ -101,7 +101,7 @@ namespace Cryptofolio.Collector.Job.Data
         public override async Task StartAsync(CancellationToken cancellationToken)
         {
             Logger.LogInformation("Updating the scheduler hash with {0}.", Environment.MachineName);
-            await Database.HashSetAsync(Options.SchedulersHashKey, Environment.MachineName, JsonSerializer.Serialize(SystemClock.UtcNow));
+            await Database.HashSetAsync(Options.SchedulersHashKey, Environment.MachineName, JsonSerializer.Serialize(SystemClock.UtcNow).Trim('"'));
             Logger.LogInformation("Scheduler list updated.");
             await ComputeNextExecution();
             await base.StartAsync(cancellationToken);
@@ -195,7 +195,7 @@ namespace Cryptofolio.Collector.Job.Data
                         new HashEntry[]
                         {
                             new(SchedulesHashScheduledForField, nextScheduler),
-                            new(SchedulesHashScheduledAtField, JsonSerializer.Serialize(new DateTimeOffset(nextExecution.Value)))
+                            new(SchedulesHashScheduledAtField, JsonSerializer.Serialize(new DateTimeOffset(nextExecution.Value)).Trim('"'))
                         }
                     );
                 }
@@ -217,7 +217,7 @@ namespace Cryptofolio.Collector.Job.Data
             var f2 = hash.SingleOrDefault(h => h.Name == SchedulesHashScheduledAtField);
             if (f1.Value.HasValue)
             {
-                return (f1.Value.ToString(), JsonSerializer.Deserialize<DateTimeOffset>(f2.Value.ToString()));
+                return (f1.Value.ToString(), JsonSerializer.Deserialize<DateTimeOffset>(f2.Value.ToString()).Trim('"'));
             }
             return (null, default);
         }
@@ -230,7 +230,7 @@ namespace Cryptofolio.Collector.Job.Data
                 return Environment.MachineName;
             }
             var schedulers = values.Where(v => v.Name != Environment.MachineName).ToArray();
-            return schedulers[_random.Next(schedulers.Length)].Value.ToString();
+            return schedulers[_random.Next(schedulers.Length)].Name.ToString();
         }
     }
 }
