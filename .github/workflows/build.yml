@@ -30,4 +30,4 @@ jobs:
       - name: Build & push Docker images
         run: chmod +x docker/github-ci.sh && docker/github-ci.sh
       - name: Garbage collect docker registry
-        run: doctl registry garbage-collection start --include-untagged-manifests cryptofolio
+        run: doctl registry garbage-collection start -f --include-untagged-manifests cryptofolio
