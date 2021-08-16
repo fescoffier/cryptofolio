@@ -4,14 +4,14 @@ on:
   push:
     branches:
       - main
-  workflow_run:
-    workflows:
-      - Build
-    branches:
-      - main
-    types: 
-      - completed
-  workflow_dispatch:
+  # workflow_run:
+  #   workflows:
+  #     - Build
+  #   branches:
+  #     - main
+  #   types: 
+  #     - completed
+  # workflow_dispatch:
 
 jobs:
   deploy:
@@ -21,8 +21,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Deploy chart
-        uses: WyriHaximus/github-action-helm3@v2.0
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
         with:
-          exec: helm upgrade --install cryptofolio charts/cryptofolio
-          kubeconfig: "${{ secrets.KUBECONFIG }}"
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      - name: Setup KubeConfig 
+        run: doctl kubernetes cluster kubeconfig save $K8S_CLUSTER_ID
+      - name: Install helm
+        uses: azure/setup-helm@v1
+        with:
+          version: latest
+      - name: Deploy chart
+        run: helm upgrade --install cryptofolio charts/cryptofolio
