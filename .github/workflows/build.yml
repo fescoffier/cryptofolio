@@ -26,7 +26,7 @@ jobs:
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
       - name: Log in to DO Container Registry 
-        run: doctl registry login --expiry-seconds 600
+        run: doctl registry login
       - name: Build & push Docker images
         run: chmod +x github-ci.sh && ./github-ci.sh
       - name: Garbage collect docker registry
