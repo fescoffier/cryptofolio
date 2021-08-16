@@ -48,6 +48,7 @@ then
   docker-compose -f docker/docker-compose-build.yaml push
 else
   echo -e "Failed to build the images with their version tag. Push skipped.\n"
+  exit 1
 fi
 
 export API_TAG=latest
@@ -62,4 +63,5 @@ then
   docker-compose -f docker/docker-compose-build.yaml push
 else
   echo -e "Failed to build the images with 'latest' tag. Push skipped.\n"
+  exit 1
 fi
