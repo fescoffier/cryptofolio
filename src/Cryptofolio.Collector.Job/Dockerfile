@@ -6,7 +6,7 @@ ARG VERSION
 FROM mcr.microsoft.com/dotnet/sdk:5.0.301-alpine3.13 AS build
 COPY ["src/", "src/"]
 RUN dotnet restore "src/Cryptofolio.Collector.Job/Cryptofolio.Collector.Job.csproj"
-RUN dotnet build "src/Cryptofolio.Collector.Job/Cryptofolio.Collector.Job.csproj" -c Release -o /app/build /property:Version=$VERSION
+RUN dotnet build "src/Cryptofolio.Collector.Job/Cryptofolio.Collector.Job.csproj" -c Release -o /app/build
 
 FROM build AS publish
 ARG VERSION

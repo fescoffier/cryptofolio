@@ -4,7 +4,7 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:5.0.301-alpine3.13 AS build
 COPY ["src/", "src/"]
 RUN dotnet restore "src/Cryptofolio.App/Cryptofolio.App.csproj"
-RUN dotnet build "src/Cryptofolio.App/Cryptofolio.App.csproj" -c Release -o /app/build /property:Version=$VERSION
+RUN dotnet build "src/Cryptofolio.App/Cryptofolio.App.csproj" -c Release -o /app/build
 
 FROM build AS publish
 ARG VERSION
