@@ -6,16 +6,16 @@ dotnet tool restore --tool-manifest .config/dotnet-tools.json
 export REGISTRY=registry.digitalocean.com/cryptofolio
 export API_BUILD_CONTEXT=${API_BUILD_CONTEXT:-../}
 export API_REPOSITORY=${API_REPOSITORY:-api}
-export API_VERSION=$(dotnet version -p src/Cryptofolio.Api/Cryptofolio.Api.csproj --show | awk '{print $3}')+$GITHUB_SHA
+export API_VERSION=$(dotnet version -p src/Cryptofolio.Api/Cryptofolio.Api.csproj --show | awk '{print $3}').$GITHUB_SHA
 export APP_BUILD_CONTEXT=${APP_BUILD_CONTEXT:-../}
 export APP_REPOSITORY=${APP_REPOSITORY:-app}
-export APP_VERSION=$(dotnet version -p src/Cryptofolio.App/Cryptofolio.App.csproj --show | awk '{print $3}')+$GITHUB_SHA
+export APP_VERSION=$(dotnet version -p src/Cryptofolio.App/Cryptofolio.App.csproj --show | awk '{print $3}').$GITHUB_SHA
 export JOB_COLLECTOR_BUILD_CONTEXT=${JOB_COLLECTOR_BUILD_CONTEXT:-../}
 export JOB_COLLECTOR_REPOSITORY=${JOB_COLLECTOR_REPOSITORY:-jobs/collector}
-export JOB_COLLECTOR_VERSION=$(dotnet version -p src/Cryptofolio.Collector.Job/Cryptofolio.Collector.Job.csproj --show | awk '{print $3}')+$GITHUB_SHA
+export JOB_COLLECTOR_VERSION=$(dotnet version -p src/Cryptofolio.Collector.Job/Cryptofolio.Collector.Job.csproj --show | awk '{print $3}').$GITHUB_SHA
 export JOB_HANDLERS_CONTEXT=${JOB_HANDLERS_CONTEXT:-../}
 export JOB_HANDLERS_REPOSITORY=${JOB_HANDLERS_REPOSITORY:-jobs/handlers}
-export JOB_HANDLERS_VERSION=$(dotnet version -p src/Cryptofolio.Handlers.Job/Cryptofolio.Handlers.Job.csproj --show | awk '{print $3}')+$GITHUB_SHA
+export JOB_HANDLERS_VERSION=$(dotnet version -p src/Cryptofolio.Handlers.Job/Cryptofolio.Handlers.Job.csproj --show | awk '{print $3}').$GITHUB_SHA
 
 echo -e "\n"
 echo "REGISTRY: $REGISTRY"
