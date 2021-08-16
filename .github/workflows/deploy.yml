@@ -31,5 +31,11 @@ jobs:
         uses: azure/setup-helm@v1
         with:
           version: latest
+      - name: Setup env
+        run: |
+          echo "::set-env name=API_TAG::$(dotnet version -p src/Cryptofolio.Api/Cryptofolio.Api.csproj --show | awk -v GITHUB_RUN_NUMBER=$GITHUB_RUN_NUMBER '{print $3 "-build." GITHUB_RUN_NUMBER}')
+          echo "::set-env name=APP_TAG::$(dotnet version -p src/Cryptofolio.App/Cryptofolio.App.csproj --show | awk -v GITHUB_RUN_NUMBER=$GITHUB_RUN_NUMBER '{print $3 "-build." GITHUB_RUN_NUMBER}')
+          echo "::set-env name=JOB_COLLECTOR_TAG::$(dotnet version -p src/Cryptofolio.Collector.Job/Cryptofolio.Collector.Job.csproj --show | awk -v GITHUB_RUN_NUMBER=$GITHUB_RUN_NUMBER '{print $3 "-build." GITHUB_RUN_NUMBER}')
+          echo "::set-env name=JOB_HANDLERS_TAG::$(dotnet version -p src/Cryptofolio.Handlers.Job/Cryptofolio.Handlers.Job.csproj --show | awk -v GITHUB_RUN_NUMBER=$GITHUB_RUN_NUMBER '{print $3 "-build." GITHUB_RUN_NUMBER}')
       - name: Deploy chart
-        run: helm upgrade --install cryptofolio charts/cryptofolio
+        run: helm upgrade --install --set api.image.tag=$API_TAG --set app.image.tag=$APP_TAG --set jobs.collector.tag=$JOB_COLLECTOR_TAG --set jobs.handlers.tag=JOB_HANDLERS_TAG cryptofolio charts/cryptofolio
