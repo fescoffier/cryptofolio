@@ -21,15 +21,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Build Docker images
-        run: docker-compose -f docker/docker-compose-build.yaml build
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
       - name: Log in to DO Container Registry 
         run: doctl registry login --expiry-seconds 600
-      - name: Push Docker images
-        run: docker-compose -f docker/docker-compose-build.yaml push
+      - name: Build & push Docker images
+        run: chmod +x docker/github-ci.sh && docker/github-ci.sh
       - name: Garbage collect docker registry
         run: doctl registry garbage-collection start --include-untagged-manifests cryptofolio
