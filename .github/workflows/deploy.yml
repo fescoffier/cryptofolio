@@ -33,9 +33,9 @@ jobs:
           version: latest
       - name: Setup env
         run: |
-          echo "API_TAG=$(dotnet version -p src/Cryptofolio.Api/Cryptofolio.Api.csproj --show | awk -v build_number=$GITHUB_RUN_NUMBER '{print $3 "-build." build_number}')" >> GITHUB_ENV
-          echo "APP_TAG=$(dotnet version -p src/Cryptofolio.App/Cryptofolio.App.csproj --show | awk -v build_number=$GITHUB_RUN_NUMBER '{print $3 "-build." build_number}')" >> GITHUB_ENV
-          echo "JOB_COLLECTOR_TAG=$(dotnet version -p src/Cryptofolio.Collector.Job/Cryptofolio.Collector.Job.csproj --show | awk -v build_number=$GITHUB_RUN_NUMBER '{print $3 "-build." build_number}')" >> GITHUB_ENV
-          echo "JOB_HANDLERS_TAG=$(dotnet version -p src/Cryptofolio.Handlers.Job/Cryptofolio.Handlers.Job.csproj --show | awk -v build_number=$GITHUB_RUN_NUMBER '{print $3 "-build." build_number}')" >> GITHUB_ENV
+          echo "API_TAG=$(dotnet version -p src/Cryptofolio.Api/Cryptofolio.Api.csproj --show | awk -v commit_sha=$$GITHUB_SHA '{print $3 "+" commit_sha}')" >> GITHUB_ENV
+          echo "APP_TAG=$(dotnet version -p src/Cryptofolio.App/Cryptofolio.App.csproj --show | awk -v commit_sha=$$GITHUB_SHA '{print $3 "+" commit_sha}')" >> GITHUB_ENV
+          echo "JOB_COLLECTOR_TAG=$(dotnet version -p src/Cryptofolio.Collector.Job/Cryptofolio.Collector.Job.csproj --show | awk -v commit_sha=$$GITHUB_SHA '{print $3 "+" commit_sha}')" >> GITHUB_ENV
+          echo "JOB_HANDLERS_TAG=$(dotnet version -p src/Cryptofolio.Handlers.Job/Cryptofolio.Handlers.Job.csproj --show | awk -v commit_sha=$$GITHUB_SHA '{print $3 "+" commit_sha}')" >> GITHUB_ENV
       - name: Deploy chart
-        run: helm upgrade --install --set api.image.tag=$API_TAG --set app.image.tag=$APP_TAG --set jobs.collector.tag=$JOB_COLLECTOR_TAG --set jobs.handlers.tag=JOB_HANDLERS_TAG cryptofolio charts/cryptofolio
+        run: helm upgrade --install --set api.image.tag=$API_TAG --set app.image.tag=$APP_TAG --set jobs.collector.image.tag=$JOB_COLLECTOR_TAG --set jobs.handlers.image.tag=JOB_HANDLERS_TAG cryptofolio charts/cryptofolio
