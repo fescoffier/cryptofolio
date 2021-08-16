@@ -31,3 +31,5 @@ jobs:
         run: doctl registry login --expiry-seconds 600
       - name: Push Docker images
         run: docker-compose -f docker/docker-compose-build.yaml push
+      - name: Garbage collect docker registry
+        run: doctl registry garbage-collection start --include-untagged-manifests cryptofolio

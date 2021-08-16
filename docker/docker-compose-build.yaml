@@ -9,25 +9,41 @@ services:
       # You can override the build context (where the source code is) by defining a API_BUILD_CONTEXT environment variable.
       context: ${API_BUILD_CONTEXT:-../}
       dockerfile: src/Cryptofolio.Api/Dockerfile
-    image: registry.digitalocean.com/cryptofolio/api:${API_TAG:-latest}
+      args:
+        - VERSION=$API_VERSION
+        - HTTP_PROXY=$HTTP_PROXY
+        - HTTPS_PROXY=$HTTP_PROXY
+    image: ${REGISTRY:-registry.digitalocean.com/cryptofolio}/${API_REPOSITORY:-api}:${API_TAG:-latest}
 
   cryptofolio-app:
     build:
       # You can override the build context (where the source code is) by defining a APP_BUILD_CONTEXT environment variable.
       context: ${APP_BUILD_CONTEXT:-../}
       dockerfile: src/Cryptofolio.App/Dockerfile
-    image: registry.digitalocean.com/cryptofolio/app:${APP_TAG:-latest}
+      args:
+        - VERSION=$APP_VERSION
+        - HTTP_PROXY=$HTTP_PROXY
+        - HTTPS_PROXY=$HTTP_PROXY
+    image: ${REGISTRY:-registry.digitalocean.com/cryptofolio}/${APP_REPOSITORY:-app}:${APP_TAG:-latest}
 
   cryptofolio-job-collector:
     build:
       # You can override the build context (where the source code is) by defining a JOB_COLLECTOR_BUILD_CONTEXT environment variable.
       context: ${JOB_COLLECTOR_BUILD_CONTEXT:-../}
       dockerfile: src/Cryptofolio.Collector.Job/Dockerfile
-    image: registry.digitalocean.com/cryptofolio/jobs/collector:${JOB_COLLECTOR_TAG:-latest}
+      args:
+        - VERSION=$JOB_COLLECTOR_VERSION
+        - HTTP_PROXY=$HTTP_PROXY
+        - HTTPS_PROXY=$HTTP_PROXY
+    image: ${REGISTRY:-registry.digitalocean.com/cryptofolio}/${JOB_COLLECTOR_REPOSITORY:-jobs/collector}:${JOB_COLLECTOR_TAG:-latest}
 
   cryptofolio-job-handlers:
     build:
       # You can override the build context (where the source code is) by defining a JOB_HANDLERS_BUILD_CONTEXT environment variable.
       context: ${JOB_HANDLERS_BUILD_CONTEXT:-../}
       dockerfile: src/Cryptofolio.Handlers.Job/Dockerfile
-    image: registry.digitalocean.com/cryptofolio/jobs/handlers:${JOB_HANDLERS_TAG:-latest}
+      args:
+        - VERSION=$JOB_HANDLERS_VERSION
+        - HTTP_PROXY=$HTTP_PROXY
+        - HTTPS_PROXY=$HTTP_PROXY
+    image: ${REGISTRY:-registry.digitalocean.com/cryptofolio}/${JOB_HANDLERS_REPOSITORY:-jobs/handlers}:${JOB_HANDLERS_TAG:-latest}
