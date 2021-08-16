@@ -32,4 +32,4 @@ jobs:
         with:
           version: latest
       - name: Deploy chart
-        run: helm upgrade --install --force cryptofolio charts/cryptofolio
+        run: helm upgrade --install cryptofolio charts/cryptofolio
