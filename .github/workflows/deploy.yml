@@ -26,7 +26,7 @@ jobs:
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
       - name: Setup KubeConfig 
-        run: doctl kubernetes cluster kubeconfig save $K8S_CLUSTER_ID
+        run: doctl kubernetes cluster kubeconfig save ${{ secrets.K8S_CLUSTER_ID }}
       - name: Install helm
         uses: azure/setup-helm@v1
         with:
