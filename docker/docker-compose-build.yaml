@@ -11,8 +11,6 @@ services:
       dockerfile: src/Cryptofolio.Api/Dockerfile
       args:
         - VERSION=$API_VERSION
-        - HTTP_PROXY=$HTTP_PROXY
-        - HTTPS_PROXY=$HTTP_PROXY
     image: ${REGISTRY:-registry.digitalocean.com/cryptofolio}/${API_REPOSITORY:-api}:${API_TAG:-latest}
 
   cryptofolio-app:
@@ -22,8 +20,6 @@ services:
       dockerfile: src/Cryptofolio.App/Dockerfile
       args:
         - VERSION=$APP_VERSION
-        - HTTP_PROXY=$HTTP_PROXY
-        - HTTPS_PROXY=$HTTP_PROXY
     image: ${REGISTRY:-registry.digitalocean.com/cryptofolio}/${APP_REPOSITORY:-app}:${APP_TAG:-latest}
 
   cryptofolio-job-collector:
@@ -33,8 +29,6 @@ services:
       dockerfile: src/Cryptofolio.Collector.Job/Dockerfile
       args:
         - VERSION=$JOB_COLLECTOR_VERSION
-        - HTTP_PROXY=$HTTP_PROXY
-        - HTTPS_PROXY=$HTTP_PROXY
     image: ${REGISTRY:-registry.digitalocean.com/cryptofolio}/${JOB_COLLECTOR_REPOSITORY:-jobs/collector}:${JOB_COLLECTOR_TAG:-latest}
 
   cryptofolio-job-handlers:
@@ -44,6 +38,4 @@ services:
       dockerfile: src/Cryptofolio.Handlers.Job/Dockerfile
       args:
         - VERSION=$JOB_HANDLERS_VERSION
-        - HTTP_PROXY=$HTTP_PROXY
-        - HTTPS_PROXY=$HTTP_PROXY
     image: ${REGISTRY:-registry.digitalocean.com/cryptofolio}/${JOB_HANDLERS_REPOSITORY:-jobs/handlers}:${JOB_HANDLERS_TAG:-latest}
