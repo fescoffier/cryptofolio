@@ -34,28 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\img\card-danger.png" />
-    <Content Remove="wwwroot\img\card-info.png" />
-    <Content Remove="wwwroot\img\card-primary.png" />
-    <Content Remove="wwwroot\img\card-success.png" />
-    <Content Remove="wwwroot\img\card-warning.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Cryptofolio.Infrastructure\Cryptofolio.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ClientApp\" />
-    <Folder Include="Migrations\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\img\card-danger.png" />
-    <None Include="wwwroot\img\card-info.png" />
-    <None Include="wwwroot\img\card-primary.png" />
-    <None Include="wwwroot\img\card-success.png" />
-    <None Include="wwwroot\img\card-warning.png" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' ">
