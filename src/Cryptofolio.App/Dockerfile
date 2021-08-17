@@ -15,7 +15,6 @@ ARG VERSION
 COPY ["src/Cryptofolio.App/ClientApp", "/src"]
 WORKDIR /src
 RUN npm install --pure-lockfile
-RUN npm version $VERSION
 RUN npm run build:prod
 
 FROM base AS final

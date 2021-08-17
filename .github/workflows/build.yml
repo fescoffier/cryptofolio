@@ -28,6 +28,6 @@ jobs:
       - name: Log in to DO Container Registry 
         run: doctl registry login
       - name: Build & push Docker images
-        run: chmod +x github-ci.sh && ./github-ci.sh
+        run: chmod +x build.sh && ./build.sh
       - name: Garbage collect docker registry
         run: doctl registry garbage-collection start -f --include-untagged-manifests cryptofolio
