@@ -21,13 +21,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Setup env
-        run: |
-          dotnet tool restore --tool-manifest .config/dotnet-tools.json
-          echo "API_TAG=$(dotnet version -p src/Cryptofolio.Api/Cryptofolio.Api.csproj --show | awk -v commit_sha=$(git rev-parse --short HEAD) '{print $3 "." commit_sha}')" >> GITHUB_ENV
-          echo "APP_TAG=$(dotnet version -p src/Cryptofolio.App/Cryptofolio.App.csproj --show | awk -v commit_sha=$(git rev-parse --short HEAD) '{print $3 "." commit_sha}')" >> GITHUB_ENV
-          echo "JOB_COLLECTOR_TAG=$(dotnet version -p src/Cryptofolio.Collector.Job/Cryptofolio.Collector.Job.csproj --show | awk -v commit_sha=$(git rev-parse --short HEAD) '{print $3 "." commit_sha}')" >> GITHUB_ENV
-          echo "JOB_HANDLERS_TAG=$(dotnet version -p src/Cryptofolio.Handlers.Job/Cryptofolio.Handlers.Job.csproj --show | awk -v commit_sha=$(git rev-parse --short HEAD) '{print $3 "." commit_sha}')" >> GITHUB_ENV
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
@@ -40,8 +33,12 @@ jobs:
           version: latest
       - name: Deploy chart
         run: |
+          export API_TAG=$(dotnet version -p src/Cryptofolio.Api/Cryptofolio.Api.csproj --show | awk -v commit_sha=$(git rev-parse --short HEAD) '{print $3 "." commit_sha}')
+          export APP_TAG=$(dotnet version -p src/Cryptofolio.App/Cryptofolio.App.csproj --show | awk -v commit_sha=$(git rev-parse --short HEAD) '{print $3 "." commit_sha}')
+          export JOB_COLLECTOR_TAG=$(dotnet version -p src/Cryptofolio.Collector.Job/Cryptofolio.Collector.Job.csproj --show | awk -v commit_sha=$(git rev-parse --short HEAD) '{print $3 "." commit_sha}')
+          export JOB_HANDLERS_TAG=$(dotnet version -p src/Cryptofolio.Handlers.Job/Cryptofolio.Handlers.Job.csproj --show | awk -v commit_sha=$(git rev-parse --short HEAD) '{print $3 "." commit_sha}')
           echo "API_TAG: $API_TAG"
           echo "APP_TAG: $APP_TAG"
           echo "JOB_COLLECTOR_TAG: $JOB_COLLECTOR_TAG"
           echo "JOB_HANDLERS_TAG: $JOB_HANDLERS_TAG"
-          helm upgrade --install --set api.image.tag=$API_TAG --set app.image.tag=$APP_TAG --set jobs.collector.image.tag=$JOB_COLLECTOR_TAG --set jobs.handlers.image.tag=JOB_HANDLERS_TAG cryptofolio charts/cryptofolio
+          helm upgrade --install --set api.image.tag=$API_TAG --set app.image.tag=$APP_TAG --set jobs.collector.image.tag=$JOB_COLLECTOR_TAG --set jobs.handlers.image.tag=$JOB_HANDLERS_TAG cryptofolio charts/cryptofolio
