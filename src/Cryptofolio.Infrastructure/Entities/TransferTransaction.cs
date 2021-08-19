@@ -3,7 +3,7 @@ namespace Cryptofolio.Infrastructure.Entities
     /// <summary>
     /// Models a transaction of type "Transfer".
     /// </summary>
-    public class TransferTransaction
+    public class TransferTransaction : Transaction
     {
         /// <summary>
         /// The source.

@@ -1,17 +1,24 @@
 namespace Cryptofolio.Infrastructure.Entities
 {
     /// <summary>
-    /// Models a transaction of type "Buy".
+    /// Models a transaction of type "Buy" or "Sell".
     /// </summary>
-    public class BuyTransaction : Transaction
+    public class BuyOrSellTransaction : Transaction
     {
         /// <summary>
-        /// The exchange on which it was bought.
+        /// Defines the transaction type:
+        /// - Buy
+        /// - Sell
+        /// </summary>
+        public string Type { get; set; }
+
+        /// <summary>
+        /// The exchange on which it was bought/sold.
         /// </summary>
         public Exchange Exchange { get; set; }
 
         /// <summary>
-        /// The currency it was bought with.
+        /// The currency it was bought with/sold for.
         /// </summary>
         public string Currency { get; set; }
 
