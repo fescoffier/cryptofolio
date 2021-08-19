@@ -13,11 +13,6 @@ namespace Cryptofolio.Infrastructure.Entities
         public string Type { get; set; }
 
         /// <summary>
-        /// The exchange on which it was bought/sold.
-        /// </summary>
-        public Exchange Exchange { get; set; }
-
-        /// <summary>
         /// The currency it was bought with/sold for.
         /// </summary>
         public string Currency { get; set; }

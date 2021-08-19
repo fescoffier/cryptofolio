@@ -19,9 +19,11 @@ namespace Cryptofolio.Infrastructure.Entities
             builder.Property(p => p.Qty).HasColumnName("qty");
             builder.Property(p => p.Note).HasColumnType("text").HasColumnName("note");
             builder.Property<string>("wallet_id");
-            builder.HasOne(p => p.Wallet).WithMany().HasForeignKey("wallet_id");
+            builder.HasOne(p => p.Wallet).WithMany().HasForeignKey("wallet_id").IsRequired();
             builder.Property<string>("asset_id");
-            builder.HasOne(p => p.Asset).WithMany().HasForeignKey("asset_id");
+            builder.HasOne(p => p.Asset).WithMany().HasForeignKey("asset_id").IsRequired();
+            builder.Property<string>("exchange_id");
+            builder.HasOne(p => p.Exchange).WithMany().HasForeignKey("exchange_id");
         }
     }
 }

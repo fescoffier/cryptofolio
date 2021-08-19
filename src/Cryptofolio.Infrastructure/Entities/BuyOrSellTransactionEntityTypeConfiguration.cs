@@ -12,11 +12,9 @@ namespace Cryptofolio.Infrastructure.Entities
         public void Configure(EntityTypeBuilder<BuyOrSellTransaction> builder)
         {
             builder.HasBaseType<Transaction>();
-            builder.Property(p => p.Type).HasMaxLength(4).HasColumnName("type");
-            builder.Property(p => p.Currency).HasMaxLength(10).HasColumnName("currency");
+            builder.Property(p => p.Type).HasMaxLength(4).HasColumnName("type").IsRequired();
+            builder.Property(p => p.Currency).HasMaxLength(10).HasColumnName("currency").IsRequired();
             builder.Property(p => p.Price).HasColumnName("price");
-            builder.Property<string>("exchange_id");
-            builder.HasOne(p => p.Exchange).WithMany().HasForeignKey("exchange_id");
         }
     }
 }

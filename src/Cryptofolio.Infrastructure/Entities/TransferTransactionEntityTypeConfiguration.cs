@@ -12,8 +12,8 @@ namespace Cryptofolio.Infrastructure.Entities
         public void Configure(EntityTypeBuilder<TransferTransaction> builder)
         {
             builder.HasBaseType<Transaction>();
-            builder.Property(p => p.Source).HasMaxLength(100).HasColumnName("source");
-            builder.Property(p => p.Destination).HasMaxLength(100).HasColumnName("destination");
+            builder.Property(p => p.Source).HasMaxLength(100).HasColumnName("source").IsRequired();
+            builder.Property(p => p.Destination).HasMaxLength(100).HasColumnName("destination").IsRequired();
         }
     }
 }

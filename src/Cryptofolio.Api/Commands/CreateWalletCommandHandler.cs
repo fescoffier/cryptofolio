@@ -46,8 +46,8 @@ namespace Cryptofolio.Api.Commands
             try
             {
                 _logger.LogDebug("Beginning a new transaction.");
-                using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
-                _logger.LogDebug("Transaction {0} just begun.", transaction.TransactionId);
+                using var dbTransaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+                _logger.LogDebug("Transaction {0} just begun.", dbTransaction.TransactionId);
 
                 var wallet = new Wallet
                 {
@@ -70,8 +70,8 @@ namespace Cryptofolio.Api.Commands
                 _logger.LogDebug("Dispatching a {0} event.", nameof(WalletCreatedEvent));
                 await _dispatcher.DispatchAsync(@event);
 
-                _logger.LogDebug("Committing the transaction {0}.", transaction.TransactionId);
-                await transaction.CommitAsync(cancellationToken);
+                _logger.LogDebug("Committing the transaction {0}.", dbTransaction.TransactionId);
+                await dbTransaction.CommitAsync(cancellationToken);
 
                 _logger.LogInformation("Command {0} handled.", command.RequestId);
 

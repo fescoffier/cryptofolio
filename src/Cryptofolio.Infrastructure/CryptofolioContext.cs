@@ -29,6 +29,11 @@ namespace Cryptofolio.Infrastructure
         public DbSet<Setting> Settings { get; set; }
 
         /// <summary>
+        /// The transactions set.
+        /// </summary>
+        public DbSet<Transaction> Transactions { get; set; }
+
+        /// <summary>
         /// The wallets set.
         /// </summary>
         public DbSet<Wallet> Wallets { get; set; }

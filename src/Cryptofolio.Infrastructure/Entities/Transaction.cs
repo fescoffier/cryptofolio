@@ -28,6 +28,11 @@ namespace Cryptofolio.Infrastructure.Entities
         public Asset Asset { get; set; }
 
         /// <summary>
+        /// The exchange on which it was bought/sold/transfered.
+        /// </summary>
+        public Exchange Exchange { get; set; }
+
+        /// <summary>
         /// The asset quantity.
         /// </summary>
         public decimal Qty { get; set; }
