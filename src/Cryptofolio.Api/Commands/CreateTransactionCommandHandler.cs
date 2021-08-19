@@ -53,7 +53,7 @@ namespace Cryptofolio.Api.Commands
                 var transaction = await CreateEntity(command);
                 if (!await _context.Wallets.AnyAsync(w => w.Id == command.WalletId && w.UserId == command.UserId, cancellationToken))
                 {
-                    _logger.LogWarning("The wallet {0} doesn't exist for the usr {1}.", command.WalletId, command.UserId);
+                    _logger.LogWarning("The wallet {0} doesn't exist for the user {1}.", command.WalletId, command.UserId);
                     return CommandResult<Transaction>.Failed(CommandConstants.Transaction.Errors.CreateInvalidWalletError);
                 }
 
@@ -72,7 +72,7 @@ namespace Cryptofolio.Api.Commands
                 await _dispatcher.DispatchAsync(@event);
 
                 _logger.LogDebug("Committing the transaction {0}.", dbTransaction.TransactionId);
-                await dbTransaction.CommitAsync(cancellationToken);
+                await dbTransaction.CommitAsync(CancellationToken.None);
 
                 _logger.LogInformation("Command {0} handled.", command.RequestId);
 

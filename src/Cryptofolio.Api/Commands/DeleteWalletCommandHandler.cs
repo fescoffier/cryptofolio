@@ -57,7 +57,7 @@ namespace Cryptofolio.Api.Commands
                 }
 
                 _context.Wallets.Remove(wallet);
-                _logger.LogDebug("Storing the updated wallet in database.");
+                _logger.LogDebug("Deleting the wallet in database.");
                 await _context.SaveChangesAsync(cancellationToken);
 
                 var @event = new WalletDeletedEvent
@@ -71,7 +71,7 @@ namespace Cryptofolio.Api.Commands
                 await _dispatcher.DispatchAsync(@event);
 
                 _logger.LogDebug("Committing the transaction {0}.", dbTransaction.TransactionId);
-                await dbTransaction.CommitAsync(cancellationToken);
+                await dbTransaction.CommitAsync(CancellationToken.None);
 
                 _logger.LogInformation("Command {0} handled.", command.RequestId);
 

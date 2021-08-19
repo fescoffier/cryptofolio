@@ -72,7 +72,7 @@ namespace Cryptofolio.Api.Commands
                 await _dispatcher.DispatchAsync(@event);
 
                 _logger.LogDebug("Committing the transaction {0}.", dbTransaction.TransactionId);
-                await dbTransaction.CommitAsync(cancellationToken);
+                await dbTransaction.CommitAsync(CancellationToken.None);
 
                 _logger.LogInformation("Command {0} handled.", command.RequestId);
 
