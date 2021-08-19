@@ -161,6 +161,13 @@ namespace Cryptofolio.Api
             services
                 .AddScoped<DeleteWalletCommandHandler>()
                 .AddScoped<IRequestHandler<DeleteWalletCommand, CommandResult>>(p => p.GetRequiredService<DeleteWalletCommandHandler>());
+            // Transaction
+            services
+                .AddScoped<CreateTransactionCommandHandler>()
+                .AddScoped<IRequestHandler<CreateTransactionCommand, CommandResult<Transaction>>>(p => p.GetRequiredService<CreateTransactionCommandHandler>());
+            services
+                .AddScoped<UpdateTransactionCommandHandler>()
+                .AddScoped<IRequestHandler<UpdateTransactionCommand, CommandResult>>(p => p.GetRequiredService<UpdateTransactionCommandHandler>());
         }
 
         public void Configure(IApplicationBuilder app)

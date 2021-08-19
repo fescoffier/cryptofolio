@@ -14,6 +14,8 @@ namespace Cryptofolio.Infrastructure.Entities
             builder.HasBaseType<Transaction>();
             builder.Property(p => p.Source).HasMaxLength(100).HasColumnName("source").IsRequired();
             builder.Property(p => p.Destination).HasMaxLength(100).HasColumnName("destination").IsRequired();
+            builder.HasIndex(p => p.Source);
+            builder.HasIndex(p => p.Destination);
         }
     }
 }

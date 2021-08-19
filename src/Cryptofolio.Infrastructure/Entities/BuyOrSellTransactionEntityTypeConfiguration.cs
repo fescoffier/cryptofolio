@@ -15,6 +15,8 @@ namespace Cryptofolio.Infrastructure.Entities
             builder.Property(p => p.Type).HasMaxLength(4).HasColumnName("type").IsRequired();
             builder.Property(p => p.Currency).HasMaxLength(10).HasColumnName("currency").IsRequired();
             builder.Property(p => p.Price).HasColumnName("price");
+            builder.HasIndex(p => p.Type);
+            builder.HasIndex(p => p.Currency);
         }
     }
 }

@@ -58,5 +58,17 @@ namespace Cryptofolio.Api.IntegrationTests
             context.Database.Migrate();
             return host;
         }
+
+        public void PurgeData()
+        {
+            using var scope = Services.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
+            context.Transactions.RemoveRange(context.Transactions);
+            context.Wallets.RemoveRange(context.Wallets);
+            context.AssetTickers.RemoveRange(context.AssetTickers);
+            context.Assets.RemoveRange(context.Assets);
+            context.Exchanges.RemoveRange(context.Exchanges);
+            context.SaveChanges();
+        }
     }
 }
