@@ -15,16 +15,18 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
 {
     public class CreateTransactionCommandHandlerTests : IClassFixture<WebApplicationFactory>
     {
-        private readonly TestData _data;
+        private readonly WebApplicationFactory _factory;
         private readonly IServiceScope _scope;
         private readonly CreateTransactionCommandHandler _handler;
         private readonly CryptofolioContext _context;
         private readonly Mock<ISystemClock> _systemClockMock;
         private readonly Mock<IEventDispatcher> _dispatcherMock;
 
+        private TestData Data => _factory.Data;
+
         public CreateTransactionCommandHandlerTests(WebApplicationFactory factory)
         {
-            _data = factory.Data;
+            _factory = factory;
             _scope = factory.Services.CreateScope();
             _handler = _scope.ServiceProvider.GetRequiredService<CreateTransactionCommandHandler>();
             _context = _scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
@@ -40,22 +42,22 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             // Setup
             var utcNow = DateTimeOffset.UtcNow;
             _systemClockMock.SetupGet(m => m.UtcNow).Returns(utcNow);
-            _context.Wallets.Add(_data.Transaction1.Wallet);
-            _context.Assets.Add(_data.Transaction1.Asset);
-            _context.Exchanges.Add(_data.Transaction1.Exchange);
+            _context.Wallets.Add(Data.Transaction1.Wallet);
+            _context.Assets.Add(Data.Transaction1.Asset);
+            _context.Exchanges.Add(Data.Transaction1.Exchange);
             _context.SaveChanges();
             var command = new CreateTransactionCommand
             {
-                RequestContext = new(null, _data.UserId),
+                RequestContext = new(null, Data.UserId),
                 Type = CommandConstants.Transaction.Types.Buy,
-                Date = _data.Transaction1.Date,
-                WalletId = _data.Transaction1.Wallet.Id,
-                AssetId = _data.Transaction1.Asset.Id,
-                ExchangeId = _data.Transaction1.Exchange.Id,
-                Currency = _data.Transaction1.Currency,
-                Price = _data.Transaction1.Price,
-                Qty = _data.Transaction1.Qty,
-                Note = _data.Transaction1.Note
+                Date = Data.Transaction1.Date,
+                WalletId = Data.Transaction1.Wallet.Id,
+                AssetId = Data.Transaction1.Asset.Id,
+                ExchangeId = Data.Transaction1.Exchange.Id,
+                Currency = Data.Transaction1.Currency,
+                Price = Data.Transaction1.Price,
+                Qty = Data.Transaction1.Qty,
+                Note = Data.Transaction1.Note
             };
             var cancellationToken = CancellationToken.None;
 
@@ -64,7 +66,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
 
             // Assert
             result.Succeeded.Should().BeTrue();
-            result.Data.Should().BeEquivalentTo(_data.Transaction1, options => options.Excluding(m => m.Id));
+            result.Data.Should().BeEquivalentTo(Data.Transaction1, options => options.Excluding(m => m.Id));
             _context.Transactions.Single(t => t.Id == result.Data.Id).Should().BeEquivalentTo(result.Data);
             _dispatcherMock.Verify(m => m.DispatchAsync(It.Is<TransactionCreatedEvent>(w => w.Date == utcNow)), Times.Once());
         }
@@ -75,21 +77,21 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             // Setup
             var utcNow = DateTimeOffset.UtcNow;
             _systemClockMock.SetupGet(m => m.UtcNow).Returns(utcNow);
-            _context.Assets.Add(_data.Transaction1.Asset);
-            _context.Exchanges.Add(_data.Transaction1.Exchange);
+            _context.Assets.Add(Data.Transaction1.Asset);
+            _context.Exchanges.Add(Data.Transaction1.Exchange);
             _context.SaveChanges();
             var command = new CreateTransactionCommand
             {
-                RequestContext = new(null, _data.UserId),
+                RequestContext = new(null, Data.UserId),
                 Type = CommandConstants.Transaction.Types.Buy,
-                Date = _data.Transaction1.Date,
-                WalletId = _data.Transaction1.Wallet.Id,
-                AssetId = _data.Transaction1.Asset.Id,
-                ExchangeId = _data.Transaction1.Exchange.Id,
-                Currency = _data.Transaction1.Currency,
-                Price = _data.Transaction1.Price,
-                Qty = _data.Transaction1.Qty,
-                Note = _data.Transaction1.Note
+                Date = Data.Transaction1.Date,
+                WalletId = Data.Transaction1.Wallet.Id,
+                AssetId = Data.Transaction1.Asset.Id,
+                ExchangeId = Data.Transaction1.Exchange.Id,
+                Currency = Data.Transaction1.Currency,
+                Price = Data.Transaction1.Price,
+                Qty = Data.Transaction1.Qty,
+                Note = Data.Transaction1.Note
             };
             var cancellationToken = CancellationToken.None;
 
@@ -110,7 +112,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             var utcNow = DateTimeOffset.UtcNow;
             var command = new CreateTransactionCommand
             {
-                RequestContext = new(null, _data.UserId)
+                RequestContext = new(null, Data.UserId)
             };
             var cancellationToken = CancellationToken.None;
 

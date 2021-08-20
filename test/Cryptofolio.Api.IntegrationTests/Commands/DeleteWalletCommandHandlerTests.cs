@@ -15,16 +15,18 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
 {
     public class DeleteWalletCommandHandlerTests : IClassFixture<WebApplicationFactory>
     {
-        private readonly TestData _data;
+        private readonly WebApplicationFactory _factory;
         private readonly IServiceScope _scope;
         private readonly DeleteWalletCommandHandler _handler;
         private readonly CryptofolioContext _context;
         private readonly Mock<ISystemClock> _systemClockMock;
         private readonly Mock<IEventDispatcher> _dispatcherMock;
 
+        private TestData Data => _factory.Data;
+
         public DeleteWalletCommandHandlerTests(WebApplicationFactory factory)
         {
-            _data = factory.Data;
+            _factory = factory;
             _scope = factory.Services.CreateScope();
             _handler = _scope.ServiceProvider.GetRequiredService<DeleteWalletCommandHandler>();
             _context = _scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
@@ -38,13 +40,13 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             // Setup
             var utcNow = DateTimeOffset.UtcNow;
             _systemClockMock.SetupGet(m => m.UtcNow).Returns(utcNow);
-            _context.Wallets.Add(_data.Wallet2);
+            _context.Wallets.Add(Data.Wallet2);
             _context.SaveChanges();
             _context.ChangeTracker.Clear();
             var command = new DeleteWalletCommand
             {
-                RequestContext = new(null, _data.UserId),
-                Id = _data.Wallet2.Id
+                RequestContext = new(null, Data.UserId),
+                Id = Data.Wallet2.Id
             };
             var cancellationToken = CancellationToken.None;
 
@@ -53,7 +55,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
 
             // Assert
             result.Succeeded.Should().BeTrue();
-            _context.Wallets.SingleOrDefault(w => w.Id == _data.Wallet2.Id).Should().BeNull();
+            _context.Wallets.SingleOrDefault(w => w.Id == Data.Wallet2.Id).Should().BeNull();
             _dispatcherMock.Verify(m => m.DispatchAsync(It.Is<WalletDeletedEvent>(w => w.Date == utcNow)), Times.Once());
         }
 
@@ -63,13 +65,13 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             // Setup
             var utcNow = DateTimeOffset.UtcNow;
             _systemClockMock.SetupGet(m => m.UtcNow).Returns(utcNow);
-            _context.Wallets.Add(_data.Wallet1);
+            _context.Wallets.Add(Data.Wallet1);
             _context.SaveChanges();
             _context.ChangeTracker.Clear();
             var command = new DeleteWalletCommand
             {
-                RequestContext = new(null, _data.UserId),
-                Id = _data.Wallet1.Id
+                RequestContext = new(null, Data.UserId),
+                Id = Data.Wallet1.Id
             };
             var cancellationToken = CancellationToken.None;
 
@@ -79,7 +81,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             // Assert
             result.Succeeded.Should().BeFalse();
             result.Errors.Should().HaveCount(1).And.Contain(CommandConstants.Wallet.Errors.DeleteSelectedError);
-            _context.Wallets.SingleOrDefault(w => w.Id == _data.Wallet1.Id).Should().NotBeNull();
+            _context.Wallets.SingleOrDefault(w => w.Id == Data.Wallet1.Id).Should().NotBeNull();
             _dispatcherMock.Verify(m => m.DispatchAsync(It.Is<WalletDeletedEvent>(w => w.Date == utcNow)), Times.Never());
         }
 
@@ -89,12 +91,12 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             // Setup
             var utcNow = DateTimeOffset.UtcNow;
             _systemClockMock.SetupGet(m => m.UtcNow).Returns(utcNow);
-            _context.Wallets.Add(_data.Wallet3);
+            _context.Wallets.Add(Data.Wallet3);
             _context.SaveChanges();
             _context.ChangeTracker.Clear();
             var command = new DeleteWalletCommand
             {
-                RequestContext = new(null, _data.UserId),
+                RequestContext = new(null, Data.UserId),
                 Id = ""
             };
             var cancellationToken = CancellationToken.None;
@@ -105,7 +107,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             // Assert
             result.Succeeded.Should().BeFalse();
             result.Errors.Should().HaveCount(1).And.Contain(CommandConstants.Wallet.Errors.DeleteError);
-            _context.Wallets.SingleOrDefault(w => w.Id == _data.Wallet3.Id).Should().NotBeNull();
+            _context.Wallets.SingleOrDefault(w => w.Id == Data.Wallet3.Id).Should().NotBeNull();
             _dispatcherMock.Verify(m => m.DispatchAsync(It.Is<WalletDeletedEvent>(w => w.Date == utcNow)), Times.Never());
         }
     }

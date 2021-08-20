@@ -3,8 +3,8 @@ using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Entities;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -16,15 +16,50 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
     public class WalletControllerTests : IClassFixture<WebApplicationFactory>
     {
         private readonly WebApplicationFactory _factory;
-        private readonly TestData _data;
+
+        private TestData Data => _factory.Data;
 
         public WalletControllerTests(WebApplicationFactory factory)
         {
             _factory = factory;
-            _data = factory.Data;
+            factory.PurgeData();
+        }
 
+        [Fact]
+        public async Task Get_Test()
+        {
+            // Setup
+            var client = _factory.CreateClient();
             using var scope = _factory.Services.CreateScope();
-            scope.ServiceProvider.GetRequiredService<CryptofolioContext>().Database.ExecuteSqlRaw("delete from \"data\".\"wallet\"");
+            var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
+            context.Wallets.Add(Data.Wallet1);
+            context.SaveChanges();
+
+            // Act
+            var transaction = await client.GetFromJsonAsync<Wallet>($"/wallets/{Data.Wallet1.Id}");
+
+            // Assert
+            transaction.Should().BeEquivalentTo(Data.Wallet1);
+        }
+
+        [Fact]
+        public async Task Get_List_Test()
+        {
+            // Setup
+            var client = _factory.CreateClient();
+            using var scope = _factory.Services.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
+            context.Wallets.AddRange(Data.Wallet1, Data.Wallet2, Data.Wallet3);
+            context.SaveChanges();
+
+            // Act
+            var transactions = await client.GetFromJsonAsync<List<Wallet>>("/wallets");
+
+            // Assert
+            transactions.Should().HaveCount(3);
+            transactions.Should().ContainEquivalentOf(Data.Wallet1);
+            transactions.Should().ContainEquivalentOf(Data.Wallet2);
+            transactions.Should().ContainEquivalentOf(Data.Wallet3);
         }
 
         [Fact]
@@ -34,8 +69,8 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             var client = _factory.CreateClient();
             var command = new CreateWalletCommand
             {
-                Name = _data.Wallet1.Name,
-                Description = _data.Wallet1.Description
+                Name = Data.Wallet1.Name,
+                Description = Data.Wallet1.Description
             };
 
             // Act
@@ -71,11 +106,11 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             var client = _factory.CreateClient();
             var command = new CreateWalletCommand
             {
-                Name = _data.Wallet1.Name,
-                Description = _data.Wallet1.Description
+                Name = Data.Wallet1.Name,
+                Description = Data.Wallet1.Description
             };
             // Change the test data user id with a value length greater than 36 characters, triggers a database exception.
-            _data.ChangUserId(new string(Enumerable.Repeat('A', 37).ToArray()));
+            Data.ChangUserId(new string(Enumerable.Repeat('A', 37).ToArray()));
 
             // Act
             var response = await client.PostAsJsonAsync("/wallets", command);
@@ -86,7 +121,7 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             document.RootElement.GetProperty("errors").EnumerateArray().Should().HaveCount(1);
             document.RootElement.GetProperty("errors").EnumerateArray().First().GetString().Should().Be(CommandConstants.Wallet.Errors.CreateError);
             document.RootElement.GetProperty("succeeded").GetBoolean().Should().BeFalse();
-            _data.RestoreUserId();
+            Data.RestoreUserId();
         }
 
         [Fact]
@@ -97,14 +132,14 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             using (var scope = _factory.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
-                context.Wallets.Add(_data.Wallet2);
+                context.Wallets.Add(Data.Wallet2);
                 context.SaveChanges();
             }
             var command = new UpdateWalletCommand
             {
-                Id = _data.Wallet2.Id,
-                Name = _data.Wallet2.Name + " updated",
-                Description = _data.Wallet2.Description
+                Id = Data.Wallet2.Id,
+                Name = Data.Wallet2.Name + " updated",
+                Description = Data.Wallet2.Description
             };
 
             // Act
@@ -115,9 +150,9 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             using (var scope = _factory.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
-                var wallet = context.Wallets.Single(w => w.Id == _data.Wallet2.Id);
-                wallet.Name.Should().Be(_data.Wallet2.Name + " updated");
-                wallet.Description.Should().Be(_data.Wallet2.Description);
+                var wallet = context.Wallets.Single(w => w.Id == Data.Wallet2.Id);
+                wallet.Name.Should().Be(Data.Wallet2.Name + " updated");
+                wallet.Description.Should().Be(Data.Wallet2.Description);
             }
         }
 
@@ -142,9 +177,9 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             var client = _factory.CreateClient();
             var command = new UpdateWalletCommand
             {
-                Id = _data.Wallet2.Id,
-                Name = _data.Wallet2.Name,
-                Description = _data.Wallet2.Description
+                Id = Data.Wallet2.Id,
+                Name = Data.Wallet2.Name,
+                Description = Data.Wallet2.Description
             };
 
             // Act
@@ -166,12 +201,12 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             using (var scope = _factory.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
-                context.Wallets.AddRange(_data.Wallet1, _data.Wallet2, _data.Wallet3);
+                context.Wallets.AddRange(Data.Wallet1, Data.Wallet2, Data.Wallet3);
                 context.SaveChanges();
             }
 
             // Act
-            var response = await client.PutAsync($"/wallets/{_data.Wallet2.Id}/select", null);
+            var response = await client.PutAsync($"/wallets/{Data.Wallet2.Id}/select", null);
 
             // Assert
             response.StatusCode.Should().Be(StatusCodes.Status204NoContent);
@@ -179,9 +214,9 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             {
                 var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
                 var wallets = context.Wallets.ToList();
-                wallets.Single(w => w.Id == _data.Wallet1.Id).Selected.Should().BeFalse();
-                wallets.Single(w => w.Id == _data.Wallet2.Id).Selected.Should().BeTrue();
-                wallets.Single(w => w.Id == _data.Wallet3.Id).Selected.Should().BeFalse();
+                wallets.Single(w => w.Id == Data.Wallet1.Id).Selected.Should().BeFalse();
+                wallets.Single(w => w.Id == Data.Wallet2.Id).Selected.Should().BeTrue();
+                wallets.Single(w => w.Id == Data.Wallet3.Id).Selected.Should().BeFalse();
             }
         }
 
@@ -193,7 +228,7 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             using (var scope = _factory.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
-                context.Wallets.AddRange(_data.Wallet1, _data.Wallet2, _data.Wallet3);
+                context.Wallets.AddRange(Data.Wallet1, Data.Wallet2, Data.Wallet3);
                 context.SaveChanges();
             }
 
@@ -210,9 +245,9 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             {
                 var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
                 var wallets = context.Wallets.ToList();
-                wallets.Single(w => w.Id == _data.Wallet1.Id).Selected.Should().BeTrue();
-                wallets.Single(w => w.Id == _data.Wallet2.Id).Selected.Should().BeFalse();
-                wallets.Single(w => w.Id == _data.Wallet3.Id).Selected.Should().BeFalse();
+                wallets.Single(w => w.Id == Data.Wallet1.Id).Selected.Should().BeTrue();
+                wallets.Single(w => w.Id == Data.Wallet2.Id).Selected.Should().BeFalse();
+                wallets.Single(w => w.Id == Data.Wallet3.Id).Selected.Should().BeFalse();
             }
         }
 
@@ -224,19 +259,19 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             using (var scope = _factory.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
-                context.Wallets.Add(_data.Wallet3);
+                context.Wallets.Add(Data.Wallet3);
                 context.SaveChanges();
             }
 
             // Act
-            var response = await client.DeleteAsync($"/wallets/{_data.Wallet3.Id}");
+            var response = await client.DeleteAsync($"/wallets/{Data.Wallet3.Id}");
 
             // Assert
             response.StatusCode.Should().Be(StatusCodes.Status204NoContent);
             using (var scope = _factory.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
-                context.Wallets.SingleOrDefault(w => w.Id == _data.Wallet3.Id).Should().BeNull();
+                context.Wallets.SingleOrDefault(w => w.Id == Data.Wallet3.Id).Should().BeNull();
             }
         }
 
@@ -247,7 +282,7 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             var client = _factory.CreateClient();
 
             // Act
-            var response = await client.DeleteAsync($"/wallets/{_data.Wallet3.Id}");
+            var response = await client.DeleteAsync($"/wallets/{Data.Wallet3.Id}");
 
             // Assert
             response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);

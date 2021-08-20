@@ -15,16 +15,18 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
 {
     public class UpdateWalletCommandHandlerTests : IClassFixture<WebApplicationFactory>
     {
-        private readonly TestData _data;
+        private readonly WebApplicationFactory _factory;
         private readonly IServiceScope _scope;
         private readonly UpdateWalletCommandHandler _handler;
         private readonly CryptofolioContext _context;
         private readonly Mock<ISystemClock> _systemClockMock;
         private readonly Mock<IEventDispatcher> _dispatcherMock;
 
+        private TestData Data => _factory.Data;
+
         public UpdateWalletCommandHandlerTests(WebApplicationFactory factory)
         {
-            _data = factory.Data;
+            _factory = factory;
             _scope = factory.Services.CreateScope();
             _handler = _scope.ServiceProvider.GetRequiredService<UpdateWalletCommandHandler>();
             _context = _scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
@@ -38,15 +40,15 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             // Setup
             var utcNow = DateTimeOffset.UtcNow;
             _systemClockMock.SetupGet(m => m.UtcNow).Returns(utcNow);
-            _context.Wallets.Add(_data.Wallet1);
+            _context.Wallets.Add(Data.Wallet1);
             _context.SaveChanges();
             _context.ChangeTracker.Clear();
             var command = new UpdateWalletCommand
             {
-                RequestContext = new(null, _data.UserId),
-                Id = _data.Wallet1.Id,
-                Name = _data.Wallet1.Name + " updated",
-                Description = _data.Wallet1.Description
+                RequestContext = new(null, Data.UserId),
+                Id = Data.Wallet1.Id,
+                Name = Data.Wallet1.Name + " updated",
+                Description = Data.Wallet1.Description
             };
             var cancellationToken = CancellationToken.None;
 
@@ -55,7 +57,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
 
             // Assert
             result.Succeeded.Should().BeTrue();
-            var wallet = _context.Wallets.Single(w => w.Id == _data.Wallet1.Id);
+            var wallet = _context.Wallets.Single(w => w.Id == Data.Wallet1.Id);
             wallet.Name.Should().Be(command.Name);
             wallet.Description.Should().Be(command.Description);
             _dispatcherMock.Verify(m => m.DispatchAsync(It.Is<WalletUpdatedEvent>(w => w.Date == utcNow)), Times.Once());
@@ -69,10 +71,10 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             _systemClockMock.SetupGet(m => m.UtcNow).Returns(utcNow);
             var command = new UpdateWalletCommand
             {
-                RequestContext = new(null, _data.UserId),
-                Id = _data.Wallet1.Id,
-                Name = _data.Wallet1.Name + " updated",
-                Description = _data.Wallet1.Description
+                RequestContext = new(null, Data.UserId),
+                Id = Data.Wallet1.Id,
+                Name = Data.Wallet1.Name + " updated",
+                Description = Data.Wallet1.Description
             };
             var cancellationToken = CancellationToken.None;
 

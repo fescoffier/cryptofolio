@@ -105,7 +105,7 @@ namespace Cryptofolio.Api.IntegrationTests
             Transaction2 = new BuyOrSellTransaction
             {
                 Id = Guid.NewGuid().ToString(),
-                Date = DateTimeOffset.UtcNow,
+                Date = DateTimeOffset.UtcNow.AddMinutes(-2),
                 Asset = BTC,
                 Wallet = Wallet1,
                 Exchange = Exchange1,
@@ -118,7 +118,7 @@ namespace Cryptofolio.Api.IntegrationTests
             Transaction3 = new BuyOrSellTransaction
             {
                 Id = Guid.NewGuid().ToString(),
-                Date = DateTimeOffset.UtcNow,
+                Date = DateTimeOffset.UtcNow.AddMinutes(-4),
                 Asset = BTC,
                 Wallet = Wallet2,
                 Exchange = Exchange1,
@@ -131,7 +131,7 @@ namespace Cryptofolio.Api.IntegrationTests
             Transaction4 = new TransferTransaction
             {
                 Id = Guid.NewGuid().ToString(),
-                Date = DateTimeOffset.UtcNow,
+                Date = DateTimeOffset.UtcNow.AddMinutes(-5),
                 Asset = BTC,
                 Wallet = Wallet3,
                 Exchange = Exchange2,

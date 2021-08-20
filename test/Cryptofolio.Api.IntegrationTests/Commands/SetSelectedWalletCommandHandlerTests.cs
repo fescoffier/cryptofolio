@@ -2,7 +2,6 @@ using Cryptofolio.Api.Commands;
 using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Entities;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Internal;
 using Moq;
@@ -16,23 +15,25 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
 {
     public class SetSelectedWalletCommandHandlerTests : IClassFixture<WebApplicationFactory>
     {
-        private readonly TestData _data;
+        private readonly WebApplicationFactory _factory;
         private readonly IServiceScope _scope;
         private readonly SetSelectedWalletCommandHandler _handler;
         private readonly CryptofolioContext _context;
         private readonly Mock<ISystemClock> _systemClockMock;
         private readonly Mock<IEventDispatcher> _dispatcherMock;
 
+        private TestData Data => _factory.Data;
+
         public SetSelectedWalletCommandHandlerTests(WebApplicationFactory factory)
         {
-            _data = factory.Data;
+            _factory = factory;
             _scope = factory.Services.CreateScope();
             _handler = _scope.ServiceProvider.GetRequiredService<SetSelectedWalletCommandHandler>();
             _context = _scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
             _systemClockMock = _scope.ServiceProvider.GetRequiredService<Mock<ISystemClock>>();
             _dispatcherMock = _scope.ServiceProvider.GetRequiredService<Mock<IEventDispatcher>>();
 
-            _context.Database.ExecuteSqlRaw("delete from \"data\".\"wallet\"");
+            factory.PurgeData();
         }
 
         [Fact]
@@ -41,13 +42,13 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             // Setup
             var utcNow = DateTimeOffset.UtcNow;
             _systemClockMock.SetupGet(m => m.UtcNow).Returns(utcNow);
-            _context.Wallets.AddRange(_data.Wallet1, _data.Wallet2, _data.Wallet3);
+            _context.Wallets.AddRange(Data.Wallet1, Data.Wallet2, Data.Wallet3);
             _context.SaveChanges();
             _context.ChangeTracker.Clear();
             var command = new SetSelectedWalletCommand
             {
-                RequestContext = new(null, _data.UserId),
-                Id = _data.Wallet2.Id
+                RequestContext = new(null, Data.UserId),
+                Id = Data.Wallet2.Id
             };
             var cancellationToken = CancellationToken.None;
 
@@ -57,9 +58,9 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             // Assert
             result.Succeeded.Should().BeTrue();
             var wallets = _context.Wallets.ToList();
-            wallets.Single(w => w.Id == _data.Wallet1.Id).Selected.Should().BeFalse();
-            wallets.Single(w => w.Id == _data.Wallet2.Id).Selected.Should().BeTrue();
-            wallets.Single(w => w.Id == _data.Wallet3.Id).Selected.Should().BeFalse();
+            wallets.Single(w => w.Id == Data.Wallet1.Id).Selected.Should().BeFalse();
+            wallets.Single(w => w.Id == Data.Wallet2.Id).Selected.Should().BeTrue();
+            wallets.Single(w => w.Id == Data.Wallet3.Id).Selected.Should().BeFalse();
             _dispatcherMock.Verify(m => m.DispatchAsync(It.Is<WalletSelectedEvent>(w => w.Date == utcNow)), Times.Once());
         }
 
@@ -68,12 +69,12 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
         {
             // Setup
             var utcNow = DateTimeOffset.UtcNow;
-            _context.Wallets.AddRange(_data.Wallet1, _data.Wallet2, _data.Wallet3);
+            _context.Wallets.AddRange(Data.Wallet1, Data.Wallet2, Data.Wallet3);
             _context.SaveChanges();
             _context.ChangeTracker.Clear();
             var command = new SetSelectedWalletCommand
             {
-                RequestContext = new(null, _data.UserId)
+                RequestContext = new(null, Data.UserId)
             };
             var cancellationToken = CancellationToken.None;
 
@@ -84,9 +85,9 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             result.Succeeded.Should().BeFalse();
             result.Errors.Should().HaveCount(1).And.Contain(CommandConstants.Wallet.Errors.UpdateError);
             var wallets = _context.Wallets.ToList();
-            wallets.Single(w => w.Id == _data.Wallet1.Id).Selected.Should().BeTrue();
-            wallets.Single(w => w.Id == _data.Wallet2.Id).Selected.Should().BeFalse();
-            wallets.Single(w => w.Id == _data.Wallet3.Id).Selected.Should().BeFalse();
+            wallets.Single(w => w.Id == Data.Wallet1.Id).Selected.Should().BeTrue();
+            wallets.Single(w => w.Id == Data.Wallet2.Id).Selected.Should().BeFalse();
+            wallets.Single(w => w.Id == Data.Wallet3.Id).Selected.Should().BeFalse();
             _dispatcherMock.Verify(m => m.DispatchAsync(It.Is<WalletSelectedEvent>(w => w.Date == utcNow)), Times.Never());
         }
     }

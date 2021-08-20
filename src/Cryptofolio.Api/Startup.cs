@@ -42,6 +42,7 @@ namespace Cryptofolio.Api
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+                    options.JsonSerializerOptions.Converters.Add(new TransactionJsonConverter());
                 });
 
             // Authentification
