@@ -41,6 +41,10 @@ namespace Cryptofolio.Api.Commands
 
         private void ValidateBuy(ITransactionCommand command, HashSet<string> errorMemberNames)
         {
+            if (string.IsNullOrWhiteSpace(command.ExchangeId))
+            {
+                errorMemberNames.Add(nameof(ITransactionCommand.ExchangeId));
+            }
             if (string.IsNullOrWhiteSpace(command.Currency))
             {
                 errorMemberNames.Add(nameof(ITransactionCommand.Currency));
@@ -57,6 +61,10 @@ namespace Cryptofolio.Api.Commands
 
         private void ValidateSell(ITransactionCommand command, HashSet<string> errorMemberNames)
         {
+            if (string.IsNullOrWhiteSpace(command.ExchangeId))
+            {
+                errorMemberNames.Add(nameof(ITransactionCommand.ExchangeId));
+            }
             if (string.IsNullOrWhiteSpace(command.Currency))
             {
                 errorMemberNames.Add(nameof(ITransactionCommand.Currency));

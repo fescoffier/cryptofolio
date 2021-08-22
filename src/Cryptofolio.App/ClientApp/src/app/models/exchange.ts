@@ -1,8 +1,10 @@
-export class Wallet {
+export class Exchange {
   id: string;
   name: string;
   description: string;
-  selected: boolean;
+  year_established: number;
+  url: string;
+  image: string;
 
   constructor(properties?: any) {
     Object.assign(this, properties);

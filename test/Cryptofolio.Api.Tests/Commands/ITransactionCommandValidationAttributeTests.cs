@@ -19,6 +19,7 @@ namespace Cryptofolio.Api.Tests.Commands
             var command = new FakeTransactionCommand
             {
                 Type = CommandConstants.Transaction.Types.Buy,
+                ExchangeId = "exchange1",
                 Currency = "usd",
                 Price = 1,
                 Qty = 1
@@ -35,12 +36,35 @@ namespace Cryptofolio.Api.Tests.Commands
         }
 
         [Fact]
+        public void IsValid_Buy_InvalidExchangeId_Test()
+        {
+            // Setup
+            var command = new FakeTransactionCommand
+            {
+                Type = CommandConstants.Transaction.Types.Buy,
+                Currency = "usd",
+                Price = 1,
+                Qty = 1
+            };
+            var validationContext = new ValidationContext(command);
+            var validationResults = new List<ValidationResult>();
+
+            // Act
+            var result = Validator.TryValidateObject(command, validationContext, validationResults);
+
+            // Assert
+            result.Should().BeFalse();
+            validationResults.Should().ContainEquivalentOf(new ValidationResult(ErrorMessage, new[] { nameof(ITransactionCommand.ExchangeId) }));
+        }
+
+        [Fact]
         public void IsValid_Buy_InvalidCurrency_Test()
         {
             // Setup
             var command = new FakeTransactionCommand
             {
                 Type = CommandConstants.Transaction.Types.Buy,
+                ExchangeId = "exchange1",
                 Price = 1,
                 Qty = 1
             };
@@ -62,6 +86,7 @@ namespace Cryptofolio.Api.Tests.Commands
             var command = new FakeTransactionCommand
             {
                 Type = CommandConstants.Transaction.Types.Buy,
+                ExchangeId = "exchange1",
                 Currency = "usd",
                 Qty = 1
             };
@@ -83,6 +108,7 @@ namespace Cryptofolio.Api.Tests.Commands
             var command = new FakeTransactionCommand
             {
                 Type = CommandConstants.Transaction.Types.Buy,
+                ExchangeId = "exchange1",
                 Currency = "usd",
                 Price = 1
             };
@@ -104,6 +130,7 @@ namespace Cryptofolio.Api.Tests.Commands
             var command = new FakeTransactionCommand
             {
                 Type = CommandConstants.Transaction.Types.Sell,
+                ExchangeId = "exchange1",
                 Currency = "usd",
                 Price = 1,
                 Qty = 1
@@ -120,12 +147,35 @@ namespace Cryptofolio.Api.Tests.Commands
         }
 
         [Fact]
+        public void IsValid_Sell_InvalidExchangeId_Test()
+        {
+            // Setup
+            var command = new FakeTransactionCommand
+            {
+                Type = CommandConstants.Transaction.Types.Sell,
+                Currency = "usd",
+                Price = 1,
+                Qty = 1
+            };
+            var validationContext = new ValidationContext(command);
+            var validationResults = new List<ValidationResult>();
+
+            // Act
+            var result = Validator.TryValidateObject(command, validationContext, validationResults);
+
+            // Assert
+            result.Should().BeFalse();
+            validationResults.Should().ContainEquivalentOf(new ValidationResult(ErrorMessage, new[] { nameof(ITransactionCommand.ExchangeId) }));
+        }
+
+        [Fact]
         public void IsValid_Sell_InvalidCurrency_Test()
         {
             // Setup
             var command = new FakeTransactionCommand
             {
                 Type = CommandConstants.Transaction.Types.Sell,
+                ExchangeId = "exchange1",
                 Price = 1,
                 Qty = 1
             };
@@ -147,6 +197,7 @@ namespace Cryptofolio.Api.Tests.Commands
             var command = new FakeTransactionCommand
             {
                 Type = CommandConstants.Transaction.Types.Sell,
+                ExchangeId = "exchange1",
                 Currency = "usd",
                 Qty = 1
             };
@@ -168,6 +219,7 @@ namespace Cryptofolio.Api.Tests.Commands
             var command = new FakeTransactionCommand
             {
                 Type = CommandConstants.Transaction.Types.Sell,
+                ExchangeId = "exchange1",
                 Currency = "usd",
                 Price = 1
             };

@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace Cryptofolio.Infrastructure.Entities
 {
@@ -41,5 +42,11 @@ namespace Cryptofolio.Infrastructure.Entities
         /// The optional note.
         /// </summary>
         public string Note { get; set; }
+
+        /// <summary>
+        /// The type discriminator.
+        /// </summary>
+        [JsonPropertyName("type_discriminator")]
+        public string TypeDiscriminator => GetType().Name;
     }
 }

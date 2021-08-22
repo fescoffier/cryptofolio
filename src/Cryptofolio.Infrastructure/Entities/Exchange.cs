@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Cryptofolio.Infrastructure.Entities
 {
     /// <summary>
@@ -23,6 +25,7 @@ namespace Cryptofolio.Infrastructure.Entities
         /// <summary>
         /// The year the it was established.
         /// </summary>
+        [JsonPropertyName("year_established")]
         public long? YearEstablished { get; set; }
 
         /// <summary>

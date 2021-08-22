@@ -12,9 +12,15 @@ export class ApiOptions {
     return this._walletsEndpoint;
   }
 
+  private _transactionsEndpoint: string;
+  public get transactionsEndpoint() {
+    return this._transactionsEndpoint;
+  }
+
   constructor() {
     const apiOptions = (window as any)['__me']['api'];
     this._url = apiOptions.url;
     this._walletsEndpoint = apiOptions.walletsEndpoint;
+    this._transactionsEndpoint = apiOptions.transactionsEndpoint;
   }
 }

@@ -1,8 +1,8 @@
-export class Wallet {
+export class Asset {
   id: string;
+  symbol: string;
   name: string;
   description: string;
-  selected: boolean;
 
   constructor(properties?: any) {
     Object.assign(this, properties);

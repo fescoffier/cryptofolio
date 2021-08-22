@@ -14,5 +14,10 @@ namespace Cryptofolio.App
         /// The wallets endpoint.
         /// </summary>
         public string WalletsEndpoint => $"{Url}/wallets";
+
+        /// <summary>
+        /// The transactions endpoint.
+        /// </summary>
+        public string TransactionsEndpoint => $"{Url}/transactions";
     }
 }
