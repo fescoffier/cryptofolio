@@ -1,14 +1,21 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 
 import { BuyOrSellTransaction, Transaction, TransferTransaction } from "../../../models/transaction";
+import { Asset } from "../../../models/Asset";
+import { Exchange } from "../../../models/exchange";
 import { TransactionService } from "../transaction.service";
+import { Wallet } from "../../../models/wallet";
 
 @Component({
   selector: "app-transaction-edit",
-  templateUrl: "transaction-edit.component.html"
+  templateUrl: "transaction-edit.component.html",
+  styleUrls: ["./transaction-edit.component.scss"]
 })
-export class TransactionEditComponent {
+export class TransactionEditComponent implements OnInit {
+  public assets: Asset[];
+  public exchanges: Exchange[];
+  public wallets: Wallet[];
 
   @Input()
   public transaction: Transaction;
@@ -27,6 +34,12 @@ export class TransactionEditComponent {
     this.form = this.createForm();
   }
 
+  ngOnInit(): void {
+    this.service.getAssets().subscribe(assets => this.assets = assets);
+    this.service.getExchanges().subscribe(exchanges => this.exchanges = exchanges);
+    this.service.getWallets().subscribe(wallets => this.wallets = wallets);
+  }
+
   private createForm(): FormGroup {
     if (this.type === "buy" || this.type === "sell") {
       return this.fb.group({
@@ -34,8 +47,11 @@ export class TransactionEditComponent {
         transaction_date: [this.transaction?.date, [Validators.required]],
         transaction_time: [this.transaction?.date],
         wallet_id: [this.transaction?.wallet.id, [Validators.required]],
+        wallet_name: [this.transaction?.wallet.name],
         asset_id: [this.transaction?.asset.id, [Validators.required]],
+        asset_name: [this.transaction?.asset.name],
         exchange_id: [this.transaction?.exchange.id, [Validators.required]],
+        exchange_name: [this.transaction?.exchange.name],
         type: [this.transaction?.["type"] || this.type],
         currency: [this.transaction?.["currency"], [Validators.required]],
         price: [this.transaction?.["price"], [Validators.required]],
@@ -48,8 +64,11 @@ export class TransactionEditComponent {
         transaction_date: [this.transaction?.date, [Validators.required]],
         transaction_time: [this.transaction?.date],
         wallet_id: [this.transaction?.wallet.id, [Validators.required]],
+        wallet_name: [this.transaction?.wallet.name],
         asset_id: [this.transaction?.asset.id, [Validators.required]],
+        asset_name: [this.transaction?.asset.name],
         exchange_id: [this.transaction?.exchange.id, [Validators.required]],
+        exchange_name: [this.transaction?.exchange.name],
         source: [this.transaction?.["source"], [Validators.required]],
         destination: [this.transaction?.["destination"], [Validators.required]],
         qty: [this.transaction?.qty, [Validators.min(0), Validators.max(Number.MAX_VALUE)]],
@@ -62,6 +81,21 @@ export class TransactionEditComponent {
     this.type = type;
     this.form = this.createForm();
     this.formSubmitted = false;
+  }
+
+  setWallet(wallet: Wallet) {
+    this.form.controls.wallet_id.setValue(wallet.id);
+    this.form.controls.wallet_name.setValue(wallet.name);
+  }
+
+  setAsset(asset: Asset) {
+    this.form.controls.asset_id.setValue(asset.id);
+    this.form.controls.asset_name.setValue(asset.name);
+  }
+
+  setExchange(exchange: Exchange) {
+    this.form.controls.exchange_id.setValue(exchange.id);
+    this.form.controls.exchange_name.setValue(exchange.name);
   }
 
   reset() {
@@ -82,6 +116,10 @@ export class TransactionEditComponent {
       date.setTime(time.getTime());
     }
     transaction["date"] = date;
+    
+    delete transaction.wallet_name;
+    delete transaction.asset_name;
+    delete transaction.exchange_name;
     delete transaction.transaction_date;
     delete transaction.transaction_time;
     console.log(transaction);

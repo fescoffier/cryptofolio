@@ -19,8 +19,17 @@
           'has-danger': (formSubmitted && formControls.wallet_id.errors) || (formControls.wallet_id.value != null && formControls.wallet_id.errors),
           'has-success': !formControls.wallet_id.errors
         }">
-          <label> Wallet * </label>
-          <input class=" form-control" name="wallet_id" formControlName="wallet_id" autofocus />
+          <label class="d-block"> Wallet * </label>
+          <div class="btn-group transaction-ddl" dropdown>
+            <button dropdownToggle type="button" class="btn dropdown-toggle" [ngClass]="{'btn-info': form.controls.wallet_name.value}">
+              {{ form.controls.wallet_name.value || 'Select a wallet' }}
+            </button>
+            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu">
+              <li role="menuitem" *ngFor="let wallet of wallets">
+                <a class="dropdown-item" href="javascript:void(0)" (click)="setWallet(wallet)">{{ wallet.name }}</a>
+              </li>
+            </ul>
+          </div>
           <label class="error"
             *ngIf="(formSubmitted && formControls.wallet_id.errors) || (formControls.wallet_id.value != null && formControls.wallet_id.errors)">
             Please select a wallet.</label>
@@ -29,8 +38,17 @@
           'has-danger': (formSubmitted && formControls.asset_id.errors) || (formControls.asset_id.value != null && formControls.asset_id.errors),
           'has-success': !formControls.asset_id.errors
         }">
-          <label> Asset * </label>
-          <input class=" form-control" name="asset_id" formControlName="asset_id" />
+          <label class="d-block"> Asset * </label>
+          <div class="btn-group transaction-ddl" dropdown>
+            <button dropdownToggle type="button" class="btn dropdown-toggle" [ngClass]="{'btn-info': form.controls.asset_name.value}">
+              {{ form.controls.asset_name.value || 'Select an asset' }}
+            </button>
+            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu">
+              <li role="menuitem" *ngFor="let asset of assets">
+                <a class="dropdown-item" href="javascript:void(0)" (click)="setAsset(asset)">{{ asset.name }}</a>
+              </li>
+            </ul>
+          </div>
           <label class="error"
             *ngIf="(formSubmitted && formControls.asset_id.errors) || (formControls.asset_id.value != null && formControls.asset_id.errors)">
             Please select an asset.</label>
@@ -39,8 +57,17 @@
           'has-danger': (formSubmitted && formControls.exchange_id.errors) || (formControls.exchange_id.value != null && formControls.exchange_id.errors),
           'has-success': !formControls.exchange_id.errors
         }">
-          <label> Exchange * </label>
-          <input class=" form-control" name="exchange_id" formControlName="exchange_id" />
+          <label class="d-block"> Exchange * </label>
+          <div class="btn-group transaction-ddl" dropdown>
+            <button dropdownToggle type="button" class="btn dropdown-toggle" [ngClass]="{'btn-info': form.controls.exchange_name.value}">
+              {{ form.controls.exchange_name.value || 'Select an exchange' }}
+            </button>
+            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu">
+              <li role="menuitem" *ngFor="let exchange of exchanges">
+                <a class="dropdown-item" href="javascript:void(0)" (click)="setExchange(exchange)">{{ exchange.name }}</a>
+              </li>
+            </ul>
+          </div>
           <label class="error"
             *ngIf="(formSubmitted && formControls.exchange_id.errors) || (formControls.exchange_id.value != null && formControls.exchange_id.errors)">
             Please select an exchange.</label>
@@ -108,8 +135,17 @@
           'has-danger': (formSubmitted && formControls.wallet_id.errors) || (formControls.wallet_id.value != null && formControls.wallet_id.errors),
           'has-success': !formControls.wallet_id.errors
         }">
-          <label> Wallet * </label>
-          <input class=" form-control" name="wallet_id" formControlName="wallet_id" required autofocus />
+          <label class="d-block"> Wallet * </label>
+          <div class="btn-group transaction-ddl" dropdown>
+            <button dropdownToggle type="button" class="btn dropdown-toggle" [ngClass]="{'btn-info': form.controls.wallet_name.value}">
+              {{ form.controls.wallet_name.value || 'Select a wallet' }}
+            </button>
+            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu">
+              <li role="menuitem" *ngFor="let wallet of wallets">
+                <a class="dropdown-item" href="javascript:void(0)" (click)="setWallet(wallet)">{{ wallet.name }}</a>
+              </li>
+            </ul>
+          </div>
           <label class="error"
             *ngIf="(formSubmitted && formControls.wallet_id.errors) || (formControls.wallet_id.value != null && formControls.wallet_id.errors)">
             Please select a wallet.</label>
@@ -118,8 +154,17 @@
           'has-danger': (formSubmitted && formControls.asset_id.errors) || (formControls.asset_id.value != null && formControls.asset_id.errors),
           'has-success': !formControls.asset_id.errors
         }">
-          <label> Asset * </label>
-          <input class=" form-control" name="asset_id" formControlName="asset_id" required autofocus />
+          <label class="d-block"> Asset * </label>
+          <div class="btn-group transaction-ddl" dropdown>
+            <button dropdownToggle type="button" class="btn dropdown-toggle" [ngClass]="{'btn-info': form.controls.asset_name.value}">
+              {{ form.controls.asset_name.value || 'Select an asset' }}
+            </button>
+            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu">
+              <li role="menuitem" *ngFor="let asset of assets">
+                <a class="dropdown-item" href="javascript:void(0)" (click)="setAsset(asset)">{{ asset.name }}</a>
+              </li>
+            </ul>
+          </div>
           <label class="error"
             *ngIf="(formSubmitted && formControls.asset_id.errors) || (formControls.asset_id.value != null && formControls.asset_id.errors)">
             Please select an asset.</label>
@@ -128,8 +173,17 @@
           'has-danger': (formSubmitted && formControls.exchange_id.errors) || (formControls.exchange_id.value != null && formControls.exchange_id.errors),
           'has-success': !formControls.exchange_id.errors
         }">
-          <label> Exchange * </label>
-          <input class=" form-control" name="exchange_id" formControlName="exchange_id" required autofocus />
+          <label class="d-block"> Exchange * </label>
+          <div class="btn-group transaction-ddl" dropdown>
+            <button dropdownToggle type="button" class="btn dropdown-toggle" [ngClass]="{'btn-info': form.controls.exchange_name.value}">
+              {{ form.controls.exchange_name.value || 'Select an exchange' }}
+            </button>
+            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu">
+              <li role="menuitem" *ngFor="let exchange of exchanges">
+                <a class="dropdown-item" href="javascript:void(0)" (click)="setExchange(exchange)">{{ exchange.name }}</a>
+              </li>
+            </ul>
+          </div>
           <label class="error"
             *ngIf="(formSubmitted && formControls.exchange_id.errors) || (formControls.exchange_id.value != null && formControls.exchange_id.errors)">
             Please select an exchange.</label>
@@ -197,8 +251,17 @@
           'has-danger': (formSubmitted && formControls.wallet_id.errors) || (formControls.wallet_id.value != null && formControls.wallet_id.errors),
           'has-success': !formControls.wallet_id.errors
         }">
-          <label> Wallet * </label>
-          <input class=" form-control" name="wallet_id" formControlName="wallet_id" autofocus />
+          <label class="d-block"> Wallet * </label>
+          <div class="btn-group transaction-ddl" dropdown>
+            <button dropdownToggle type="button" class="btn dropdown-toggle" [ngClass]="{'btn-info': form.controls.wallet_name.value}">
+              {{ form.controls.wallet_name.value || 'Select a wallet' }}
+            </button>
+            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu">
+              <li role="menuitem" *ngFor="let wallet of wallets">
+                <a class="dropdown-item" href="javascript:void(0)" (click)="setWallet(wallet)">{{ wallet.name }}</a>
+              </li>
+            </ul>
+          </div>
           <label class="error"
             *ngIf="(formSubmitted && formControls.wallet_id.errors) || (formControls.wallet_id.value != null && formControls.wallet_id.errors)">
             Please select a wallet.</label>
@@ -207,8 +270,17 @@
           'has-danger': (formSubmitted && formControls.asset_id.errors) || (formControls.asset_id.value != null && formControls.asset_id.errors),
           'has-success': !formControls.asset_id.errors
         }">
-          <label> Asset * </label>
-          <input class=" form-control" name="asset_id" formControlName="asset_id" />
+          <label class="d-block"> Asset * </label>
+          <div class="btn-group transaction-ddl" dropdown>
+            <button dropdownToggle type="button" class="btn dropdown-toggle" [ngClass]="{'btn-info': form.controls.asset_name.value}">
+              {{ form.controls.asset_name.value || 'Select an asset' }}
+            </button>
+            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu">
+              <li role="menuitem" *ngFor="let asset of assets">
+                <a class="dropdown-item" href="javascript:void(0)" (click)="setAsset(asset)">{{ asset.name }}</a>
+              </li>
+            </ul>
+          </div>
           <label class="error"
             *ngIf="(formSubmitted && formControls.asset_id.errors) || (formControls.asset_id.value != null && formControls.asset_id.errors)">
             Please select an asset.</label>
@@ -217,8 +289,17 @@
           'has-danger': (formSubmitted && formControls.exchange_id.errors) || (formControls.exchange_id.value != null && formControls.exchange_id.errors),
           'has-success': !formControls.exchange_id.errors
         }">
-          <label> Exchange * </label>
-          <input class=" form-control" name="exchange_id" formControlName="exchange_id" />
+          <label class="d-block"> Exchange * </label>
+          <div class="btn-group transaction-ddl" dropdown>
+            <button dropdownToggle type="button" class="btn dropdown-toggle" [ngClass]="{'btn-info': form.controls.exchange_name.value}">
+              {{ form.controls.exchange_name.value || 'Select an exchange' }}
+            </button>
+            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu">
+              <li role="menuitem" *ngFor="let exchange of exchanges">
+                <a class="dropdown-item" href="javascript:void(0)" (click)="setExchange(exchange)">{{ exchange.name }}</a>
+              </li>
+            </ul>
+          </div>
           <label class="error"
             *ngIf="(formSubmitted && formControls.exchange_id.errors) || (formControls.exchange_id.value != null && formControls.exchange_id.errors)">
             Please select an exchange.</label>

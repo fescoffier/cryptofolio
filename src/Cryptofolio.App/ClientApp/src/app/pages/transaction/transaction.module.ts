@@ -4,6 +4,7 @@ import { RouterModule } from "@angular/router";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TimepickerModule } from "ngx-bootstrap/timepicker";
 
 import { TransactionRoutes } from "./transaction.routing";
@@ -19,6 +20,7 @@ import { TransactionsHistoryComponent } from "./history/transactions-history.com
     RouterModule.forChild(TransactionRoutes),
     ScrollingModule,
     BsDatepickerModule.forRoot(),
+    BsDropdownModule.forRoot(),
     TimepickerModule.forRoot()
   ],
   declarations: [
