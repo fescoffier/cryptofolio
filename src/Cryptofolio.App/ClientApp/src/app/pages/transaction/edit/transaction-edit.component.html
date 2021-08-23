@@ -1,26 +1,26 @@
 <div class="content">
   <ul class="nav nav-pills nav-justified">
     <li class="nav-item">
-      <a class="nav-link" [ngClass]="{'active': type === 'buy'}" href="javascript:void(0)" (click)="setType('buy')">Buy</a>
+      <a class="nav-link" [ngClass]="{'active': type === 'buy', 'bg-success': type === 'buy'}" href="javascript:void(0)" (click)="setType('buy')">Buy</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" [ngClass]="{'active': type === 'sell'}" href="javascript:void(0)" (click)="setType('sell')">Sell</a>
+      <a class="nav-link" [ngClass]="{'active': type === 'sell', 'bg-danger': type === 'sell'}" href="javascript:void(0)" (click)="setType('sell')">Sell</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" [ngClass]="{'active': type === 'transfer'}" href="javascript:void(0)" (click)="setType('transfer')">Transfer</a>
+      <a class="nav-link" [ngClass]="{'active': type === 'transfer', 'bg-info': type === 'transfer'}" href="javascript:void(0)" (click)="setType('transfer')">Transfer</a>
     </li>
   </ul>
   <form [formGroup]="form" (ngSubmit)="submit()" class="mt-5">
     <input type="hidden" name="type" formControlName="type" />
-    <!--Buy type-->
-    <div class="card" *ngIf="type === 'buy'">
-      <div class=" card-body">
+    <div class="card" >
+      <!--Buy type-->
+      <div class=" card-body" *ngIf="type === 'buy'">
         <div class=" form-group has-label" [ngClass]="{
           'has-danger': (formSubmitted && formControls.wallet_id.errors) || (formControls.wallet_id.value != null && formControls.wallet_id.errors),
           'has-success': !formControls.wallet_id.errors
         }">
           <label> Wallet * </label>
-          <input class=" form-control" name="wallet_id" formControlName="wallet_id" required autofocus />
+          <input class=" form-control" name="wallet_id" formControlName="wallet_id" autofocus />
           <label class="error"
             *ngIf="(formSubmitted && formControls.wallet_id.errors) || (formControls.wallet_id.value != null && formControls.wallet_id.errors)">
             Please select a wallet.</label>
@@ -30,7 +30,7 @@
           'has-success': !formControls.asset_id.errors
         }">
           <label> Asset * </label>
-          <input class=" form-control" name="asset_id" formControlName="asset_id" required autofocus />
+          <input class=" form-control" name="asset_id" formControlName="asset_id" />
           <label class="error"
             *ngIf="(formSubmitted && formControls.asset_id.errors) || (formControls.asset_id.value != null && formControls.asset_id.errors)">
             Please select an asset.</label>
@@ -40,7 +40,7 @@
           'has-success': !formControls.exchange_id.errors
         }">
           <label> Exchange * </label>
-          <input class=" form-control" name="exchange_id" formControlName="exchange_id" required autofocus />
+          <input class=" form-control" name="exchange_id" formControlName="exchange_id" />
           <label class="error"
             *ngIf="(formSubmitted && formControls.exchange_id.errors) || (formControls.exchange_id.value != null && formControls.exchange_id.errors)">
             Please select an exchange.</label>
@@ -50,7 +50,7 @@
           'has-success': !formControls.currency.errors
         }">
           <label> Bought with * </label>
-          <input class=" form-control" name="currency" formControlName="currency" required autofocus />
+          <input class=" form-control" name="currency" formControlName="currency" />
           <label class="error"
             *ngIf="(formSubmitted && formControls.currency.errors) || (formControls.currency.value != null && formControls.currency.errors)">
             Please select the currency the asset was bought with.</label>
@@ -60,7 +60,7 @@
           'has-success': !formControls.price.errors
         }">
           <label> Price per asset * </label>
-          <input class=" form-control" name="price" formControlName="price" required autofocus />
+          <input class=" form-control" name="price" formControlName="price" type="number" min="0" />
           <label class="error"
             *ngIf="(formSubmitted && formControls.price.errors) || (formControls.price.value != null && formControls.price.errors)">
             Please set the price per asset.</label>
@@ -70,35 +70,40 @@
           'has-success': !formControls.qty.errors
         }">
           <label> Quantity * </label>
-          <input class=" form-control" name="qty" formControlName="qty" required autofocus />
+          <input class=" form-control" name="qty" formControlName="qty" type="number" min="0" />
           <label class="error"
             *ngIf="(formSubmitted && formControls.qty.errors) || (formControls.qty.value != null && formControls.qty.errors)">
-            Please set quantity.</label>
+            Please set the quantity.</label>
         </div>
         <div class=" form-group has-label" [ngClass]="{
-          'has-danger': (formSubmitted && formControls.date.errors) || (formControls.date.value != null && formControls.date.errors),
-          'has-success': !formControls.date.errors
+          'has-danger': (formSubmitted && formControls.transaction_date.errors) || (formControls.transaction_date.value != null && formControls.transaction_date.errors),
+          'has-success': !formControls.transaction_date.errors
         }">
           <label> Date * </label>
-          <ngx-time-picker formControlName="date" [use24HourClock]="true"></ngx-time-picker>
+          <input
+              bsDatepicker
+              class="form-control"
+              name="transaction_date"
+              formControlName="transaction_date"
+              data-datepicker-color="danger"
+              [bsConfig]="{ isAnimated: true, containerClass: 'theme-default' }"
+              type="text"
+            />
           <label class="error"
-            *ngIf="(formSubmitted && formControls.date.errors) || (formControls.date.value != null && formControls.date.errors)">
+            *ngIf="(formSubmitted && formControls.transaction_date.errors) || (formControls.transaction_date.value != null && formControls.transaction_date.errors)">
             Please set the date.</label>
+        </div>
+        <div class="form-group">
+          <timepicker [formControlName]="'transaction_time'" [showMeridian]="false"></timepicker>
         </div>
         <div class=" form-group has-label">
           <label> Note </label>
-          <input class=" form-control" name="note" formControlName="note" />
+          <textarea class=" form-control" name="note" formControlName="note"></textarea>
         </div>
         <div class=" category form-category">* Required fields</div>
       </div>
-      <div class=" card-footer text-right">
-        <button class=" btn btn-success mr-2" type="submit">Validate</button>
-        <button class=" btn btn-warning" (click)="form.reset()">Cancel</button>
-      </div>
-    </div>
-    <!--Sell type-->
-    <div class="card" *ngIf="type === 'sell'">
-      <div class=" card-body">
+      <!--Sell type-->
+      <div class=" card-body" *ngIf="type === 'sell'">
         <div class=" form-group has-label" [ngClass]="{
           'has-danger': (formSubmitted && formControls.wallet_id.errors) || (formControls.wallet_id.value != null && formControls.wallet_id.errors),
           'has-success': !formControls.wallet_id.errors
@@ -144,7 +149,7 @@
           'has-success': !formControls.price.errors
         }">
           <label> Price per asset * </label>
-          <input class=" form-control" name="price" formControlName="price" required autofocus />
+          <input class=" form-control" name="price" formControlName="price" type="number" min="0" />
           <label class="error"
             *ngIf="(formSubmitted && formControls.price.errors) || (formControls.price.value != null && formControls.price.errors)">
             Please set the price per asset.</label>
@@ -154,30 +159,120 @@
           'has-success': !formControls.qty.errors
         }">
           <label> Quantity * </label>
-          <input class=" form-control" name="qty" formControlName="qty" required autofocus />
+          <input class=" form-control" name="qty" formControlName="qty" type="number" min="0" />
           <label class="error"
             *ngIf="(formSubmitted && formControls.qty.errors) || (formControls.qty.value != null && formControls.qty.errors)">
-            Please set quantity.</label>
+            Please set the quantity.</label>
         </div>
         <div class=" form-group has-label" [ngClass]="{
-          'has-danger': (formSubmitted && formControls.date.errors) || (formControls.date.value != null && formControls.date.errors),
-          'has-success': !formControls.date.errors
+          'has-danger': (formSubmitted && formControls.transaction_date.errors) || (formControls.transaction_date.value != null && formControls.transaction_date.errors),
+          'has-success': !formControls.transaction_date.errors
         }">
           <label> Date * </label>
-          <input class=" form-control" name="date" formControlName="date" required autofocus />
+          <input
+              bsDatepicker
+              class="form-control"
+              name="transaction_date"
+              formControlName="transaction_date"
+              data-datepicker-color="danger"
+              [bsConfig]="{ isAnimated: true, containerClass: 'theme-default' }"
+              type="text"
+            />
           <label class="error"
-            *ngIf="(formSubmitted && formControls.date.errors) || (formControls.date.value != null && formControls.date.errors)">
+            *ngIf="(formSubmitted && formControls.transaction_date.errors) || (formControls.transaction_date.value != null && formControls.transaction_date.errors)">
             Please set the date.</label>
+        </div>
+        <div class="form-group">
+          <timepicker [formControlName]="'transaction_time'" [showMeridian]="false"></timepicker>
         </div>
         <div class=" form-group has-label">
           <label> Note </label>
-          <input class=" form-control" name="note" formControlName="note" />
+          <textarea class=" form-control" name="note" formControlName="note"></textarea>
+        </div>
+        <div class=" category form-category">* Required fields</div>
+      </div>
+      <!--Transfer type-->
+      <div class=" card-body" *ngIf="type === 'transfer'">
+        <div class=" form-group has-label" [ngClass]="{
+          'has-danger': (formSubmitted && formControls.wallet_id.errors) || (formControls.wallet_id.value != null && formControls.wallet_id.errors),
+          'has-success': !formControls.wallet_id.errors
+        }">
+          <label> Wallet * </label>
+          <input class=" form-control" name="wallet_id" formControlName="wallet_id" autofocus />
+          <label class="error"
+            *ngIf="(formSubmitted && formControls.wallet_id.errors) || (formControls.wallet_id.value != null && formControls.wallet_id.errors)">
+            Please select a wallet.</label>
+        </div>
+        <div class=" form-group has-label" [ngClass]="{
+          'has-danger': (formSubmitted && formControls.asset_id.errors) || (formControls.asset_id.value != null && formControls.asset_id.errors),
+          'has-success': !formControls.asset_id.errors
+        }">
+          <label> Asset * </label>
+          <input class=" form-control" name="asset_id" formControlName="asset_id" />
+          <label class="error"
+            *ngIf="(formSubmitted && formControls.asset_id.errors) || (formControls.asset_id.value != null && formControls.asset_id.errors)">
+            Please select an asset.</label>
+        </div>
+        <div class=" form-group has-label" [ngClass]="{
+          'has-danger': (formSubmitted && formControls.exchange_id.errors) || (formControls.exchange_id.value != null && formControls.exchange_id.errors),
+          'has-success': !formControls.exchange_id.errors
+        }">
+          <label> Exchange * </label>
+          <input class=" form-control" name="exchange_id" formControlName="exchange_id" />
+          <label class="error"
+            *ngIf="(formSubmitted && formControls.exchange_id.errors) || (formControls.exchange_id.value != null && formControls.exchange_id.errors)">
+            Please select an exchange.</label>
+        </div>
+        <div class=" form-group has-label" [ngClass]="{
+          'has-danger': (formSubmitted && formControls.source.errors) || (formControls.source.value != null && formControls.source.errors),
+          'has-success': !formControls.source.errors
+        }">
+          <label> From * </label>
+          <input class=" form-control" name="source" formControlName="source" />
+          <label class="error"
+            *ngIf="(formSubmitted && formControls.source.errors) || (formControls.source.value != null && formControls.source.errors)">
+            Please select the source.</label>
+        </div>
+        <div class=" form-group has-label" [ngClass]="{
+          'has-danger': (formSubmitted && formControls.destination.errors) || (formControls.destination.value != null && formControls.destination.errors),
+          'has-success': !formControls.destination.errors
+        }">
+          <label> To * </label>
+          <input class=" form-control" name="destination" formControlName="destination" type="number" min="0" />
+          <label class="error"
+            *ngIf="(formSubmitted && formControls.destination.errors) || (formControls.destination.value != null && formControls.destination.errors)">
+            Please set the destination.</label>
+        </div>
+        <div class=" form-group has-label" [ngClass]="{
+          'has-danger': (formSubmitted && formControls.transaction_date.errors) || (formControls.transaction_date.value != null && formControls.transaction_date.errors),
+          'has-success': !formControls.transaction_date.errors
+        }">
+          <label> Date * </label>
+          <input
+              bsDatepicker
+              class="form-control"
+              name="transaction_date"
+              formControlName="transaction_date"
+              data-datepicker-color="danger"
+              [bsConfig]="{ isAnimated: true, containerClass: 'theme-default' }"
+              type="text"
+            />
+          <label class="error"
+            *ngIf="(formSubmitted && formControls.transaction_date.errors) || (formControls.transaction_date.value != null && formControls.transaction_date.errors)">
+            Please set the date.</label>
+        </div>
+        <div class="form-group">
+          <timepicker [formControlName]="'transaction_time'" [showMeridian]="false"></timepicker>
+        </div>
+        <div class=" form-group has-label">
+          <label> Note </label>
+          <textarea class=" form-control" name="note" formControlName="note"></textarea>
         </div>
         <div class=" category form-category">* Required fields</div>
       </div>
       <div class=" card-footer text-right">
         <button class=" btn btn-success mr-2" type="submit">Validate</button>
-        <button class=" btn btn-warning" (click)="form.reset()">Cancel</button>
+        <button class=" btn btn-warning" (click)="reset()" type="button">Cancel</button>
       </div>
     </div>
   </form>

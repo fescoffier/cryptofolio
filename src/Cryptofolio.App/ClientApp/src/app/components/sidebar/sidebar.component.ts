@@ -46,7 +46,7 @@ export const ROUTES: RouteInfo[] = [
     type: "sub",
     icontype: "tim-icons icon-bullet-list-67",
     collapse: "transactions",
-    isCollapsed: true,
+    isCollapsed: false,
     children: [
       {
         path: "history",

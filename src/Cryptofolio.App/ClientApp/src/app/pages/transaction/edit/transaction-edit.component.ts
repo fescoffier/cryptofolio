@@ -31,11 +31,12 @@ export class TransactionEditComponent {
     if (this.type === "buy" || this.type === "sell") {
       return this.fb.group({
         id: [this.transaction?.id],
-        date: [this.transaction?.date, [Validators.required]],
+        transaction_date: [this.transaction?.date, [Validators.required]],
+        transaction_time: [this.transaction?.date],
         wallet_id: [this.transaction?.wallet.id, [Validators.required]],
         asset_id: [this.transaction?.asset.id, [Validators.required]],
         exchange_id: [this.transaction?.exchange.id, [Validators.required]],
-        type: [this.transaction?.["type"]],
+        type: [this.transaction?.["type"] || this.type],
         currency: [this.transaction?.["currency"], [Validators.required]],
         price: [this.transaction?.["price"], [Validators.required]],
         qty: [this.transaction?.qty, [Validators.min(0), Validators.max(Number.MAX_VALUE)]],
@@ -44,7 +45,8 @@ export class TransactionEditComponent {
     } else if (this.type === "transfer") {
       return this.fb.group({
         id: [this.transaction?.id],
-        date: [this.transaction?.date, [Validators.required]],
+        transaction_date: [this.transaction?.date, [Validators.required]],
+        transaction_time: [this.transaction?.date],
         wallet_id: [this.transaction?.wallet.id, [Validators.required]],
         asset_id: [this.transaction?.asset.id, [Validators.required]],
         exchange_id: [this.transaction?.exchange.id, [Validators.required]],
@@ -59,9 +61,29 @@ export class TransactionEditComponent {
   setType(type: string) {
     this.type = type;
     this.form = this.createForm();
+    this.formSubmitted = false;
+  }
+
+  reset() {
+    this.form.reset();
+    this.formSubmitted = false;
   }
 
   submit() {
-    console.log(this.form.value);
+    this.formSubmitted = true;
+    if (!this.form.valid) {
+      return;
+    }
+
+    const transaction = { ...this.form.value };
+    const date = this.form.value.transaction_date as Date;
+    const time = this.form.value.transaction_time as Date;
+    if (time) {
+      date.setTime(time.getTime());
+    }
+    transaction["date"] = date;
+    delete transaction.transaction_date;
+    delete transaction.transaction_time;
+    console.log(transaction);
   }
 }

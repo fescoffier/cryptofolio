@@ -3,6 +3,8 @@ import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
+import { TimepickerModule } from "ngx-bootstrap/timepicker";
 
 import { TransactionRoutes } from "./transaction.routing";
 import { TransactionService } from "./transaction.service";
@@ -15,7 +17,9 @@ import { TransactionsHistoryComponent } from "./history/transactions-history.com
     FormsModule,
     ReactiveFormsModule.withConfig({ warnOnNgModelWithFormControl: "never" }),
     RouterModule.forChild(TransactionRoutes),
-    ScrollingModule
+    ScrollingModule,
+    BsDatepickerModule.forRoot(),
+    TimepickerModule.forRoot()
   ],
   declarations: [
     TransactionsHistoryComponent,
