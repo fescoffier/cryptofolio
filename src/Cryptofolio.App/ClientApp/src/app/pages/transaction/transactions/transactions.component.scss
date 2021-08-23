@@ -1,0 +1,9 @@
+cdk-virtual-scroll-viewport {
+  :-webkit-scrollbar {
+    display: none;
+  }
+
+  flex-grow: 1;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

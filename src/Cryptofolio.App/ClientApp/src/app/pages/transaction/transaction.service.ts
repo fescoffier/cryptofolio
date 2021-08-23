@@ -10,9 +10,9 @@ import { BuyOrSellTransaction, Transaction, TransferTransaction } from "../../mo
 export class TransactionService {
   constructor(private http: HttpClient, private api: ApiOptions) {}
 
-  get(): Observable<Transaction[]> {
+  get(skip: number, take: number): Observable<Transaction[]> {
     return this.http
-      .get<any[]>(this.api.transactionsEndpoint)
+      .get<any[]>(`${this.api.transactionsEndpoint}?skip=${skip}&take=${take}`)
       .pipe(
         map(transactions => transactions.map(t => this.deserialize(t)))
       );
