@@ -1,7 +1,6 @@
 import { Component } from "@angular/core";
 import swal from "sweetalert2";
 
-import { Transaction } from "../../../models/transaction";
 import { TransactionService } from "../transaction.service";
 import { TransactionsDataSource } from "./transactions.datasource";
 
