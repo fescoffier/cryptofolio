@@ -1,12 +1,13 @@
 import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ScrollingModule } from '@angular/cdk/scrolling';
 
-import { CommonModule } from "@angular/common";
-import { TransactionsComponent } from "./transactions/transactions.component";
 import { TransactionRoutes } from "./transaction.routing";
 import { TransactionService } from "./transaction.service";
+import { TransactionEditComponent } from "./edit/transaction-edit.component";
+import { TransactionsHistoryComponent } from "./history/transactions-history.component";
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import { TransactionService } from "./transaction.service";
     ScrollingModule
   ],
   declarations: [
-    TransactionsComponent
+    TransactionsHistoryComponent,
+    TransactionEditComponent
   ],
   providers: [
     TransactionService

@@ -1,10 +1,15 @@
 import { Routes } from "@angular/router";
 
-import { TransactionsComponent } from "./transactions/transactions.component";
+import { TransactionEditComponent } from "./edit/transaction-edit.component";
+import { TransactionsHistoryComponent } from "./history/transactions-history.component";
 
 export const TransactionRoutes: Routes = [
   {
-    path: "",
-    component: TransactionsComponent
+    path: "history",
+    component: TransactionsHistoryComponent
+  },
+  {
+    path: "add",
+    component: TransactionEditComponent
   }
 ];

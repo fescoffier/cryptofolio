@@ -1,0 +1,184 @@
+<div class="content">
+  <ul class="nav nav-pills nav-justified">
+    <li class="nav-item">
+      <a class="nav-link" [ngClass]="{'active': type === 'buy'}" href="javascript:void(0)" (click)="setType('buy')">Buy</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [ngClass]="{'active': type === 'sell'}" href="javascript:void(0)" (click)="setType('sell')">Sell</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [ngClass]="{'active': type === 'transfer'}" href="javascript:void(0)" (click)="setType('transfer')">Transfer</a>
+    </li>
+  </ul>
+  <form [formGroup]="form" (ngSubmit)="submit()" class="mt-5">
+    <input type="hidden" name="type" formControlName="type" />
+    <!--Buy type-->
+    <div class="card" *ngIf="type === 'buy'">
+      <div class=" card-body">
+        <div class=" form-group has-label" [ngClass]="{
+          'has-danger': (formSubmitted && formControls.wallet_id.errors) || (formControls.wallet_id.value != null && formControls.wallet_id.errors),
+          'has-success': !formControls.wallet_id.errors
+        }">
+          <label> Wallet * </label>
+          <input class=" form-control" name="wallet_id" formControlName="wallet_id" required autofocus />
+          <label class="error"
+            *ngIf="(formSubmitted && formControls.wallet_id.errors) || (formControls.wallet_id.value != null && formControls.wallet_id.errors)">
+            Please select a wallet.</label>
+        </div>
+        <div class=" form-group has-label" [ngClass]="{
+          'has-danger': (formSubmitted && formControls.asset_id.errors) || (formControls.asset_id.value != null && formControls.asset_id.errors),
+          'has-success': !formControls.asset_id.errors
+        }">
+          <label> Asset * </label>
+          <input class=" form-control" name="asset_id" formControlName="asset_id" required autofocus />
+          <label class="error"
+            *ngIf="(formSubmitted && formControls.asset_id.errors) || (formControls.asset_id.value != null && formControls.asset_id.errors)">
+            Please select an asset.</label>
+        </div>
+        <div class=" form-group has-label" [ngClass]="{
+          'has-danger': (formSubmitted && formControls.exchange_id.errors) || (formControls.exchange_id.value != null && formControls.exchange_id.errors),
+          'has-success': !formControls.exchange_id.errors
+        }">
+          <label> Exchange * </label>
+          <input class=" form-control" name="exchange_id" formControlName="exchange_id" required autofocus />
+          <label class="error"
+            *ngIf="(formSubmitted && formControls.exchange_id.errors) || (formControls.exchange_id.value != null && formControls.exchange_id.errors)">
+            Please select an exchange.</label>
+        </div>
+        <div class=" form-group has-label" [ngClass]="{
+          'has-danger': (formSubmitted && formControls.currency.errors) || (formControls.currency.value != null && formControls.currency.errors),
+          'has-success': !formControls.currency.errors
+        }">
+          <label> Bought with * </label>
+          <input class=" form-control" name="currency" formControlName="currency" required autofocus />
+          <label class="error"
+            *ngIf="(formSubmitted && formControls.currency.errors) || (formControls.currency.value != null && formControls.currency.errors)">
+            Please select the currency the asset was bought with.</label>
+        </div>
+        <div class=" form-group has-label" [ngClass]="{
+          'has-danger': (formSubmitted && formControls.price.errors) || (formControls.price.value != null && formControls.price.errors),
+          'has-success': !formControls.price.errors
+        }">
+          <label> Price per asset * </label>
+          <input class=" form-control" name="price" formControlName="price" required autofocus />
+          <label class="error"
+            *ngIf="(formSubmitted && formControls.price.errors) || (formControls.price.value != null && formControls.price.errors)">
+            Please set the price per asset.</label>
+        </div>
+        <div class=" form-group has-label" [ngClass]="{
+          'has-danger': (formSubmitted && formControls.qty.errors) || (formControls.qty.value != null && formControls.qty.errors),
+          'has-success': !formControls.qty.errors
+        }">
+          <label> Quantity * </label>
+          <input class=" form-control" name="qty" formControlName="qty" required autofocus />
+          <label class="error"
+            *ngIf="(formSubmitted && formControls.qty.errors) || (formControls.qty.value != null && formControls.qty.errors)">
+            Please set quantity.</label>
+        </div>
+        <div class=" form-group has-label" [ngClass]="{
+          'has-danger': (formSubmitted && formControls.date.errors) || (formControls.date.value != null && formControls.date.errors),
+          'has-success': !formControls.date.errors
+        }">
+          <label> Date * </label>
+          <ngx-time-picker formControlName="date" [use24HourClock]="true"></ngx-time-picker>
+          <label class="error"
+            *ngIf="(formSubmitted && formControls.date.errors) || (formControls.date.value != null && formControls.date.errors)">
+            Please set the date.</label>
+        </div>
+        <div class=" form-group has-label">
+          <label> Note </label>
+          <input class=" form-control" name="note" formControlName="note" />
+        </div>
+        <div class=" category form-category">* Required fields</div>
+      </div>
+      <div class=" card-footer text-right">
+        <button class=" btn btn-success mr-2" type="submit">Validate</button>
+        <button class=" btn btn-warning" (click)="form.reset()">Cancel</button>
+      </div>
+    </div>
+    <!--Sell type-->
+    <div class="card" *ngIf="type === 'sell'">
+      <div class=" card-body">
+        <div class=" form-group has-label" [ngClass]="{
+          'has-danger': (formSubmitted && formControls.wallet_id.errors) || (formControls.wallet_id.value != null && formControls.wallet_id.errors),
+          'has-success': !formControls.wallet_id.errors
+        }">
+          <label> Wallet * </label>
+          <input class=" form-control" name="wallet_id" formControlName="wallet_id" required autofocus />
+          <label class="error"
+            *ngIf="(formSubmitted && formControls.wallet_id.errors) || (formControls.wallet_id.value != null && formControls.wallet_id.errors)">
+            Please select a wallet.</label>
+        </div>
+        <div class=" form-group has-label" [ngClass]="{
+          'has-danger': (formSubmitted && formControls.asset_id.errors) || (formControls.asset_id.value != null && formControls.asset_id.errors),
+          'has-success': !formControls.asset_id.errors
+        }">
+          <label> Asset * </label>
+          <input class=" form-control" name="asset_id" formControlName="asset_id" required autofocus />
+          <label class="error"
+            *ngIf="(formSubmitted && formControls.asset_id.errors) || (formControls.asset_id.value != null && formControls.asset_id.errors)">
+            Please select an asset.</label>
+        </div>
+        <div class=" form-group has-label" [ngClass]="{
+          'has-danger': (formSubmitted && formControls.exchange_id.errors) || (formControls.exchange_id.value != null && formControls.exchange_id.errors),
+          'has-success': !formControls.exchange_id.errors
+        }">
+          <label> Exchange * </label>
+          <input class=" form-control" name="exchange_id" formControlName="exchange_id" required autofocus />
+          <label class="error"
+            *ngIf="(formSubmitted && formControls.exchange_id.errors) || (formControls.exchange_id.value != null && formControls.exchange_id.errors)">
+            Please select an exchange.</label>
+        </div>
+        <div class=" form-group has-label" [ngClass]="{
+          'has-danger': (formSubmitted && formControls.currency.errors) || (formControls.currency.value != null && formControls.currency.errors),
+          'has-success': !formControls.currency.errors
+        }">
+          <label> Sold for * </label>
+          <input class=" form-control" name="currency" formControlName="currency" required autofocus />
+          <label class="error"
+            *ngIf="(formSubmitted && formControls.currency.errors) || (formControls.currency.value != null && formControls.currency.errors)">
+            Please select the currency the asset was sold for.</label>
+        </div>
+        <div class=" form-group has-label" [ngClass]="{
+          'has-danger': (formSubmitted && formControls.price.errors) || (formControls.price.value != null && formControls.price.errors),
+          'has-success': !formControls.price.errors
+        }">
+          <label> Price per asset * </label>
+          <input class=" form-control" name="price" formControlName="price" required autofocus />
+          <label class="error"
+            *ngIf="(formSubmitted && formControls.price.errors) || (formControls.price.value != null && formControls.price.errors)">
+            Please set the price per asset.</label>
+        </div>
+        <div class=" form-group has-label" [ngClass]="{
+          'has-danger': (formSubmitted && formControls.qty.errors) || (formControls.qty.value != null && formControls.qty.errors),
+          'has-success': !formControls.qty.errors
+        }">
+          <label> Quantity * </label>
+          <input class=" form-control" name="qty" formControlName="qty" required autofocus />
+          <label class="error"
+            *ngIf="(formSubmitted && formControls.qty.errors) || (formControls.qty.value != null && formControls.qty.errors)">
+            Please set quantity.</label>
+        </div>
+        <div class=" form-group has-label" [ngClass]="{
+          'has-danger': (formSubmitted && formControls.date.errors) || (formControls.date.value != null && formControls.date.errors),
+          'has-success': !formControls.date.errors
+        }">
+          <label> Date * </label>
+          <input class=" form-control" name="date" formControlName="date" required autofocus />
+          <label class="error"
+            *ngIf="(formSubmitted && formControls.date.errors) || (formControls.date.value != null && formControls.date.errors)">
+            Please set the date.</label>
+        </div>
+        <div class=" form-group has-label">
+          <label> Note </label>
+          <input class=" form-control" name="note" formControlName="note" />
+        </div>
+        <div class=" category form-category">* Required fields</div>
+      </div>
+      <div class=" card-footer text-right">
+        <button class=" btn btn-success mr-2" type="submit">Validate</button>
+        <button class=" btn btn-warning" (click)="form.reset()">Cancel</button>
+      </div>
+    </div>
+  </form>
+</div>
