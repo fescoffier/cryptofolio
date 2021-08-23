@@ -4,11 +4,26 @@ import { Observable } from "rxjs";
 import { map } from "rxjs/internal/operators";
 
 import { ApiOptions } from "../../api-options";
+import { Asset } from "../../models/asset";
+import { Exchange } from "../../models/exchange";
 import { BuyOrSellTransaction, Transaction, TransferTransaction } from "../../models/transaction";
+import { Wallet } from "../../models/wallet";
 
 @Injectable()
 export class TransactionService {
   constructor(private http: HttpClient, private api: ApiOptions) {}
+
+  getWallets(): Observable<Wallet[]> {
+    return this.http.get<Wallet[]>(this.api.walletsEndpoint);
+  }
+
+  getAssets(): Observable<Asset[]> {
+    return this.http.get<Asset[]>(this.api.assetsEndpoint);
+  }
+
+  getExchanges(): Observable<Exchange[]> {
+    return this.http.get<Exchange[]>(this.api.exchangesEndpoint);
+  }
 
   get(skip: number, take: number): Observable<Transaction[]> {
     return this.http
