@@ -76,8 +76,17 @@
           'has-danger': (formSubmitted && formControls.currency.errors) || (formControls.currency.value != null && formControls.currency.errors),
           'has-success': !formControls.currency.errors
         }">
-          <label> Bought with * </label>
-          <input class=" form-control" name="currency" formControlName="currency" />
+          <label class="d-block"> Bought with * </label>
+          <div class="btn-group transaction-ddl" dropdown>
+            <button dropdownToggle type="button" class="btn dropdown-toggle" [ngClass]="{'btn-info': form.controls.exchange_name.value}">
+              {{ (form.controls.currency.value | uppercase) || 'Select an currency' }}
+            </button>
+            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu">
+              <li role="menuitem" *ngFor="let currency of currencies">
+                <a class="dropdown-item" href="javascript:void(0)" (click)="setCurrency(currency)">{{ currency.symbol }} - {{ currency.code | uppercase }}</a>
+              </li>
+            </ul>
+          </div>
           <label class="error"
             *ngIf="(formSubmitted && formControls.currency.errors) || (formControls.currency.value != null && formControls.currency.errors)">
             Please select the currency the asset was bought with.</label>
@@ -192,8 +201,17 @@
           'has-danger': (formSubmitted && formControls.currency.errors) || (formControls.currency.value != null && formControls.currency.errors),
           'has-success': !formControls.currency.errors
         }">
-          <label> Sold for * </label>
-          <input class=" form-control" name="currency" formControlName="currency" required autofocus />
+          <label class="d-block"> Sold for * </label>
+          <div class="btn-group transaction-ddl" dropdown>
+            <button dropdownToggle type="button" class="btn dropdown-toggle" [ngClass]="{'btn-info': form.controls.exchange_name.value}">
+              {{ (form.controls.currency.value | uppercase) || 'Select an currency' }}
+            </button>
+            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu">
+              <li role="menuitem" *ngFor="let currency of currencies">
+                <a class="dropdown-item" href="javascript:void(0)" (click)="setCurrency(currency)">{{ currency.symbol }} - {{ currency.code | uppercase }}</a>
+              </li>
+            </ul>
+          </div>
           <label class="error"
             *ngIf="(formSubmitted && formControls.currency.errors) || (formControls.currency.value != null && formControls.currency.errors)">
             Please select the currency the asset was sold for.</label>

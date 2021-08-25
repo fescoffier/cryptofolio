@@ -5,6 +5,7 @@ import { map } from "rxjs/internal/operators";
 
 import { ApiOptions } from "../../api-options";
 import { Asset } from "../../models/asset";
+import { Currency } from "../../models/currency";
 import { Exchange } from "../../models/exchange";
 import { BuyOrSellTransaction, Transaction, TransferTransaction } from "../../models/transaction";
 import { Wallet } from "../../models/wallet";
@@ -14,15 +15,35 @@ export class TransactionService {
   constructor(private http: HttpClient, private api: ApiOptions) {}
 
   getWallets(): Observable<Wallet[]> {
-    return this.http.get<Wallet[]>(this.api.walletsEndpoint);
+    return this.http
+      .get<any[]>(this.api.walletsEndpoint)
+      .pipe(
+        map(wallets => wallets.map(w => new Wallet(w)))
+      );
   }
 
   getAssets(): Observable<Asset[]> {
-    return this.http.get<Asset[]>(this.api.assetsEndpoint);
+    return this.http
+      .get<any[]>(this.api.assetsEndpoint)
+      .pipe(
+        map(assets => assets.map(a => new Asset(a)))
+      );
   }
 
   getExchanges(): Observable<Exchange[]> {
-    return this.http.get<Exchange[]>(this.api.exchangesEndpoint);
+    return this.http
+      .get<any[]>(this.api.exchangesEndpoint)
+      .pipe(
+        map(exhanges => exhanges.map(e => new Exchange(e)))
+      );
+  }
+
+  getCurrencies(): Observable<Currency[]> {
+    return this.http
+      .get<any[]>(this.api.currenciesEndpoint)
+      .pipe(
+        map(currencies => currencies.map(e => new Currency(e)))
+      );
   }
 
   get(skip: number, take: number): Observable<Transaction[]> {

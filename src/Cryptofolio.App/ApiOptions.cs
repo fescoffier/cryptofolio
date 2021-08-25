@@ -16,6 +16,11 @@ namespace Cryptofolio.App
         public string AssetsEndpoint => $"{Url}/assets";
 
         /// <summary>
+        /// The currencies endpoint.
+        /// </summary>
+        public string CurrenciesEndpoint => $"{Url}/currencies";
+
+        /// <summary>
         /// The exchanges endpoint.
         /// </summary>
         public string ExchangesEndpoint => $"{Url}/exchanges";

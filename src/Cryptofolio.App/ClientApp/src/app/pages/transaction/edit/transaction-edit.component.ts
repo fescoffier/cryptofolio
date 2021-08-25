@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 
-import { BuyOrSellTransaction, Transaction, TransferTransaction } from "../../../models/transaction";
-import { Asset } from "../../../models/Asset";
+import { Asset } from "../../../models/asset";
+import { Currency } from "../../../models/currency";
 import { Exchange } from "../../../models/exchange";
+import { Transaction } from "../../../models/transaction";
 import { TransactionService } from "../transaction.service";
 import { Wallet } from "../../../models/wallet";
 
@@ -14,6 +15,7 @@ import { Wallet } from "../../../models/wallet";
 })
 export class TransactionEditComponent implements OnInit {
   public assets: Asset[];
+  public currencies: Currency[];
   public exchanges: Exchange[];
   public wallets: Wallet[];
 
@@ -36,6 +38,7 @@ export class TransactionEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.service.getAssets().subscribe(assets => this.assets = assets);
+    this.service.getCurrencies().subscribe(currencies => this.currencies = currencies);
     this.service.getExchanges().subscribe(exchanges => this.exchanges = exchanges);
     this.service.getWallets().subscribe(wallets => this.wallets = wallets);
   }
@@ -96,6 +99,10 @@ export class TransactionEditComponent implements OnInit {
   setExchange(exchange: Exchange) {
     this.form.controls.exchange_id.setValue(exchange.id);
     this.form.controls.exchange_name.setValue(exchange.name);
+  }
+
+  setCurrency(currency: Currency) {
+    this.form.controls.currency.setValue(currency.code);
   }
 
   reset() {
