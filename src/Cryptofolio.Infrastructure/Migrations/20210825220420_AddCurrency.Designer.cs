@@ -3,15 +3,17 @@ using System;
 using Cryptofolio.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Cryptofolio.Infrastructure.Migrations
 {
     [DbContext(typeof(CryptofolioContext))]
-    partial class CryptofolioContextModelSnapshot : ModelSnapshot
+    [Migration("20210825220420_AddCurrency")]
+    partial class AddCurrency
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,7 +99,7 @@ namespace Cryptofolio.Infrastructure.Migrations
                         .HasColumnName("precision");
 
                     b.Property<string>("Symbol")
-                        .HasMaxLength(3)
+                        .HasMaxLength(1)
                         .HasColumnType("character varying(3)")
                         .HasColumnName("symbol");
 

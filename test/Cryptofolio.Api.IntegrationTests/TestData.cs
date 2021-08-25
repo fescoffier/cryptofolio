@@ -14,6 +14,10 @@ namespace Cryptofolio.Api.IntegrationTests
 
         public Asset ETH { get; }
 
+        public Currency USD { get; }
+
+        public Currency EUR { get; }
+
         public Exchange Exchange1 { get; }
 
         public Exchange Exchange2 { get; }
@@ -48,6 +52,20 @@ namespace Cryptofolio.Api.IntegrationTests
                 Name = "Ethereum",
                 Symbol = "eth",
                 Description = "Lorem ipsum dolor sit amet"
+            };
+            USD = new()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "United States Dolar",
+                Code = "usd",
+                Symbol = "$"
+            };
+            EUR = new()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "Euro Members Countries",
+                Code = "eur",
+                Symbol = "€"
             };
             Exchange1 = new()
             {

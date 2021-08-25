@@ -67,6 +67,7 @@ namespace Cryptofolio.Api.IntegrationTests
             context.Wallets.RemoveRange(context.Wallets);
             context.AssetTickers.RemoveRange(context.AssetTickers);
             context.Assets.RemoveRange(context.Assets);
+            context.Currencies.RemoveRange(context.Currencies);
             context.Exchanges.RemoveRange(context.Exchanges);
             context.SaveChanges();
         }

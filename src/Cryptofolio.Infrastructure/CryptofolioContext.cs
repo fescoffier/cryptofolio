@@ -19,6 +19,11 @@ namespace Cryptofolio.Infrastructure
         public DbSet<AssetTicker> AssetTickers { get; set; }
 
         /// <summary>
+        /// The currencies set.
+        /// </summary>
+        public DbSet<Currency> Currencies { get; set; }
+
+        /// <summary>
         /// The exchanges set.
         /// </summary>
         public DbSet<Exchange> Exchanges { get; set; }
