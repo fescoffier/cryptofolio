@@ -1,4 +1,5 @@
 import { Asset } from "./asset";
+import { Currency } from "./currency";
 import { Exchange } from "./exchange";
 import { Wallet } from "./wallet";
 
@@ -18,7 +19,7 @@ export abstract class Transaction {
 
 export class BuyOrSellTransaction extends Transaction {
   type: string;
-  currency: string;
+  currency: Currency;
   price: number;
 
   constructor(properties?: any) {
@@ -28,6 +29,7 @@ export class BuyOrSellTransaction extends Transaction {
     this.wallet = new Wallet(properties.wallet);
     this.asset = new Asset(properties.asset);
     this.exchange = new Exchange(properties.exchange);
+    this.currency = new Currency(properties.currency);
   }
 }
 

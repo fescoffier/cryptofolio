@@ -45,9 +45,9 @@ namespace Cryptofolio.Api.Commands
             {
                 errorMemberNames.Add(nameof(ITransactionCommand.ExchangeId));
             }
-            if (string.IsNullOrWhiteSpace(command.Currency))
+            if (string.IsNullOrWhiteSpace(command.CurrencyId))
             {
-                errorMemberNames.Add(nameof(ITransactionCommand.Currency));
+                errorMemberNames.Add(nameof(ITransactionCommand.CurrencyId));
             }
             if (command.Price == default)
             {
@@ -65,9 +65,9 @@ namespace Cryptofolio.Api.Commands
             {
                 errorMemberNames.Add(nameof(ITransactionCommand.ExchangeId));
             }
-            if (string.IsNullOrWhiteSpace(command.Currency))
+            if (string.IsNullOrWhiteSpace(command.CurrencyId))
             {
-                errorMemberNames.Add(nameof(ITransactionCommand.Currency));
+                errorMemberNames.Add(nameof(ITransactionCommand.CurrencyId));
             }
             if (command.Price == default)
             {

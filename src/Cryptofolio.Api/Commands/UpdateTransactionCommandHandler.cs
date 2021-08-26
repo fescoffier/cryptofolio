@@ -50,7 +50,7 @@ namespace Cryptofolio.Api.Commands
                 using var dbTransaction = await _context.Database.BeginTransactionAsync(cancellationToken);
                 _logger.LogDebug("Transaction {0} just begun.", dbTransaction.TransactionId);
 
-                var transaction = await UpdateEntity(command);
+                var transaction = await UpdateEntity(command, cancellationToken);
                 _logger.LogDebug("Storing the updated transaction in database.");
                 await _context.SaveChangesAsync(cancellationToken);
 
@@ -78,7 +78,7 @@ namespace Cryptofolio.Api.Commands
             }
         }
 
-        private async Task<Transaction> UpdateEntity(UpdateTransactionCommand command)
+        private async Task<Transaction> UpdateEntity(UpdateTransactionCommand command, CancellationToken cancellationToken)
         {
             Transaction transaction;
 
@@ -89,8 +89,8 @@ namespace Cryptofolio.Api.Commands
                 {
                     Id = command.Id,
                     Date = command.Date,
-                    Exchange = await _context.Exchanges.SingleOrDefaultAsync(e => e.Id == command.ExchangeId),
-                    Currency = command.Currency,
+                    Exchange = await _context.Exchanges.SingleOrDefaultAsync(e => e.Id == command.ExchangeId, cancellationToken),
+                    Currency = await _context.Currencies.SingleOrDefaultAsync(c => c.Id == command.CurrencyId, cancellationToken),
                     Price = command.Price,
                     Qty = command.Qty,
                     Type = command.Type,
@@ -98,7 +98,7 @@ namespace Cryptofolio.Api.Commands
                 };
                 var buyOrSellTransactionEntry = _context.Attach(buyOrSellTransaction);
                 buyOrSellTransactionEntry.Property(p => p.Type).IsModified = true;
-                buyOrSellTransactionEntry.Property(p => p.Currency).IsModified = true;
+                buyOrSellTransactionEntry.Reference(p => p.Currency).IsModified = true;
                 buyOrSellTransactionEntry.Property(p => p.Price).IsModified = true;
                 transaction = buyOrSellTransaction;
             }
@@ -108,7 +108,7 @@ namespace Cryptofolio.Api.Commands
                 {
                     Id = command.Id,
                     Date = command.Date,
-                    Exchange = await _context.Exchanges.SingleOrDefaultAsync(e => e.Id == command.ExchangeId),
+                    Exchange = await _context.Exchanges.SingleOrDefaultAsync(e => e.Id == command.ExchangeId, cancellationToken),
                     Qty = command.Qty,
                     Source = command.Source,
                     Destination = command.Destination,

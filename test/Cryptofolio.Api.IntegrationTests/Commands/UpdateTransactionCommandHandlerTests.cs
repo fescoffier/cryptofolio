@@ -45,6 +45,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             {
                 var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
                 context.Exchanges.Add(Data.Exchange2);
+                context.Currencies.Add(Data.EUR);
                 context.Transactions.Add(Data.Transaction1);
                 context.SaveChanges();
             }
@@ -55,7 +56,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
                 Type = CommandConstants.Transaction.Types.Buy,
                 Date = Data.Transaction1.Date.AddDays(1),
                 ExchangeId = Data.Exchange2.Id,
-                Currency = "eur",
+                CurrencyId = Data.EUR.Id,
                 Price = 500,
                 Qty = 20,
                 Note = "Consectetur adipiscing elit"
@@ -73,10 +74,11 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
                 var transaction = context.Transactions
                     .OfType<BuyOrSellTransaction>()
                     .Include(t => t.Exchange)
+                    .Include(t => t.Currency)
                     .Single(t => t.Id == Data.Transaction1.Id);
                 transaction.Date.Should().BeCloseTo(command.Date, precision: 1);
                 transaction.Exchange.Id.Should().Be(command.ExchangeId);
-                transaction.Currency.Should().Be(command.Currency);
+                transaction.Currency.Id.Should().Be(command.CurrencyId);
                 transaction.Price.Should().Be(command.Price);
                 transaction.Qty.Should().Be(command.Qty);
                 transaction.Note.Should().Be(command.Note);

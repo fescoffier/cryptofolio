@@ -115,7 +115,7 @@ namespace Cryptofolio.Api.IntegrationTests
                 Wallet = Wallet1,
                 Exchange = Exchange1,
                 Type = InfrastructureConstants.Transactions.Types.Buy,
-                Currency = "usd",
+                Currency = USD,
                 Price = 1000,
                 Qty = 10,
                 Note = "Lorem ipsum dolor sit amet"
@@ -128,7 +128,7 @@ namespace Cryptofolio.Api.IntegrationTests
                 Wallet = Wallet1,
                 Exchange = Exchange1,
                 Type = InfrastructureConstants.Transactions.Types.Sell,
-                Currency = "usd",
+                Currency = USD,
                 Price = 1500,
                 Qty = 10,
                 Note = "Lorem ipsum dolor sit amet"
@@ -141,7 +141,7 @@ namespace Cryptofolio.Api.IntegrationTests
                 Wallet = Wallet2,
                 Exchange = Exchange1,
                 Type = InfrastructureConstants.Transactions.Types.Buy,
-                Currency = "usd",
+                Currency = EUR,
                 Price = 150,
                 Qty = 100,
                 Note = "Lorem ipsum dolor sit amet"

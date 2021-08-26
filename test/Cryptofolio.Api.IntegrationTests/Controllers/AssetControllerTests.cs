@@ -2,7 +2,6 @@ using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Entities;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Collections.Generic;
 using System.Net.Http.Json;
 using System.Threading.Tasks;

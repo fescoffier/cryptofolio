@@ -2,6 +2,7 @@ using Cryptofolio.Api.Commands;
 using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Entities;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Internal;
 using Moq;
@@ -45,6 +46,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             _context.Wallets.Add(Data.Transaction1.Wallet);
             _context.Assets.Add(Data.Transaction1.Asset);
             _context.Exchanges.Add(Data.Transaction1.Exchange);
+            _context.Currencies.Add(Data.Transaction1.Currency);
             _context.SaveChanges();
             var command = new CreateTransactionCommand
             {
@@ -54,7 +56,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
                 WalletId = Data.Transaction1.Wallet.Id,
                 AssetId = Data.Transaction1.Asset.Id,
                 ExchangeId = Data.Transaction1.Exchange.Id,
-                Currency = Data.Transaction1.Currency,
+                CurrencyId = Data.Transaction1.Currency.Id,
                 Price = Data.Transaction1.Price,
                 Qty = Data.Transaction1.Qty,
                 Note = Data.Transaction1.Note
@@ -67,7 +69,15 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             // Assert
             result.Succeeded.Should().BeTrue();
             result.Data.Should().BeEquivalentTo(Data.Transaction1, options => options.Excluding(m => m.Id));
-            _context.Transactions.Single(t => t.Id == result.Data.Id).Should().BeEquivalentTo(result.Data);
+            _context.Transactions
+                .OfType<BuyOrSellTransaction>()
+                .Include(t => t.Wallet)
+                .Include(t => t.Asset)
+                .Include(t => t.Exchange)
+                .Include(t => t.Currency)
+                .Single(t => t.Id == result.Data.Id)
+                .Should()
+                .BeEquivalentTo(result.Data);
             _dispatcherMock.Verify(m => m.DispatchAsync(It.Is<TransactionCreatedEvent>(w => w.Date == utcNow)), Times.Once());
         }
 
@@ -88,7 +98,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
                 WalletId = Data.Transaction1.Wallet.Id,
                 AssetId = Data.Transaction1.Asset.Id,
                 ExchangeId = Data.Transaction1.Exchange.Id,
-                Currency = Data.Transaction1.Currency,
+                CurrencyId = Data.Transaction1.Currency.Id,
                 Price = Data.Transaction1.Price,
                 Qty = Data.Transaction1.Qty,
                 Note = Data.Transaction1.Note

@@ -72,13 +72,13 @@
             Please select an exchange.</label>
         </div>
         <div class=" form-group has-label" [ngClass]="{
-          'has-danger': (formSubmitted && formControls.currency.errors) || (formControls.currency.value != null && formControls.currency.errors),
-          'has-success': !formControls.currency.errors
+          'has-danger': (formSubmitted && formControls.currency_id.errors) || (formControls.currency_id.value != null && formControls.currency_id.errors),
+          'has-success': !formControls.currency_id.errors
         }">
           <label class="d-block"> Bought with * </label>
           <div class="btn-group transaction-ddl" dropdown>
-            <button dropdownToggle type="button" class="btn dropdown-toggle" [ngClass]="{'btn-info': form.controls.currency.value}">
-              {{ (form.controls.currency.value | uppercase) || 'Select an currency' }}
+            <button dropdownToggle type="button" class="btn dropdown-toggle" [ngClass]="{'btn-info': form.controls.currency_id.value}">
+              {{ (form.controls.currency_name.value | uppercase) || 'Select an currency' }}
             </button>
             <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu">
               <li role="menuitem" *ngFor="let currency of currencies">
@@ -87,7 +87,7 @@
             </ul>
           </div>
           <label class="error"
-            *ngIf="(formSubmitted && formControls.currency.errors) || (formControls.currency.value != null && formControls.currency.errors)">
+            *ngIf="(formSubmitted && formControls.currency_id.errors) || (formControls.currency_id.value != null && formControls.currency_id.errors)">
             Please select the currency the asset was bought with.</label>
         </div>
         <div class=" form-group has-label" [ngClass]="{
@@ -197,13 +197,13 @@
             Please select an exchange.</label>
         </div>
         <div class=" form-group has-label" [ngClass]="{
-          'has-danger': (formSubmitted && formControls.currency.errors) || (formControls.currency.value != null && formControls.currency.errors),
-          'has-success': !formControls.currency.errors
+          'has-danger': (formSubmitted && formControls.currency_id.errors) || (formControls.currency_id.value != null && formControls.currency_id.errors),
+          'has-success': !formControls.currency_id.errors
         }">
           <label class="d-block"> Sold for * </label>
           <div class="btn-group transaction-ddl" dropdown>
-            <button dropdownToggle type="button" class="btn dropdown-toggle" [ngClass]="{'btn-info': form.controls.currency.value}">
-              {{ (form.controls.currency.value | uppercase) || 'Select an currency' }}
+            <button dropdownToggle type="button" class="btn dropdown-toggle" [ngClass]="{'btn-info': form.controls.currency_id.value}">
+              {{ (form.controls.currency_name.value | uppercase) || 'Select an currency' }}
             </button>
             <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu">
               <li role="menuitem" *ngFor="let currency of currencies">
@@ -212,7 +212,7 @@
             </ul>
           </div>
           <label class="error"
-            *ngIf="(formSubmitted && formControls.currency.errors) || (formControls.currency.value != null && formControls.currency.errors)">
+            *ngIf="(formSubmitted && formControls.currency_id.errors) || (formControls.currency_id.value != null && formControls.currency_id.errors)">
             Please select the currency the asset was sold for.</label>
         </div>
         <div class=" form-group has-label" [ngClass]="{

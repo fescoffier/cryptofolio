@@ -6,7 +6,7 @@ namespace Cryptofolio.Api.Commands
 
         public string ExchangeId { get; set; }
 
-        public string Currency { get; set; }
+        public string CurrencyId { get; set; }
 
         public decimal Price { get; set; }
 

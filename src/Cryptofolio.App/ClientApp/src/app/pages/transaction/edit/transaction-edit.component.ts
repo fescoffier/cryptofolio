@@ -80,7 +80,8 @@ export class TransactionEditComponent implements OnInit {
         asset_name: [transaction?.asset.name],
         exchange_id: [transaction?.exchange.id, [Validators.required]],
         exchange_name: [transaction?.exchange.name],
-        currency: [transaction?.["currency"], [Validators.required]],
+        currency_id: [transaction?.["currency"]["id"], [Validators.required]],
+        currency_name: [transaction?.["currency"]["name"]],
         price: [transaction?.["price"], [Validators.required]],
         qty: [transaction?.qty, [Validators.required, Validators.min(0), Validators.max(Number.MAX_VALUE)]],
         note: [transaction?.note]
@@ -156,7 +157,8 @@ export class TransactionEditComponent implements OnInit {
   }
 
   setCurrency(currency: Currency) {
-    this.form.controls.currency.setValue(currency.code);
+    this.form.controls.currency_id.setValue(currency.id);
+    this.form.controls.exchange_name.setValue(currency.code);
   }
 
   reset() {
@@ -190,6 +192,7 @@ export class TransactionEditComponent implements OnInit {
     delete transaction.wallet_name;
     delete transaction.asset_name;
     delete transaction.exchange_name;
+    delete transaction.currency_name;
     delete transaction.transaction_date;
     delete transaction.transaction_time;
 

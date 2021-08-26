@@ -24,7 +24,8 @@ namespace Cryptofolio.Api.Controllers
         private IQueryable<Transaction> Transactions => _context.Transactions
             .Include(t => t.Wallet)
             .Include(t => t.Asset)
-            .Include(t => t.Exchange);
+            .Include(t => t.Exchange)
+            .Include(nameof(BuyOrSellTransaction.Currency));
 
         public TransactionController(IMediator mediator, CryptofolioContext context)
         {

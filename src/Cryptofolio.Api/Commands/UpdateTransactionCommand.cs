@@ -38,8 +38,9 @@ namespace Cryptofolio.Api.Commands
         /// <summary>
         /// The currency used to buy/sell the asset.
         /// </summary>
-        [StringLength(10, ErrorMessage = "The currency can't be greater than {0} characters")]
-        public string Currency { get; set; }
+        [StringLength(36, ErrorMessage = "The currency can't be greater than {0} characters")]
+        [JsonPropertyName("currency_id")]
+        public string CurrencyId { get; set; }
 
         /// <summary>
         /// The price in the currency.

@@ -20,7 +20,7 @@ namespace Cryptofolio.Api.Tests.Commands
             {
                 Type = CommandConstants.Transaction.Types.Buy,
                 ExchangeId = "exchange1",
-                Currency = "usd",
+                CurrencyId = Guid.NewGuid().ToString(),
                 Price = 1,
                 Qty = 1
             };
@@ -42,7 +42,7 @@ namespace Cryptofolio.Api.Tests.Commands
             var command = new FakeTransactionCommand
             {
                 Type = CommandConstants.Transaction.Types.Buy,
-                Currency = "usd",
+                CurrencyId = Guid.NewGuid().ToString(),
                 Price = 1,
                 Qty = 1
             };
@@ -76,7 +76,7 @@ namespace Cryptofolio.Api.Tests.Commands
 
             // Assert
             result.Should().BeFalse();
-            validationResults.Should().ContainEquivalentOf(new ValidationResult(ErrorMessage, new[] { nameof(ITransactionCommand.Currency) }));
+            validationResults.Should().ContainEquivalentOf(new ValidationResult(ErrorMessage, new[] { nameof(ITransactionCommand.CurrencyId) }));
         }
 
         [Fact]
@@ -87,7 +87,7 @@ namespace Cryptofolio.Api.Tests.Commands
             {
                 Type = CommandConstants.Transaction.Types.Buy,
                 ExchangeId = "exchange1",
-                Currency = "usd",
+                CurrencyId = Guid.NewGuid().ToString(),
                 Qty = 1
             };
             var validationContext = new ValidationContext(command);
@@ -109,7 +109,7 @@ namespace Cryptofolio.Api.Tests.Commands
             {
                 Type = CommandConstants.Transaction.Types.Buy,
                 ExchangeId = "exchange1",
-                Currency = "usd",
+                CurrencyId = Guid.NewGuid().ToString(),
                 Price = 1
             };
             var validationContext = new ValidationContext(command);
@@ -131,7 +131,7 @@ namespace Cryptofolio.Api.Tests.Commands
             {
                 Type = CommandConstants.Transaction.Types.Sell,
                 ExchangeId = "exchange1",
-                Currency = "usd",
+                CurrencyId = Guid.NewGuid().ToString(),
                 Price = 1,
                 Qty = 1
             };
@@ -153,7 +153,7 @@ namespace Cryptofolio.Api.Tests.Commands
             var command = new FakeTransactionCommand
             {
                 Type = CommandConstants.Transaction.Types.Sell,
-                Currency = "usd",
+                CurrencyId = Guid.NewGuid().ToString(),
                 Price = 1,
                 Qty = 1
             };
@@ -187,7 +187,7 @@ namespace Cryptofolio.Api.Tests.Commands
 
             // Assert
             result.Should().BeFalse();
-            validationResults.Should().ContainEquivalentOf(new ValidationResult(ErrorMessage, new[] { nameof(ITransactionCommand.Currency) }));
+            validationResults.Should().ContainEquivalentOf(new ValidationResult(ErrorMessage, new[] { nameof(ITransactionCommand.CurrencyId) }));
         }
 
         [Fact]
@@ -198,7 +198,7 @@ namespace Cryptofolio.Api.Tests.Commands
             {
                 Type = CommandConstants.Transaction.Types.Sell,
                 ExchangeId = "exchange1",
-                Currency = "usd",
+                CurrencyId = Guid.NewGuid().ToString(),
                 Qty = 1
             };
             var validationContext = new ValidationContext(command);
@@ -220,7 +220,7 @@ namespace Cryptofolio.Api.Tests.Commands
             {
                 Type = CommandConstants.Transaction.Types.Sell,
                 ExchangeId = "exchange1",
-                Currency = "usd",
+                CurrencyId = Guid.NewGuid().ToString(),
                 Price = 1
             };
             var validationContext = new ValidationContext(command);
@@ -371,7 +371,7 @@ namespace Cryptofolio.Api.Tests.Commands
 
             public string ExchangeId { get; set; }
 
-            public string Currency { get; set; }
+            public string CurrencyId { get; set; }
 
             public decimal Price { get; set; }
 

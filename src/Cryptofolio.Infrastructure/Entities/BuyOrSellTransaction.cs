@@ -15,7 +15,7 @@ namespace Cryptofolio.Infrastructure.Entities
         /// <summary>
         /// The currency it was bought with/sold for.
         /// </summary>
-        public string Currency { get; set; }
+        public Currency Currency { get; set; }
 
         /// <summary>
         /// The price per asset in the currency.
