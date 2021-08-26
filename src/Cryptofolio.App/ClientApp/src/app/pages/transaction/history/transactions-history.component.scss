@@ -1,0 +1,16 @@
+cdk-virtual-scroll-viewport {
+    flex-grow: 1;
+
+    overflow: -moz-scrollbars-none;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar {
+        width: 0 !important;
+    }
+}
+
+.command-container {
+  position: absolute;
+  top: .5rem;
+  right: .5rem;
+  z-index: 1000;
+}

@@ -15,16 +15,18 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
 {
     public class CreateWalletCommandHandlerTests : IClassFixture<WebApplicationFactory>
     {
-        private readonly TestData _data;
+        private readonly WebApplicationFactory _factory;
         private readonly IServiceScope _scope;
         private readonly CreateWalletCommandHandler _handler;
         private readonly CryptofolioContext _context;
         private readonly Mock<ISystemClock> _systemClockMock;
         private readonly Mock<IEventDispatcher> _dispatcherMock;
 
+        private TestData Data => _factory.Data;
+
         public CreateWalletCommandHandlerTests(WebApplicationFactory factory)
         {
-            _data = factory.Data;
+            _factory = factory;
             _scope = factory.Services.CreateScope();
             _handler = _scope.ServiceProvider.GetRequiredService<CreateWalletCommandHandler>();
             _context = _scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
@@ -40,9 +42,9 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             _systemClockMock.SetupGet(m => m.UtcNow).Returns(utcNow);
             var command = new CreateWalletCommand
             {
-                RequestContext = new(null, _data.UserId),
-                Name = _data.Wallet1.Name,
-                Description = _data.Wallet1.Description
+                RequestContext = new(null, Data.UserId),
+                Name = Data.Wallet1.Name,
+                Description = Data.Wallet1.Description
             };
             var cancellationToken = CancellationToken.None;
 
@@ -51,7 +53,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
 
             // Assert
             result.Succeeded.Should().BeTrue();
-            result.Data.Should().BeEquivalentTo(_data.Wallet1, options => options.Excluding(m => m.Id).Excluding(m => m.Selected));
+            result.Data.Should().BeEquivalentTo(Data.Wallet1, options => options.Excluding(m => m.Id).Excluding(m => m.Selected));
             _context.Wallets.Single(w => w.Id == result.Data.Id).Should().BeEquivalentTo(result.Data, options => options.Excluding(m => m.Selected));
             _dispatcherMock.Verify(m => m.DispatchAsync(It.Is<WalletCreatedEvent>(w => w.Date == utcNow)), Times.Once());
         }
@@ -64,7 +66,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             _systemClockMock.SetupGet(m => m.UtcNow).Returns(utcNow);
             var command = new CreateWalletCommand
             {
-                RequestContext = new(null, _data.UserId)
+                RequestContext = new(null, Data.UserId)
             };
             var cancellationToken = CancellationToken.None;
 

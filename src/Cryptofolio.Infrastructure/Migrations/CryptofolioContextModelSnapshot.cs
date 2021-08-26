@@ -73,6 +73,39 @@ namespace Cryptofolio.Infrastructure.Migrations
                     b.ToTable("asset_ticker");
                 });
 
+            modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.Currency", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("code");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.Property<int>("Precision")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(2)
+                        .HasColumnName("precision");
+
+                    b.Property<string>("Symbol")
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("symbol");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("currency");
+                });
+
             modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.Exchange", b =>
                 {
                     b.Property<string>("Id")
@@ -129,6 +162,56 @@ namespace Cryptofolio.Infrastructure.Migrations
                     b.ToTable("setting");
                 });
 
+            modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.Transaction", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("Date")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
+
+                    b.Property<decimal>("Qty")
+                        .HasColumnType("numeric")
+                        .HasColumnName("qty");
+
+                    b.Property<string>("asset_id")
+                        .IsRequired()
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("discriminator")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("exchange_id")
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("wallet_id")
+                        .IsRequired()
+                        .HasColumnType("character varying(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Date")
+                        .HasSortOrder(new[] { SortOrder.Descending });
+
+                    b.HasIndex("asset_id");
+
+                    b.HasIndex("exchange_id");
+
+                    b.HasIndex("wallet_id");
+
+                    b.ToTable("transaction");
+
+                    b.HasDiscriminator<string>("discriminator").HasValue("Transaction");
+                });
+
             modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.Wallet", b =>
                 {
                     b.Property<string>("Id")
@@ -161,6 +244,54 @@ namespace Cryptofolio.Infrastructure.Migrations
                     b.ToTable("wallet");
                 });
 
+            modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.BuyOrSellTransaction", b =>
+                {
+                    b.HasBaseType("Cryptofolio.Infrastructure.Entities.Transaction");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric")
+                        .HasColumnName("price");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(4)
+                        .HasColumnType("character varying(4)")
+                        .HasColumnName("type");
+
+                    b.Property<string>("currency_id")
+                        .IsRequired()
+                        .HasColumnType("character varying(36)");
+
+                    b.HasIndex("Type");
+
+                    b.HasIndex("currency_id");
+
+                    b.HasDiscriminator().HasValue("BuyOrSellTransaction");
+                });
+
+            modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.TransferTransaction", b =>
+                {
+                    b.HasBaseType("Cryptofolio.Infrastructure.Entities.Transaction");
+
+                    b.Property<string>("Destination")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("destination");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("source");
+
+                    b.HasIndex("Destination");
+
+                    b.HasIndex("Source");
+
+                    b.HasDiscriminator().HasValue("TransferTransaction");
+                });
+
             modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.AssetTicker", b =>
                 {
                     b.HasOne("Cryptofolio.Infrastructure.Entities.Asset", "Asset")
@@ -170,6 +301,42 @@ namespace Cryptofolio.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Asset");
+                });
+
+            modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.Transaction", b =>
+                {
+                    b.HasOne("Cryptofolio.Infrastructure.Entities.Asset", "Asset")
+                        .WithMany()
+                        .HasForeignKey("asset_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Cryptofolio.Infrastructure.Entities.Exchange", "Exchange")
+                        .WithMany()
+                        .HasForeignKey("exchange_id");
+
+                    b.HasOne("Cryptofolio.Infrastructure.Entities.Wallet", "Wallet")
+                        .WithMany()
+                        .HasForeignKey("wallet_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Asset");
+
+                    b.Navigation("Exchange");
+
+                    b.Navigation("Wallet");
+                });
+
+            modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.BuyOrSellTransaction", b =>
+                {
+                    b.HasOne("Cryptofolio.Infrastructure.Entities.Currency", "Currency")
+                        .WithMany()
+                        .HasForeignKey("currency_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Currency");
                 });
 #pragma warning restore 612, 618
         }

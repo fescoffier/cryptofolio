@@ -44,8 +44,6 @@ namespace Cryptofolio.Handlers.Job
         /// <inheritdoc/>
         public async Task<Unit> Handle(TEvent @event, CancellationToken cancellationToken, RequestHandlerDelegate<Unit> next)
         {
-            // TODO: It could be a good idea to use a different response type, and then check the handling result here.
-
             _logger.LogInformation("Storing the {0} event occurence of category {1} and type {2}.", @event.Id, @event.Category, typeof(TEvent).FullName);
             _logger.LogTraceObject("Event", @event);
 

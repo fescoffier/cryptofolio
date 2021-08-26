@@ -41,6 +41,28 @@ export const ROUTES: RouteInfo[] = [
     icontype: "tim-icons icon-wallet-43"
   },
   {
+    path: "/transactions",
+    title: "Transactions",
+    type: "sub",
+    icontype: "tim-icons icon-bullet-list-67",
+    collapse: "transactions",
+    isCollapsed: false,
+    children: [
+      {
+        path: "history",
+        title: "History",
+        type: "link",
+        smallTitle: "H"
+      },
+      {
+        path: "add",
+        title: "Add",
+        type: "link",
+        smallTitle: "A"
+      }
+    ]
+  },
+  {
     path: "/pages",
     title: "Pages",
     type: "sub",

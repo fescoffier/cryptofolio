@@ -1,4 +1,5 @@
 using Serilog.Sinks.SystemConsole.Themes;
+using System.Collections.Generic;
 
 namespace Cryptofolio.Infrastructure
 {
@@ -45,6 +46,95 @@ namespace Cryptofolio.Infrastructure
         }
 
         /// <summary>
+        /// Transactions constants.
+        /// </summary>
+        public static class Transactions
+        {
+            /// <summary>
+            /// Transactions types constants.
+            /// </summary>
+            public static class Types
+            {
+                /// <summary>
+                /// The buy type.
+                /// </summary>
+                public const string Buy = "buy";
+
+                /// <summary>
+                /// The sell type.
+                /// </summary>
+                public const string Sell = "sell";
+
+                /// <summary>
+                /// The transfer type.
+                /// </summary>
+                public const string Transfer = "transfer";
+            }
+
+            /// <summary>
+            /// Transfer sources.
+            /// </summary>
+            public static class Sources
+            {
+                /// <summary>
+                /// The transfer comes from the user's exchange.
+                /// </summary>
+                public const string MyExchange = "My exchange";
+
+                /// <summary>
+                /// The transfer comes from the user's wallet.
+                /// </summary>
+                public const string MyWallet = "My wallet";
+
+                /// <summary>
+                /// The transfer comes from an external source.
+                /// </summary>
+                public const string ExternalSource = "External source";
+
+                /// <summary>
+                /// The transfer sources list.
+                /// </summary>
+                public static IEnumerable<string> All { get; } = new[]
+                {
+                    MyExchange,
+                    MyWallet,
+                    ExternalSource
+                };
+            }
+
+            /// <summary>
+            /// Transfer destinations.
+            /// </summary>
+            public static class Destinations
+            {
+                /// <summary>
+                /// The transfer goes to the user's exchange.
+                /// </summary>
+                public const string MyExchange = "My exchange";
+
+                /// <summary>
+                /// The transfer goes to the user's wallet.
+                /// </summary>
+                public const string MyWallet = "My wallet";
+
+                /// <summary>
+                /// The transfer goes to an external source.
+                /// </summary>
+                public const string ExternalSource = "External source";
+
+                /// <summary>
+                /// The transfer destinations list.
+                /// </summary>
+                public static IEnumerable<string> All { get; } = new[]
+                {
+                    MyExchange,
+                    MyWallet,
+                    ExternalSource
+                };
+            }
+        }
+
+        /// <summary>
         /// Events constants.
         /// </summary>
         public static class Events
@@ -63,6 +153,11 @@ namespace Cryptofolio.Infrastructure
                 /// The exchange category.
                 /// </summary>
                 public const string Exchange = "Exchange";
+
+                /// <summary>
+                /// The transaction category.
+                /// </summary>
+                public const string Transaction = "Transaction";
 
                 /// <summary>
                 /// The wallet category.

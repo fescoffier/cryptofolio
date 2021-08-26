@@ -77,7 +77,6 @@ namespace Cryptofolio.Collector.Job.Data
             }
             asset.Name = coin.Name;
             asset.Symbol = coin.Symbol;
-            // TODO: Might be a good idea to handle different localization.
             asset.Description = coin.Description["en"];
 
             try

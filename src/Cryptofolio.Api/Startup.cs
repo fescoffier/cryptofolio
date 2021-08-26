@@ -42,6 +42,7 @@ namespace Cryptofolio.Api
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+                    options.JsonSerializerOptions.Converters.Add(new TransactionJsonConverter());
                 });
 
             // Authentification
@@ -161,6 +162,16 @@ namespace Cryptofolio.Api
             services
                 .AddScoped<DeleteWalletCommandHandler>()
                 .AddScoped<IRequestHandler<DeleteWalletCommand, CommandResult>>(p => p.GetRequiredService<DeleteWalletCommandHandler>());
+            // Transaction
+            services
+                .AddScoped<CreateTransactionCommandHandler>()
+                .AddScoped<IRequestHandler<CreateTransactionCommand, CommandResult<Transaction>>>(p => p.GetRequiredService<CreateTransactionCommandHandler>());
+            services
+                .AddScoped<UpdateTransactionCommandHandler>()
+                .AddScoped<IRequestHandler<UpdateTransactionCommand, CommandResult>>(p => p.GetRequiredService<UpdateTransactionCommandHandler>());
+            services
+                .AddScoped<DeleteTransactionCommandHandler>()
+                .AddScoped<IRequestHandler<DeleteTransactionCommand, CommandResult>>(p => p.GetRequiredService<DeleteTransactionCommandHandler>());
         }
 
         public void Configure(IApplicationBuilder app)

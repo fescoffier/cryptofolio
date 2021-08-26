@@ -1,0 +1,89 @@
+<div class=" content d-flex flex-column">
+  <cdk-virtual-scroll-viewport itemSize="100">
+    <div *cdkVirtualFor="let transaction of datasource" [ngSwitch]="transaction.type_discriminator">
+      <div class=" card position-relative" *ngSwitchCase="'BuyOrSellTransaction'">
+        <div class="command-container">
+          <a [routerLink]="'/transactions/edit/' + transaction.id" class=" btn btn-info btn-round btn-icon mr-2" title="Edit this transaction">
+            <i class=" tim-icons icon-pencil"> </i>
+          </a>
+          <button class=" btn btn-danger btn-round btn-icon mr-2" title="Delete this transaction" (click)="delete(transaction)">
+            <i class=" tim-icons icon-simple-remove"> </i>
+          </button>
+        </div>
+        <div class=" row pl-3 pr-3">
+          <div class=" card-body col-3">
+            <div class=" card-title">
+              <i class=" tim-icons icon-coins"
+                [ngClass]="{'text-success': transaction.type === 'buy', 'text-danger': transaction.type === 'sell'}"></i>
+              {{ transaction.type | titlecase }} via {{ transaction.exchange.name }}
+            </div>
+            <div class=" card-subtitle text-muted">{{ transaction.date | date:"MMM dd, yyyy HH:mm" }}</div>
+          </div>
+          <div class=" card-body col-3">
+            <div class=" card-title">{{ transaction.qty }} {{ transaction.asset.symbol | uppercase }}</div>
+            <div class=" card-subtitle text-muted">Paid **** {{ transaction.currency | uppercase }}</div>
+          </div>
+          <div class=" card-body col-3">
+            <div class=" card-title text-muted">TRADING PAIR</div>
+            <div class=" card-text">{{ transaction.asset.symbol | uppercase }}/{{ transaction.currency.code | uppercase }}
+            </div>
+          </div>
+          <div class=" card-body col-3">
+            <div class=" card-title text-muted">PRICE</div>
+            <div class=" card-text">{{ transaction.price | number:'1.0-3' }}
+            </div>
+          </div>
+          <div class=" card-body col-3">
+            <div class=" card-title text-muted">FEE</div>
+            <div class=" card-text">Not implemented</div>
+          </div>
+          <div class=" card-body col-3">
+            <div class=" card-title text-muted">COST (FEES INCLUDED)</div>
+            <div class=" card-text">Not implemented</div>
+          </div>
+          <div class=" card-body col-3">
+            <div class=" card-title text-muted">CHANGE</div>
+            <div class=" card-text">Not implemented</div>
+          </div>
+          <div class=" card-body col-3">
+            <div class=" card-title text-muted">CURRENT VALUE</div>
+            <div class=" card-text">Not implemented</div>
+          </div>
+        </div>
+      </div>
+      <div class=" card" *ngSwitchCase="'TransferTransaction'">
+        <div class="command-container">
+          <a [routerLink]="'/transactions/edit/' + transaction.id" class=" btn btn-info btn-round btn-icon mr-2" title="Edit this transaction">
+            <i class=" tim-icons icon-pencil"> </i>
+          </a>
+          <button class=" btn btn-danger btn-round btn-icon mr-2" title="Delete this transaction" (click)="delete(transaction)">
+            <i class=" tim-icons icon-simple-remove"> </i>
+          </button>
+        </div>
+        <div class="row pl-3 pr-3">
+          <div class=" card-body col-3">
+            <div class=" card-title">
+              <i class=" tim-icons icon-refresh-02 text-info"></i>
+              From
+              <span *ngIf="transaction.source === 'My exchange';then exchange_source;else normal_source;"></span>
+              <ng-template #exchange_source> {{ transaction.exchange.name }}</ng-template>
+              <ng-template #normal_source>{{ transaction.source }}</ng-template>
+              to
+              <span
+                *ngIf="transaction.destination === 'My exchange';then exchange_destination;else normal_destination;"></span>
+              <ng-template #exchange_destination>{{ transaction.exchange.name }}</ng-template>
+              <ng-template #normal_destination>{{ transaction.destination }}</ng-template>
+            </div>
+            <div class=" card-subtitle text-muted">{{ transaction.date | date:"MMM dd, yyyy HH:mm" }}</div>
+          </div>
+          <div class=" card-body col-3">
+            <div class=" card-title">{{ transaction.qty }} {{ transaction.asset.symbol | uppercase }}</div>
+          </div>
+        </div>
+      </div>
+      <div class=" card" *ngSwitchDefault>
+        Loading...
+      </div>
+    </div>
+  </cdk-virtual-scroll-viewport>
+</div>

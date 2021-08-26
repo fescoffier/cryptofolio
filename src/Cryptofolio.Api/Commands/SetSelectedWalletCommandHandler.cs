@@ -46,8 +46,8 @@ namespace Cryptofolio.Api.Commands
             try
             {
                 _logger.LogDebug("Beginning a new transaction.");
-                using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
-                _logger.LogDebug("Transaction {0} just begun.", transaction.TransactionId);
+                using var dbTransaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+                _logger.LogDebug("Transaction {0} just begun.", dbTransaction.TransactionId);
 
                 _logger.LogDebug("Updating the unselected wallet in database.");
                 await _context.Database.ExecuteSqlInterpolatedAsync($"update \"data\".\"wallet\" set selected = false where user_id = {command.UserId}", cancellationToken: cancellationToken);
@@ -68,8 +68,8 @@ namespace Cryptofolio.Api.Commands
                 _logger.LogDebug("Dispatching a {0} event.", nameof(WalletSelectedEvent));
                 await _dispatcher.DispatchAsync(@event);
 
-                _logger.LogDebug("Committing the transaction {0}.", transaction.TransactionId);
-                await transaction.CommitAsync(cancellationToken);
+                _logger.LogDebug("Committing the transaction {0}.", dbTransaction.TransactionId);
+                await dbTransaction.CommitAsync(CancellationToken.None);
 
                 _logger.LogInformation("Command {0} handled.", command.RequestId);
 
