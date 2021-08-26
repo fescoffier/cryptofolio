@@ -31,7 +31,7 @@ export class TransactionsDataSource extends DataSource<Transaction | undefined> 
   }
 
   fetchTransactions(): void {
-    this.service.get(this.skip, this.take).subscribe(transactions => {
+    this.service.list(this.skip, this.take).subscribe(transactions => {
       if (transactions.length > 0) {
         this.cachedTransactions = this.cachedTransactions.concat(transactions);
         this.dataStream.next(this.cachedTransactions);

@@ -1,5 +1,6 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
+import { Component, OnInit } from "@angular/core";
+import { Location } from "@angular/common";
+import { ActivatedRoute, Router } from "@angular/router";
 import {
   FormGroup,
   FormBuilder,
@@ -29,10 +30,6 @@ export class TransactionEditComponent implements OnInit {
   public exchanges: Exchange[];
   public wallets: Wallet[];
 
-  @Input()
-  public transaction: Transaction;
-
-  @Input()
   public type: string = "buy";
 
   public form: FormGroup;
@@ -42,11 +39,27 @@ export class TransactionEditComponent implements OnInit {
     return this.form.controls;
   }
 
-  constructor(private fb: FormBuilder, private router: Router, private service: TransactionService) {
-    this.form = this.createForm();
+  constructor(
+    private fb: FormBuilder,
+    private location: Location,
+    private router: Router,
+    private route: ActivatedRoute,
+    private service: TransactionService) {
   }
 
   ngOnInit(): void {
+    this.route.params.subscribe(params => {
+      if (params["id"]) {
+        this.service
+          .get(params["id"])
+          .subscribe(transaction => {
+            this.formMode = "edit";
+            this.form = this.createForm(transaction);
+          });
+      } else {
+        this.form = this.createForm();
+      }
+    });
     this.service.getAssets().subscribe(assets => this.assets = assets);
     this.service.getAssetsSources().subscribe(assetsSources => this.assetsSources = assetsSources);
     this.service.getAssetsDestinations().subscribe(assetsDestinations => this.assetsDestinations = assetsDestinations);
@@ -55,38 +68,38 @@ export class TransactionEditComponent implements OnInit {
     this.service.getWallets().subscribe(wallets => this.wallets = wallets);
   }
 
-  private createForm(): FormGroup {
+  private createForm(transaction?: Transaction): FormGroup {
     if (this.type === "buy" || this.type === "sell") {
       return this.fb.group({
-        id: [this.transaction?.id],
-        transaction_date: [this.transaction?.date, [Validators.required]],
-        transaction_time: [this.transaction?.date],
-        wallet_id: [this.transaction?.wallet.id, [Validators.required]],
-        wallet_name: [this.transaction?.wallet.name],
-        asset_id: [this.transaction?.asset.id, [Validators.required]],
-        asset_name: [this.transaction?.asset.name],
-        exchange_id: [this.transaction?.exchange.id, [Validators.required]],
-        exchange_name: [this.transaction?.exchange.name],
-        currency: [this.transaction?.["currency"], [Validators.required]],
-        price: [this.transaction?.["price"], [Validators.required]],
-        qty: [this.transaction?.qty, [Validators.required, Validators.min(0), Validators.max(Number.MAX_VALUE)]],
-        note: [this.transaction?.note]
+        id: [transaction?.id],
+        transaction_date: [transaction?.date, [Validators.required]],
+        transaction_time: [transaction?.date],
+        wallet_id: [transaction?.wallet.id, [Validators.required]],
+        wallet_name: [transaction?.wallet.name],
+        asset_id: [transaction?.asset.id, [Validators.required]],
+        asset_name: [transaction?.asset.name],
+        exchange_id: [transaction?.exchange.id, [Validators.required]],
+        exchange_name: [transaction?.exchange.name],
+        currency: [transaction?.["currency"], [Validators.required]],
+        price: [transaction?.["price"], [Validators.required]],
+        qty: [transaction?.qty, [Validators.required, Validators.min(0), Validators.max(Number.MAX_VALUE)]],
+        note: [transaction?.note]
       });
     } else if (this.type === "transfer") {
       return this.fb.group({
-        id: [this.transaction?.id],
-        transaction_date: [this.transaction?.date, [Validators.required]],
-        transaction_time: [this.transaction?.date],
-        wallet_id: [this.transaction?.wallet.id, [Validators.required]],
-        wallet_name: [this.transaction?.wallet.name],
-        asset_id: [this.transaction?.asset.id, [Validators.required]],
-        asset_name: [this.transaction?.asset.name],
-        exchange_id: [this.transaction?.exchange.id],
-        exchange_name: [this.transaction?.exchange.name],
-        source: [this.transaction?.["source"], [Validators.required]],
-        destination: [this.transaction?.["destination"], [Validators.required]],
-        qty: [this.transaction?.qty, [Validators.required, Validators.min(0), Validators.max(Number.MAX_VALUE)]],
-        note: [this.transaction?.note]
+        id: [transaction?.id],
+        transaction_date: [transaction?.date, [Validators.required]],
+        transaction_time: [transaction?.date],
+        wallet_id: [transaction?.wallet.id, [Validators.required]],
+        wallet_name: [transaction?.wallet.name],
+        asset_id: [transaction?.asset.id, [Validators.required]],
+        asset_name: [transaction?.asset.name],
+        exchange_id: [transaction?.exchange.id],
+        exchange_name: [transaction?.exchange.name],
+        source: [transaction?.["source"], [Validators.required]],
+        destination: [transaction?.["destination"], [Validators.required]],
+        qty: [transaction?.qty, [Validators.required, Validators.min(0), Validators.max(Number.MAX_VALUE)]],
+        note: [transaction?.note]
       }, {
         validators: [this.validateExchange(this.type)]
       });
@@ -147,8 +160,12 @@ export class TransactionEditComponent implements OnInit {
   }
 
   reset() {
-    this.form.reset();
-    this.formSubmitted = false;
+    if (this.formMode === "create") {
+      this.form.reset();
+      this.formSubmitted = false;
+    } else {
+      this.location.back();
+    }
   }
 
   submit() {
@@ -176,8 +193,14 @@ export class TransactionEditComponent implements OnInit {
     delete transaction.transaction_date;
     delete transaction.transaction_time;
 
-    this.service
+    if (this.formMode === "create") {
+      this.service
       .create(transaction)
       .subscribe(_ => this.router.navigate(["/transactions/history"]));
+    } else if (this.formMode === "edit") {
+      this.service
+        .update(transaction)
+        .subscribe(() => this.router.navigate(["/transactions/history"]));
+    }
   }
 }

@@ -54,7 +54,15 @@ export class TransactionService {
       );
   }
 
-  get(skip: number, take: number): Observable<Transaction[]> {
+  get(id: string): Observable<Transaction> {
+    return this.http
+      .get<any>(`${this.api.transactionsEndpoint}/${id}`)
+      .pipe(
+        map(transaction => this.deserialize(transaction))
+      );
+  }
+
+  list(skip: number, take: number): Observable<Transaction[]> {
     return this.http
       .get<any[]>(`${this.api.transactionsEndpoint}?skip=${skip}&take=${take}`)
       .pipe(

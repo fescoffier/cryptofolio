@@ -1,13 +1,13 @@
 <div class="content">
   <ul class="nav nav-pills nav-justified">
     <li class="nav-item">
-      <a class="nav-link" [ngClass]="{'active': type === 'buy', 'bg-success': type === 'buy'}" href="javascript:void(0)" (click)="setType('buy')">Buy</a>
+      <a class="nav-link" [ngClass]="{'active': type === 'buy', 'disabled': formMode === 'edit', 'bg-success': type === 'buy'}" href="javascript:void(0)" (click)="setType('buy')">Buy</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" [ngClass]="{'active': type === 'sell', 'bg-danger': type === 'sell'}" href="javascript:void(0)" (click)="setType('sell')">Sell</a>
+      <a class="nav-link" [ngClass]="{'active': type === 'sell', 'disabled': formMode === 'edit', 'bg-danger': type === 'sell'}" href="javascript:void(0)" (click)="setType('sell')">Sell</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" [ngClass]="{'active': type === 'transfer', 'bg-info': type === 'transfer'}" href="javascript:void(0)" (click)="setType('transfer')">Transfer</a>
+      <a class="nav-link" [ngClass]="{'active': type === 'transfer', 'disabled': formMode === 'edit', 'bg-info': type === 'transfer'}" href="javascript:void(0)" (click)="setType('transfer')">Transfer</a>
     </li>
   </ul>
   <form [formGroup]="form" (ngSubmit)="submit()" class="mt-5">
