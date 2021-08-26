@@ -30,6 +30,14 @@ export class TransactionService {
       );
   }
 
+  getAssetsSources(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.api.assetsEndpoint}/sources`);
+  }
+
+  getAssetsDestinations(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.api.assetsEndpoint}/destinations`);
+  }
+
   getExchanges(): Observable<Exchange[]> {
     return this.http
       .get<any[]>(this.api.exchangesEndpoint)

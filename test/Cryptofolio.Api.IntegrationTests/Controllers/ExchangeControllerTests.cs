@@ -32,10 +32,10 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             context.SaveChanges();
 
             // Act
-            var transaction = await client.GetFromJsonAsync<Exchange>($"/exchanges/{Data.Exchange1.Id}");
+            var exchange = await client.GetFromJsonAsync<Exchange>($"/exchanges/{Data.Exchange1.Id}");
 
             // Assert
-            transaction.Should().BeEquivalentTo(Data.Exchange1);
+            exchange.Should().BeEquivalentTo(Data.Exchange1);
         }
 
         [Fact]
@@ -49,12 +49,12 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             context.SaveChanges();
 
             // Act
-            var transactions = await client.GetFromJsonAsync<List<Exchange>>("/exchanges");
+            var exchanges = await client.GetFromJsonAsync<List<Exchange>>("/exchanges");
 
             // Assert
-            transactions.Should().HaveCount(2);
-            transactions.Should().ContainEquivalentOf(Data.Exchange1);
-            transactions.Should().ContainEquivalentOf(Data.Exchange2);
+            exchanges.Should().HaveCount(2);
+            exchanges.Should().ContainEquivalentOf(Data.Exchange1);
+            exchanges.Should().ContainEquivalentOf(Data.Exchange2);
         }
     }
 }

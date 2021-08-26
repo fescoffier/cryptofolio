@@ -11,7 +11,6 @@
     </li>
   </ul>
   <form [formGroup]="form" (ngSubmit)="submit()" class="mt-5">
-    <input type="hidden" name="type" formControlName="type" />
     <div class="card" >
       <!--Buy type-->
       <div class=" card-body" *ngIf="type === 'buy'">
@@ -78,7 +77,7 @@
         }">
           <label class="d-block"> Bought with * </label>
           <div class="btn-group transaction-ddl" dropdown>
-            <button dropdownToggle type="button" class="btn dropdown-toggle" [ngClass]="{'btn-info': form.controls.exchange_name.value}">
+            <button dropdownToggle type="button" class="btn dropdown-toggle" [ngClass]="{'btn-info': form.controls.currency.value}">
               {{ (form.controls.currency.value | uppercase) || 'Select an currency' }}
             </button>
             <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu">
@@ -203,7 +202,7 @@
         }">
           <label class="d-block"> Sold for * </label>
           <div class="btn-group transaction-ddl" dropdown>
-            <button dropdownToggle type="button" class="btn dropdown-toggle" [ngClass]="{'btn-info': form.controls.exchange_name.value}">
+            <button dropdownToggle type="button" class="btn dropdown-toggle" [ngClass]="{'btn-info': form.controls.currency.value}">
               {{ (form.controls.currency.value | uppercase) || 'Select an currency' }}
             </button>
             <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu">
@@ -304,8 +303,49 @@
             Please select an asset.</label>
         </div>
         <div class=" form-group has-label" [ngClass]="{
-          'has-danger': (formSubmitted && formControls.exchange_id.errors) || (formControls.exchange_id.value != null && formControls.exchange_id.errors),
-          'has-success': !formControls.exchange_id.errors
+          'has-danger': (formSubmitted && formControls.source.errors) || (formControls.source.value != null && formControls.source.errors),
+          'has-success': !formControls.source.errors
+        }">
+          <label class="d-block"> From * </label>
+          <div class="btn-group transaction-ddl" dropdown>
+            <button dropdownToggle type="button" class="btn dropdown-toggle" [ngClass]="{'btn-info': form.controls.source.value}">
+              {{ form.controls.source.value || 'Select the source' }}
+            </button>
+            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu">
+              <li role="menuitem" *ngFor="let source of assetsSources">
+                <a class="dropdown-item" href="javascript:void(0)" (click)="setSource(source)">{{ source }}</a>
+              </li>
+            </ul>
+          </div>
+          <label class="error"
+            *ngIf="(formSubmitted && formControls.source.errors) || (formControls.source.value != null && formControls.source.errors)">
+            Please select the source.</label>
+        </div>
+        <div class=" form-group has-label" [ngClass]="{
+          'has-danger': (formSubmitted && formControls.destination.errors) || (formControls.destination.value != null && formControls.destination.errors),
+          'has-success': !formControls.destination.errors
+        }">
+          <label class="d-block"> To * </label>
+          <div class="btn-group transaction-ddl" dropdown>
+            <button dropdownToggle type="button" class="btn dropdown-toggle" [ngClass]="{'btn-info': form.controls.destination.value}">
+              {{ form.controls.destination.value || 'Select the destination' }}
+            </button>
+            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu">
+              <li role="menuitem" *ngFor="let destination of assetsDestinations">
+                <a class="dropdown-item" href="javascript:void(0)" (click)="setDestination(destination)">{{ destination }}</a>
+              </li>
+            </ul>
+          </div>
+          <label class="error"
+            *ngIf="(formSubmitted && formControls.destination.errors) || (formControls.destination.value != null && formControls.destination.errors)">
+            Please select the destination.</label>
+        </div>
+        <div class="form-group has-label has-danger" *ngIf="form.errors && form.errors.source && form.errors.destination">
+          <label class="error">The source and destination can't be the same.</label>
+        </div>
+        <div class=" form-group has-label" *ngIf="formControls.source.value === 'My exchange' || formControls.destination.value === 'My exchange'" [ngClass]="{
+          'has-danger': (formSubmitted && formControls.exchange_id.errors) || (formSubmitted && form.errors?.exchange_id) || (formControls.exchange_id.value != null && formControls.exchange_id.errors),
+          'has-success': !formControls.exchange_id.errors && !form.errors?.exchange_id
         }">
           <label class="d-block"> Exchange * </label>
           <div class="btn-group transaction-ddl" dropdown>
@@ -319,28 +359,18 @@
             </ul>
           </div>
           <label class="error"
-            *ngIf="(formSubmitted && formControls.exchange_id.errors) || (formControls.exchange_id.value != null && formControls.exchange_id.errors)">
+            *ngIf="(formSubmitted && formControls.exchange_id.errors) || (formSubmitted && form.errors?.exchange_id) || (formControls.exchange_id.value != null && formControls.exchange_id.errors)">
             Please select an exchange.</label>
         </div>
         <div class=" form-group has-label" [ngClass]="{
-          'has-danger': (formSubmitted && formControls.source.errors) || (formControls.source.value != null && formControls.source.errors),
-          'has-success': !formControls.source.errors
+          'has-danger': (formSubmitted && formControls.qty.errors) || (formControls.qty.value != null && formControls.qty.errors),
+          'has-success': !formControls.qty.errors
         }">
-          <label> From * </label>
-          <input class=" form-control" name="source" formControlName="source" />
+          <label> Quantity * </label>
+          <input class=" form-control" name="qty" formControlName="qty" type="number" min="0" />
           <label class="error"
-            *ngIf="(formSubmitted && formControls.source.errors) || (formControls.source.value != null && formControls.source.errors)">
-            Please select the source.</label>
-        </div>
-        <div class=" form-group has-label" [ngClass]="{
-          'has-danger': (formSubmitted && formControls.destination.errors) || (formControls.destination.value != null && formControls.destination.errors),
-          'has-success': !formControls.destination.errors
-        }">
-          <label> To * </label>
-          <input class=" form-control" name="destination" formControlName="destination" type="number" min="0" />
-          <label class="error"
-            *ngIf="(formSubmitted && formControls.destination.errors) || (formControls.destination.value != null && formControls.destination.errors)">
-            Please set the destination.</label>
+            *ngIf="(formSubmitted && formControls.qty.errors) || (formControls.qty.value != null && formControls.qty.errors)">
+            Please set the quantity.</label>
         </div>
         <div class=" form-group has-label" [ngClass]="{
           'has-danger': (formSubmitted && formControls.transaction_date.errors) || (formControls.transaction_date.value != null && formControls.transaction_date.errors),

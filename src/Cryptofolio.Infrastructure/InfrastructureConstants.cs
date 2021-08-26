@@ -1,4 +1,5 @@
 using Serilog.Sinks.SystemConsole.Themes;
+using System.Collections.Generic;
 
 namespace Cryptofolio.Infrastructure
 {
@@ -89,6 +90,16 @@ namespace Cryptofolio.Infrastructure
                 /// The transfer comes from an external source.
                 /// </summary>
                 public const string ExternalSource = "External source";
+
+                /// <summary>
+                /// The transfer sources list.
+                /// </summary>
+                public static IEnumerable<string> All { get; } = new[]
+                {
+                    MyExchange,
+                    MyWallet,
+                    ExternalSource
+                };
             }
 
             /// <summary>
@@ -110,6 +121,16 @@ namespace Cryptofolio.Infrastructure
                 /// The transfer goes to an external source.
                 /// </summary>
                 public const string ExternalSource = "External source";
+
+                /// <summary>
+                /// The transfer destinations list.
+                /// </summary>
+                public static IEnumerable<string> All { get; } = new[]
+                {
+                    MyExchange,
+                    MyWallet,
+                    ExternalSource
+                };
             }
         }
 

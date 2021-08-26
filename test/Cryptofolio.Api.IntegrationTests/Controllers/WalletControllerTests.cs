@@ -36,10 +36,10 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             context.SaveChanges();
 
             // Act
-            var transaction = await client.GetFromJsonAsync<Wallet>($"/wallets/{Data.Wallet1.Id}");
+            var wallet = await client.GetFromJsonAsync<Wallet>($"/wallets/{Data.Wallet1.Id}");
 
             // Assert
-            transaction.Should().BeEquivalentTo(Data.Wallet1);
+            wallet.Should().BeEquivalentTo(Data.Wallet1);
         }
 
         [Fact]
@@ -53,13 +53,13 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             context.SaveChanges();
 
             // Act
-            var transactions = await client.GetFromJsonAsync<List<Wallet>>("/wallets");
+            var wallets = await client.GetFromJsonAsync<List<Wallet>>("/wallets");
 
             // Assert
-            transactions.Should().HaveCount(3);
-            transactions.Should().ContainEquivalentOf(Data.Wallet1);
-            transactions.Should().ContainEquivalentOf(Data.Wallet2);
-            transactions.Should().ContainEquivalentOf(Data.Wallet3);
+            wallets.Should().HaveCount(3);
+            wallets.Should().ContainEquivalentOf(Data.Wallet1);
+            wallets.Should().ContainEquivalentOf(Data.Wallet2);
+            wallets.Should().ContainEquivalentOf(Data.Wallet3);
         }
 
         [Fact]

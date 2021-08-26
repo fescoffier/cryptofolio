@@ -32,10 +32,10 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             context.SaveChanges();
 
             // Act
-            var transaction = await client.GetFromJsonAsync<Currency>($"/currencies/{Data.USD.Id}");
+            var currency = await client.GetFromJsonAsync<Currency>($"/currencies/{Data.USD.Id}");
 
             // Assert
-            transaction.Should().BeEquivalentTo(Data.USD);
+            currency.Should().BeEquivalentTo(Data.USD);
         }
 
         [Fact]
@@ -49,12 +49,12 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             context.SaveChanges();
 
             // Act
-            var transactions = await client.GetFromJsonAsync<List<Currency>>("/currencies");
+            var currencies = await client.GetFromJsonAsync<List<Currency>>("/currencies");
 
             // Assert
-            transactions.Should().HaveCount(2);
-            transactions.Should().ContainEquivalentOf(Data.USD);
-            transactions.Should().ContainEquivalentOf(Data.EUR);
+            currencies.Should().HaveCount(2);
+            currencies.Should().ContainEquivalentOf(Data.USD);
+            currencies.Should().ContainEquivalentOf(Data.EUR);
         }
     }
 }

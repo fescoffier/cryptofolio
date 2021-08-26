@@ -29,5 +29,11 @@ namespace Cryptofolio.Api.Controllers
         [HttpGet]
         public Task<List<Asset>> Get(CancellationToken cancellationToken) =>
             _context.Assets.AsNoTracking().OrderBy(e => e.Name).ToListAsync(cancellationToken);
+
+        [HttpGet("sources")]
+        public IEnumerable<string> Sources() => InfrastructureConstants.Transactions.Sources.All;
+
+        [HttpGet("destinations")]
+        public IEnumerable<string> Destinations() => InfrastructureConstants.Transactions.Sources.All;
     }
 }

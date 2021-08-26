@@ -2,6 +2,7 @@ using Cryptofolio.Infrastructure.Entities;
 using MediatR;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Cryptofolio.Api.Commands
 {
@@ -27,18 +28,21 @@ namespace Cryptofolio.Api.Commands
         /// </summary>
         [Required(ErrorMessage = "The wallet id is required")]
         [StringLength(36, ErrorMessage = "The wallet id can't be greater than {0} characters")]
+        [JsonPropertyName("wallet_id")]
         public string WalletId { get; set; }
 
         /// <summary>
         /// The asset concerned.
         /// </summary>
         [Required(ErrorMessage = "The asset id is required")]
+        [JsonPropertyName("asset_id")]
         public string AssetId { get; set; }
 
         /// <summary>
         /// The asset it was bought/sold/transfered.
         /// </summary>
         [StringLength(36, ErrorMessage = "The exchange id can't be greater than {0} characters")]
+        [JsonPropertyName("exchange_id")]
         public string ExchangeId { get; set; }
 
         /// <summary>

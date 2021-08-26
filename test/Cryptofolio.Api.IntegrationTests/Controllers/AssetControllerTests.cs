@@ -2,6 +2,7 @@ using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Entities;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -32,10 +33,10 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             context.SaveChanges();
 
             // Act
-            var transaction = await client.GetFromJsonAsync<Asset>($"/assets/{Data.BTC.Id}");
+            var asset = await client.GetFromJsonAsync<Asset>($"/assets/{Data.BTC.Id}");
 
             // Assert
-            transaction.Should().BeEquivalentTo(Data.BTC);
+            asset.Should().BeEquivalentTo(Data.BTC);
         }
 
         [Fact]
@@ -49,12 +50,40 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             context.SaveChanges();
 
             // Act
-            var transactions = await client.GetFromJsonAsync<List<Asset>>("/assets");
+            var assets = await client.GetFromJsonAsync<List<Asset>>("/assets");
 
             // Assert
-            transactions.Should().HaveCount(2);
-            transactions.Should().ContainEquivalentOf(Data.BTC);
-            transactions.Should().ContainEquivalentOf(Data.ETH);
+            assets.Should().HaveCount(2);
+            assets.Should().ContainEquivalentOf(Data.BTC);
+            assets.Should().ContainEquivalentOf(Data.ETH);
+        }
+
+        [Fact]
+        public async Task Sources_Test()
+        {
+            // Setup
+            var client = _factory.CreateClient();
+
+            // Act
+            var sources = await client.GetFromJsonAsync<IEnumerable<string>>("/assets/sources");
+
+            // Assert
+            sources.Should().HaveCount(3);
+            sources.Should().BeEquivalentTo(InfrastructureConstants.Transactions.Sources.All);
+        }
+
+        [Fact]
+        public async Task Destinations_Test()
+        {
+            // Setup
+            var client = _factory.CreateClient();
+
+            // Act
+            var sources = await client.GetFromJsonAsync<IEnumerable<string>>("/assets/destinations");
+
+            // Assert
+            sources.Should().HaveCount(3);
+            sources.Should().BeEquivalentTo(InfrastructureConstants.Transactions.Destinations.All);
         }
     }
 }

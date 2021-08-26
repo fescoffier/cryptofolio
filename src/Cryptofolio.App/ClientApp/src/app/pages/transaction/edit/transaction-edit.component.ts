@@ -1,5 +1,13 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { Router } from "@angular/router";
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  AbstractControl,
+  ValidatorFn,
+  ValidationErrors
+} from "@angular/forms";
 
 import { Asset } from "../../../models/asset";
 import { Currency } from "../../../models/currency";
@@ -15,6 +23,8 @@ import { Wallet } from "../../../models/wallet";
 })
 export class TransactionEditComponent implements OnInit {
   public assets: Asset[];
+  public assetsSources: string[];
+  public assetsDestinations: string[];
   public currencies: Currency[];
   public exchanges: Exchange[];
   public wallets: Wallet[];
@@ -32,12 +42,14 @@ export class TransactionEditComponent implements OnInit {
     return this.form.controls;
   }
 
-  constructor(private fb: FormBuilder, private service: TransactionService) {
+  constructor(private fb: FormBuilder, private router: Router, private service: TransactionService) {
     this.form = this.createForm();
   }
 
   ngOnInit(): void {
     this.service.getAssets().subscribe(assets => this.assets = assets);
+    this.service.getAssetsSources().subscribe(assetsSources => this.assetsSources = assetsSources);
+    this.service.getAssetsDestinations().subscribe(assetsDestinations => this.assetsDestinations = assetsDestinations);
     this.service.getCurrencies().subscribe(currencies => this.currencies = currencies);
     this.service.getExchanges().subscribe(exchanges => this.exchanges = exchanges);
     this.service.getWallets().subscribe(wallets => this.wallets = wallets);
@@ -55,10 +67,9 @@ export class TransactionEditComponent implements OnInit {
         asset_name: [this.transaction?.asset.name],
         exchange_id: [this.transaction?.exchange.id, [Validators.required]],
         exchange_name: [this.transaction?.exchange.name],
-        type: [this.transaction?.["type"] || this.type],
         currency: [this.transaction?.["currency"], [Validators.required]],
         price: [this.transaction?.["price"], [Validators.required]],
-        qty: [this.transaction?.qty, [Validators.min(0), Validators.max(Number.MAX_VALUE)]],
+        qty: [this.transaction?.qty, [Validators.required, Validators.min(0), Validators.max(Number.MAX_VALUE)]],
         note: [this.transaction?.note]
       });
     } else if (this.type === "transfer") {
@@ -70,14 +81,36 @@ export class TransactionEditComponent implements OnInit {
         wallet_name: [this.transaction?.wallet.name],
         asset_id: [this.transaction?.asset.id, [Validators.required]],
         asset_name: [this.transaction?.asset.name],
-        exchange_id: [this.transaction?.exchange.id, [Validators.required]],
+        exchange_id: [this.transaction?.exchange.id],
         exchange_name: [this.transaction?.exchange.name],
         source: [this.transaction?.["source"], [Validators.required]],
         destination: [this.transaction?.["destination"], [Validators.required]],
-        qty: [this.transaction?.qty, [Validators.min(0), Validators.max(Number.MAX_VALUE)]],
+        qty: [this.transaction?.qty, [Validators.required, Validators.min(0), Validators.max(Number.MAX_VALUE)]],
         note: [this.transaction?.note]
+      }, {
+        validators: [this.validateExchange(this.type)]
       });
     }
+  }
+
+  private validateExchange(type: string): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (type === "transfer") {
+        const source = control.get("source");
+        const destination = control.get("destination");
+        if (source.value && destination.value && source.value === destination.value) {
+          return {
+            source: true,
+            destination: true
+          }
+        }
+        const exchangeId = control.get("exchange_id");
+        return (source.value === "My exchange" || destination.value === "My exchange") && !exchangeId.value
+          ? { exchange_id: true }
+          : null;
+      }
+      return null;
+    };
   }
 
   setType(type: string) {
@@ -94,6 +127,14 @@ export class TransactionEditComponent implements OnInit {
   setAsset(asset: Asset) {
     this.form.controls.asset_id.setValue(asset.id);
     this.form.controls.asset_name.setValue(asset.name);
+  }
+
+  setSource(source: string) {
+    this.form.controls.source.setValue(source);
+  }
+
+  setDestination(destination: string) {
+    this.form.controls.destination.setValue(destination);
   }
 
   setExchange(exchange: Exchange) {
@@ -116,19 +157,27 @@ export class TransactionEditComponent implements OnInit {
       return;
     }
 
-    const transaction = { ...this.form.value };
+    const transaction = {
+      type: this.type,
+      ...this.form.value
+    };
     const date = this.form.value.transaction_date as Date;
     const time = this.form.value.transaction_time as Date;
     if (time) {
-      date.setTime(time.getTime());
+      date.setHours(time.getHours());
+      date.setMinutes(time.getMinutes());
+      date.setSeconds(0);
     }
     transaction["date"] = date;
-    
+
     delete transaction.wallet_name;
     delete transaction.asset_name;
     delete transaction.exchange_name;
     delete transaction.transaction_date;
     delete transaction.transaction_time;
-    console.log(transaction);
+
+    this.service
+      .create(transaction)
+      .subscribe(_ => this.router.navigate(["/transactions/history"]));
   }
 }
