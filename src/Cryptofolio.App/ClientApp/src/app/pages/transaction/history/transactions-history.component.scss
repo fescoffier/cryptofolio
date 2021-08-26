@@ -7,3 +7,10 @@ cdk-virtual-scroll-viewport {
         width: 0 !important;
     }
 }
+
+.command-container {
+  position: absolute;
+  top: .5rem;
+  right: .5rem;
+  z-index: 1000;
+}

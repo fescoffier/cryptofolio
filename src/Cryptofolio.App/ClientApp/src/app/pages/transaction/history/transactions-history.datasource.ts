@@ -38,4 +38,9 @@ export class TransactionsDataSource extends DataSource<Transaction | undefined> 
       }
     });
   }
+
+  remove(transaction: Transaction) {
+    this.cachedTransactions.splice(this.cachedTransactions.indexOf(transaction), 1);
+    this.dataStream.next(this.cachedTransactions);
+  }
 }

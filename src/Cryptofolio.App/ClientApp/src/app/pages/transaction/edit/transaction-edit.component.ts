@@ -36,7 +36,7 @@ export class TransactionEditComponent implements OnInit {
   public formMode = "create";
   public formSubmitted = false;
   get formControls() {
-    return this.form.controls;
+    return this.form?.controls;
   }
 
   constructor(

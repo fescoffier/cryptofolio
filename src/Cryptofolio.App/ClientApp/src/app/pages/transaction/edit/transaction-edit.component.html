@@ -10,7 +10,7 @@
       <a class="nav-link" [ngClass]="{'active': type === 'transfer', 'disabled': formMode === 'edit', 'bg-info': type === 'transfer'}" href="javascript:void(0)" (click)="setType('transfer')">Transfer</a>
     </li>
   </ul>
-  <form [formGroup]="form" (ngSubmit)="submit()" class="mt-5">
+  <form [formGroup]="form" (ngSubmit)="submit()" class="mt-5" *ngIf="formControls">
     <div class="card" >
       <!--Buy type-->
       <div class=" card-body" *ngIf="type === 'buy'">
