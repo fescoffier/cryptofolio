@@ -8,7 +8,7 @@ RUN dotnet build "src/Cryptofolio.Api/Cryptofolio.Api.csproj" -c Release -o /app
 
 FROM build AS publish
 ARG VERSION
-RUN echo && dotnet publish "src/Cryptofolio.Api/Cryptofolio.Api.csproj" -c Release -o /app/publish -r alpine.3.13-x64 /p:PublishReadyToRun=true /property:Version=$VERSION
+RUN dotnet publish "src/Cryptofolio.Api/Cryptofolio.Api.csproj" -c Release -o /app/publish -r alpine.3.13-x64 /p:PublishReadyToRun=true /property:Version=$VERSION
 
 FROM base AS final
 ARG VERSION

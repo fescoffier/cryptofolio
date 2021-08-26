@@ -2,5 +2,5 @@ apiVersion: v2
 name: cryptofolio
 description: Cryptofolio is an online cryptocurrency portefolio.
 type: application
-version: 0.1.0
+version: 1.0.0
 appVersion: 1.0.0
