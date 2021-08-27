@@ -29,6 +29,11 @@ namespace Cryptofolio.Infrastructure
         public DbSet<Exchange> Exchanges { get; set; }
 
         /// <summary>
+        /// The assets holdings set.
+        /// </summary>
+        public DbSet<Holding> Holdings { get; set; }
+
+        /// <summary>
         /// The settings set.
         /// </summary>
         public DbSet<Setting> Settings { get; set; }

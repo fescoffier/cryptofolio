@@ -1,3 +1,4 @@
+using Cryptofolio.Infrastructure.TestsCommon;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Security.Claims;
@@ -8,9 +9,7 @@ namespace Cryptofolio.Api.Tests
     {
         public static TestContext Instance { get; } = new();
 
-        public string RequestId { get; }
-
-        public string UserId { get; }
+        public TestData Data { get; }
 
         public ClaimsPrincipal User { get; }
 
@@ -20,17 +19,16 @@ namespace Cryptofolio.Api.Tests
 
         private TestContext()
         {
-            RequestId = Guid.NewGuid().ToString();
-            UserId = Guid.NewGuid().ToString();
+            Data = new();
             User = new(new ClaimsIdentity(new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, UserId)
+                new Claim(ClaimTypes.NameIdentifier, Data.UserId)
             }));
             HttpContext = new DefaultHttpContext
             {
                 User = User
             };
-            RequestContext = new(RequestId, UserId);
+            RequestContext = new(Guid.NewGuid().ToString(), Data.UserId);
         }
     }
 }

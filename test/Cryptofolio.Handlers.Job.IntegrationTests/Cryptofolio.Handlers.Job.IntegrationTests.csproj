@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Cryptofolio.Handlers.Job\Cryptofolio.Handlers.Job.csproj" />
+    <ProjectReference Include="..\Cryptofolio.Infrastructure.TestsCommon\Cryptofolio.Infrastructure.TestsCommon.csproj" />
   </ItemGroup>
 
 </Project>

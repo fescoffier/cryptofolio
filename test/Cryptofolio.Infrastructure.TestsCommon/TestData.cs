@@ -2,11 +2,11 @@ using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Entities;
 using System;
 
-namespace Cryptofolio.Api.IntegrationTests
+namespace Cryptofolio.Infrastructure.TestsCommon
 {
     public class TestData
     {
-        private string _backupUserId;
+        private readonly string _backupUserId;
         private string _userId;
         public string UserId { get => _userId; }
 
@@ -35,6 +35,12 @@ namespace Cryptofolio.Api.IntegrationTests
         public BuyOrSellTransaction Transaction3 { get; }
 
         public TransferTransaction Transaction4 { get; }
+
+        public Holding Holding1 { get; }
+
+        public Holding Holding2 { get; }
+
+        public Holding Holding3 { get; }
 
         public TestData()
         {
@@ -116,7 +122,7 @@ namespace Cryptofolio.Api.IntegrationTests
                 Exchange = Exchange1,
                 Type = InfrastructureConstants.Transactions.Types.Buy,
                 Currency = USD,
-                Price = 1000,
+                Price = 2500,
                 Qty = 10,
                 Note = "Lorem ipsum dolor sit amet"
             };
@@ -150,13 +156,34 @@ namespace Cryptofolio.Api.IntegrationTests
             {
                 Id = Guid.NewGuid().ToString(),
                 Date = DateTimeOffset.UtcNow.AddMinutes(-5),
-                Asset = BTC,
+                Asset = ETH,
                 Wallet = Wallet3,
                 Exchange = Exchange2,
                 Source = InfrastructureConstants.Transactions.Sources.MyExchange,
                 Destination = InfrastructureConstants.Transactions.Destinations.MyWallet,
                 Qty = 50,
                 Note = "Lorem ipsum dolor sit amet"
+            };
+            Holding1 = new()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Asset = BTC,
+                Wallet = Wallet1,
+                Amount = Transaction1.Qty - Transaction2.Qty
+            };
+            Holding2 = new()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Asset = BTC,
+                Wallet = Wallet2,
+                Amount = Transaction3.Qty
+            };
+            Holding3 = new()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Asset = ETH,
+                Wallet = Wallet3,
+                Amount = Transaction4.Qty
             };
         }
 

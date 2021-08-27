@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Cryptofolio.Infrastructure.Entities
 {
     /// <summary>
@@ -29,5 +31,10 @@ namespace Cryptofolio.Infrastructure.Entities
         /// The user id that owns the wallet.
         /// </summary>
         public string UserId { get; set; }
+
+        /// <summary>
+        /// The assets holdings.
+        /// </summary>
+        public ICollection<Holding> Holdings { get; set; } = new HashSet<Holding>();
     }
 }

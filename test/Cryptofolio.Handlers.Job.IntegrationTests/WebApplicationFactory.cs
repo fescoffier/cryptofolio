@@ -1,4 +1,5 @@
 using Cryptofolio.Infrastructure;
+using Cryptofolio.Infrastructure.TestsCommon;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,8 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests
     public class WebApplicationFactory : WebApplicationFactory<Startup>
     {
         public string DbName { get; } = Guid.NewGuid().ToString();
+
+        public TestData Data { get; } = new();
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
@@ -48,6 +51,20 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests
             var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
             context.Database.Migrate();
             return host;
+        }
+
+        public void PurgeData()
+        {
+            using var scope = Services.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
+            context.Transactions.RemoveRange(context.Transactions);
+            context.Holdings.RemoveRange(context.Holdings);
+            context.Wallets.RemoveRange(context.Wallets);
+            context.AssetTickers.RemoveRange(context.AssetTickers);
+            context.Assets.RemoveRange(context.Assets);
+            context.Currencies.RemoveRange(context.Currencies);
+            context.Exchanges.RemoveRange(context.Exchanges);
+            context.SaveChanges();
         }
     }
 }

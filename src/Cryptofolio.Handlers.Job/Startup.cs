@@ -1,4 +1,5 @@
 using Confluent.Kafka;
+using Cryptofolio.Handlers.Job.Transactions;
 using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Entities;
 using Elasticsearch.Net;
@@ -48,6 +49,13 @@ namespace Cryptofolio.Handlers.Job
             {
                 options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(IEvent).FullName}").Get<string>();
                 options.Config = Configuration.GetSection("Kafka:Consumer").Get<ConsumerConfig>();
+                options.ValueSerilializerOptions = new()
+                {
+                    Converters =
+                    {
+                        new TransactionPolymorphicJsonConverter()
+                    }
+                };
             });
 
             // Elasticsearch
@@ -85,6 +93,9 @@ namespace Cryptofolio.Handlers.Job
             services.AddDefaultEventHandler<AssetInfosUpsertedEvent>();
             services.AddDefaultEventHandler<AssetTickerUpsertedEvent>();
             services.AddDefaultEventHandler<ExchangeInfosUpsertedEvent>();
+            services.AddEventHandler<TransactionCreatedEvent, TransactionEventHandler>();
+            services.AddEventHandler<TransactionUpdatedEvent, TransactionEventHandler>();
+            services.AddEventHandler<TransactionDeletedEvent, TransactionEventHandler>();
 
             // Healthchecks
             services

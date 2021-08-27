@@ -9,8 +9,8 @@ namespace Cryptofolio.Infrastructure
     /// </summary>
     public class IEventJsonConverter : JsonConverter<IEvent>
     {
-        private const string EventTypePropertyName = "EventType";
-        private const string EventPropertyName = "Event";
+        private const string EventTypePropertyName = "event_type";
+        private const string EventPropertyName = "event";
 
         /// <inheritdoc/>
         public override IEvent Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)

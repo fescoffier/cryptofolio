@@ -1,4 +1,5 @@
 using Cryptofolio.Infrastructure;
+using Cryptofolio.Infrastructure.TestsCommon;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -64,6 +65,7 @@ namespace Cryptofolio.Api.IntegrationTests
             using var scope = Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
             context.Transactions.RemoveRange(context.Transactions);
+            context.Holdings.RemoveRange(context.Holdings);
             context.Wallets.RemoveRange(context.Wallets);
             context.AssetTickers.RemoveRange(context.AssetTickers);
             context.Assets.RemoveRange(context.Assets);

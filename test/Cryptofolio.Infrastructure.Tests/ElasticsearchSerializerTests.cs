@@ -14,7 +14,10 @@ namespace Cryptofolio.Infrastructure.Tests
 
         public ElasticsearchSerializerTests()
         {
-            _options = new();
+            _options = new()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            };
             _serializer = new(_options);
         }
 
@@ -108,7 +111,7 @@ namespace Cryptofolio.Infrastructure.Tests
                 Property2 = "Value2"
             };
 
-            public static string Json { get; } = "{\"Property1\":\"Value1\",\"Property2\":\"Value2\"}";
+            public static string Json { get; } = "{\"property1\":\"Value1\",\"property2\":\"Value2\"}";
 
             public string Property1 { get; set; }
 

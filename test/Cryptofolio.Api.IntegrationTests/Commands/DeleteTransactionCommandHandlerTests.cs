@@ -1,6 +1,7 @@
 using Cryptofolio.Api.Commands;
 using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Entities;
+using Cryptofolio.Infrastructure.TestsCommon;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Internal;
