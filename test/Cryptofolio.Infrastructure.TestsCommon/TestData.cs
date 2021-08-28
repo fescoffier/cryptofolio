@@ -1,4 +1,3 @@
-using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Entities;
 using System;
 

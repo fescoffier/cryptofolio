@@ -2,7 +2,6 @@ using Cryptofolio.Api.Commands;
 using Cryptofolio.Api.Controllers;
 using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Entities;
-using Cryptofolio.Infrastructure.TestsCommon;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Http;

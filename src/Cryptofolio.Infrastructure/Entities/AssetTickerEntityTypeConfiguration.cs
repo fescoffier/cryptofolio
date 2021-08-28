@@ -6,7 +6,7 @@ namespace Cryptofolio.Infrastructure.Entities
     /// <summary>
     /// Provides entity configuration for <see cref="AssetTicker"/>.
     /// </summary>
-    public class AssetTickerEntityConfiguration : IEntityTypeConfiguration<AssetTicker>
+    public class AssetTickerEntityTypeConfiguration : IEntityTypeConfiguration<AssetTicker>
     {
         /// <inheritdoc/>
         public void Configure(EntityTypeBuilder<AssetTicker> builder)

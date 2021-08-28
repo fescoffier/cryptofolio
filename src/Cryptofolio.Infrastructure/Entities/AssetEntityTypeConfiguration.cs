@@ -4,21 +4,19 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace Cryptofolio.Infrastructure.Entities
 {
     /// <summary>
-    /// Provides entity configuration for <see cref="Exchange"/>.
+    /// Provides entity configuration for <see cref="Asset"/>.
     /// </summary>
-    public class ExchangeEntityConfiguration : IEntityTypeConfiguration<Exchange>
+    public class AssetEntityTypeConfiguration : IEntityTypeConfiguration<Asset>
     {
         /// <inheritdoc/>
-        public void Configure(EntityTypeBuilder<Exchange> builder)
+        public void Configure(EntityTypeBuilder<Asset> builder)
         {
-            builder.ToTable("exchange");
+            builder.ToTable("asset");
             builder.HasKey(p => p.Id);
             builder.Property(p => p.Id).HasMaxLength(100).HasColumnName("id");
             builder.Property(p => p.Name).HasMaxLength(250).HasColumnName("name");
+            builder.Property(p => p.Symbol).HasMaxLength(50).HasColumnName("symbol");
             builder.Property(p => p.Description).HasColumnType("text").HasColumnName("description");
-            builder.Property(p => p.YearEstablished).HasColumnName("year_established");
-            builder.Property(p => p.Url).HasMaxLength(2048).HasColumnName("url");
-            builder.Property(p => p.Image).HasMaxLength(2048).HasColumnName("image");
         }
     }
 }
