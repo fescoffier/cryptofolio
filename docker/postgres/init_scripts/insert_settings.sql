@@ -502,6 +502,10 @@ insert into setting ("key", "group", "value") values ('Data:Schedules:Cryptofoli
 insert into setting ("key", "group", "value") values ('Data:Schedules:Cryptofolio.Infrastructure.Data.AssetTickerDataRequest:Ids:249', 'Cryptofolio.Collector.Job.Data.AssetTickerDataRequestScheduler:Ids', 'melon');
 insert into setting ("key","group",value) values ('Data:Schedules:Cryptofolio.Infrastructure.Data.AssetTickerDataRequest:VsCurrencies:0','Cryptofolio.Collector.Job.Data.AssetTickerDataRequestScheduler:VsCurrencies','usd');
 insert into setting ("key","group",value) values ('Data:Schedules:Cryptofolio.Infrastructure.Data.AssetTickerDataRequest:VsCurrencies:1','Cryptofolio.Collector.Job.Data.AssetTickerDataRequestScheduler:VsCurrencies','eur');
+insert into setting ("key","group",value) values ('Data:Schedules:Cryptofolio.Infrastructure.Data.AssetTickerDataRequest:VsCurrencies:2','Cryptofolio.Collector.Job.Data.AssetTickerDataRequestScheduler:VsCurrencies','jpy');
+insert into setting ("key","group",value) values ('Data:Schedules:Cryptofolio.Infrastructure.Data.AssetTickerDataRequest:VsCurrencies:3','Cryptofolio.Collector.Job.Data.AssetTickerDataRequestScheduler:VsCurrencies','gbp');
+insert into setting ("key","group",value) values ('Data:Schedules:Cryptofolio.Infrastructure.Data.AssetTickerDataRequest:VsCurrencies:4','Cryptofolio.Collector.Job.Data.AssetTickerDataRequestScheduler:VsCurrencies','chf');
+insert into setting ("key","group",value) values ('Data:Schedules:Cryptofolio.Infrastructure.Data.AssetTickerDataRequest:VsCurrencies:5','Cryptofolio.Collector.Job.Data.AssetTickerDataRequestScheduler:VsCurrencies','cad');
 -- Exchanges --
 insert into setting ("key", "group", "value") values ('Data:Schedules:Cryptofolio.Infrastructure.Data.ExchangeDataRequest:Exchanges:0', 'Cryptofolio.Collector.Job.Data.ExchangeDataRequestScheduler', 'aave');
 insert into setting ("key", "group", "value") values ('Data:Schedules:Cryptofolio.Infrastructure.Data.ExchangeDataRequest:Exchanges:1', 'Cryptofolio.Collector.Job.Data.ExchangeDataRequestScheduler', 'aax');
