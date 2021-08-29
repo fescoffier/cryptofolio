@@ -1,7 +1,9 @@
 using CoinGecko.Clients;
 using CoinGecko.Interfaces;
 using Confluent.Kafka;
+using Cryptofolio.Collector.Job.Coingecko;
 using Cryptofolio.Collector.Job.Data;
+using Cryptofolio.Collector.Job.Fixer;
 using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Data;
 using Elasticsearch.Net;
@@ -18,6 +20,7 @@ using Microsoft.Extensions.Options;
 using Nest;
 using StackExchange.Redis;
 using System.Linq;
+using System.Text.Json;
 
 namespace Cryptofolio.Collector.Job
 {
@@ -134,6 +137,20 @@ namespace Cryptofolio.Collector.Job
                     client.BaseAddress = new(options.ApiUri);
                 })
                 .ConfigurePrimaryHttpMessageHandler<CoingeckoHttpClientHandler>();
+
+            // Fixer
+            services.Configure<FixerOptions>(Configuration.GetSection("Fixer"));
+            services.PostConfigure<FixerOptions>(options =>
+            {
+                options.SerializerOptions ??= new();
+                options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                options.SerializerOptions.Converters.Add(new FixerDateTimeOffsetJsonConverter());
+            });
+            services.AddHttpClient<FixerClient>((provider, client) =>
+            {
+                var options = provider.GetRequiredService<IOptionsMonitor<FixerOptions>>().CurrentValue;
+                client.BaseAddress = new(options.ApiUri);
+            });
 
             // MediatR
             services.AddMediatR(typeof(Startup));

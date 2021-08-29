@@ -1,4 +1,4 @@
-namespace Cryptofolio.Collector.Job
+namespace Cryptofolio.Collector.Job.Coingecko
 {
     /// <summary>
     /// Configuration options for the Coingecko clients.

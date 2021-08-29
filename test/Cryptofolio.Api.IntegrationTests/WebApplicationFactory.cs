@@ -27,6 +27,7 @@ namespace Cryptofolio.Api.IntegrationTests
             {
                 config.AddInMemoryCollection(new Dictionary<string, string>
                 {
+                    { "Serilog:MinimumLevel:Default", "Fatal" },
                     { "ConnectionStrings:CryptofolioContext", $"Host=localhost;Database={DbName};Username=cryptofolio;Password=Pass@word1;Port=55432;IncludeErrorDetails=true" },
                     { "Kafka:Topics:Cryptofolio.Infrastructure.IEvent", Guid.NewGuid().ToString() }
                 });

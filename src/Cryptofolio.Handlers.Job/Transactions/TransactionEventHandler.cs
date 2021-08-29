@@ -47,9 +47,17 @@ namespace Cryptofolio.Handlers.Job.Transactions
 
         private async Task ComputeHolding(Asset asset, Wallet wallet, bool delete, CancellationToken cancellationToken)
         {
+            _logger.LogInformation(
+                "Computing holding for the asset {0} in the wallet {1} using \"delete\": {0}",
+                asset.Id,
+                wallet.Id,
+                delete
+            );
+
             var holding = await _context.Holdings.SingleOrDefaultAsync(h => h.Asset.Id == asset.Id && h.Wallet.Id == wallet.Id, cancellationToken);
             if (holding == null && !delete)
             {
+                _logger.LogDebug("The holding does not exist. Creating it.");
                 holding = new()
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -65,6 +73,7 @@ namespace Cryptofolio.Handlers.Job.Transactions
                 .ToListAsync(cancellationToken);
             if (transactions.Count == 0 && delete)
             {
+                _logger.LogDebug("The holding amount is equal to 0 after a transaction delete. Removing the holding.");
                 _context.Holdings.Remove(holding);
             }
             else
@@ -85,7 +94,10 @@ namespace Cryptofolio.Handlers.Job.Transactions
                     }
                     return 0m;
                 });
+                _logger.LogTrace("Amount of {0} in the wallet {1}: {2}", asset.Id, wallet.Id, holding.Amount);
             }
+
+            _logger.LogInformation("Holding computed for the asset {0} in the wallet {1}.", asset.Id, wallet.Id);
 
             await _context.SaveChangesAsync(cancellationToken);
         }

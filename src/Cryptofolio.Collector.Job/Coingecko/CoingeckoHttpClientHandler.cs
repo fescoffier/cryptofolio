@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Cryptofolio.Collector.Job
+namespace Cryptofolio.Collector.Job.Coingecko
 {
     /// <summary>
     /// Provides an HTTP client handler that can limit the call rate to the Coingecko API.
