@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace Cryptofolio.Infrastructure.Entities
 {
     /// <summary>
-    /// Models an inserted or updated event occured on <see cref="AssetTicker"/>.
+    /// Models an inserted or updated event occured on <see cref="CurrencyTicker"/>.
     /// </summary>
-    public class AssetTickerUpsertedEvent : IEvent
+    public class CurrencyTickerUpsertedEvent : IEvent
     {
         /// <inheritdoc/>
         public string Id { get; init; }
@@ -18,16 +18,16 @@ namespace Cryptofolio.Infrastructure.Entities
         public string UserId { get; init; }
 
         /// <inheritdoc/>
-        public string Category => InfrastructureConstants.Events.Categories.Asset;
+        public string Category => InfrastructureConstants.Events.Categories.Currency;
 
         /// <summary>
-        /// The assets ids.
+        /// The currency.
         /// </summary>
-        public IEnumerable<string> Ids { get; set; }
+        public Currency Currency { get; init; }
 
         /// <summary>
-        /// The versus currencies.
+        /// The versus currency.
         /// </summary>
-        public IEnumerable<string> VsCurrencies { get; set; }
+        public IEnumerable<Currency> VsCurrencies { get; init; }
     }
 }
