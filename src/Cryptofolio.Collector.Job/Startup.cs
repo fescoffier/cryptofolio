@@ -76,6 +76,16 @@ namespace Cryptofolio.Collector.Job
                 options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(AssetTickerDataRequest).FullName}").Get<string>();
                 options.Config = Configuration.GetSection("Kafka:Consumer").Get<ConsumerConfig>();
             });
+            services.AddProducer<CurrencyTickerDataRequest>(options =>
+            {
+                options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(CurrencyTickerDataRequest).FullName}").Get<string>();
+                options.Config = Configuration.GetSection("Kafka:Producer").Get<ProducerConfig>();
+            });
+            services.AddConsumer<CurrencyTickerDataRequest>(options =>
+            {
+                options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(CurrencyTickerDataRequest).FullName}").Get<string>();
+                options.Config = Configuration.GetSection("Kafka:Consumer").Get<ConsumerConfig>();
+            });
             services.AddProducer<ExchangeDataRequest>(options =>
             {
                 options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(ExchangeDataRequest).FullName}").Get<string>();

@@ -34,7 +34,7 @@ namespace Cryptofolio.Collector.Job.Data
             IOptionsMonitor<DataRequestSchedulerOptions> optionsMonitor,
             IDatabase database,
             ISystemClock systemClock,
-            ILogger logger
+            ILogger<CurrencyTickerDataRequestScheduler> logger
         ) : base(provider, producerWrapper, optionsMonitor, database, systemClock, logger)
         {
         }
@@ -60,7 +60,7 @@ namespace Cryptofolio.Collector.Job.Data
                         TraceIdentifier = guid,
                         Date = SystemClock.UtcNow,
                         Currency = setting.Value,
-                        VsCurrencies = settings.Where(s => s.Key.StartsWith(setting.Key)).Select(s => s.Value).ToList()
+                        VsCurrencies = settings.Where(s => s.Key.StartsWith(setting.Key) && s.Key != setting.Key).Select(s => s.Value).ToList()
                     }
                 })
                 .ToList();
