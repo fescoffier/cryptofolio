@@ -150,6 +150,11 @@ namespace Cryptofolio.Infrastructure
                 public const string Asset = "Asset";
 
                 /// <summary>
+                /// The currency category.
+                /// </summary>
+                public const string Currency = "Currency";
+
+                /// <summary>
                 /// The exchange category.
                 /// </summary>
                 public const string Exchange = "Exchange";

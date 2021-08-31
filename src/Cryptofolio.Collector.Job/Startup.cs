@@ -159,6 +159,9 @@ namespace Cryptofolio.Collector.Job
             services.AddScoped<IPipelineBehavior<AssetDataRequest, Unit>>(p => p.GetRequiredService<AssetDataRequestHandler>());
             services.AddScoped<AssetTickerDataRequestHandler>();
             services.AddScoped<IPipelineBehavior<AssetTickerDataRequest, Unit>>(p => p.GetRequiredService<AssetTickerDataRequestHandler>());
+            // Currencies
+            services.AddScoped<CurrencyTickerDataRequestHandler>();
+            services.AddScoped<IPipelineBehavior<CurrencyTickerDataRequest, Unit>>(p => p.GetRequiredService<CurrencyTickerDataRequestHandler>());
             // Exchanges
             services.AddScoped<ExchangeDataRequestHandler>();
             services.AddScoped<IPipelineBehavior<ExchangeDataRequest, Unit>>(p => p.GetRequiredService<ExchangeDataRequestHandler>());
@@ -167,6 +170,7 @@ namespace Cryptofolio.Collector.Job
             services.Configure<DataRequestSchedulerOptions>(Configuration.GetSection("Data"));
             services.AddHostedService<AssetDataRequestScheduler>();
             services.AddHostedService<AssetTickerDataRequestScheduler>();
+            services.AddHostedService<CurrencyTickerDataRequestScheduler>();
             services.AddHostedService<ExchangeDataRequestScheduler>();
 
             // Healthchecks

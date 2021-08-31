@@ -15,12 +15,12 @@ using System.Threading.Tasks;
 namespace Cryptofolio.Collector.Job.Data
 {
     /// <summary>
-    /// Provides an implementation of <see cref="DataRequestSchedulerBase{TRequest}"/> to schedule <see cref="AssetTickerDataRequest"/>.
+    /// Provides an implementation of <see cref="DataRequestSchedulerBase{TRequest}"/> to schedule <see cref="CurrencyTickerDataRequest"/>.
     /// </summary>
-    public class AssetTickerDataRequestScheduler : DataRequestSchedulerBase<AssetTickerDataRequest>
+    public class CurrencyTickerDataRequestScheduler : DataRequestSchedulerBase<CurrencyTickerDataRequest>
     {
         /// <summary>
-        /// Creates a new instance of <see cref="AssetTickerDataRequestScheduler"/>.
+        /// Creates a new instance of <see cref="CurrencyTickerDataRequestScheduler"/>.
         /// </summary>
         /// <param name="provider">The service provider.</param>
         /// <param name="producerWrapper">The producer wrapper.</param>
@@ -28,42 +28,42 @@ namespace Cryptofolio.Collector.Job.Data
         /// <param name="database">The Redis database.</param>
         /// <param name="systemClock">The system clock.</param>
         /// <param name="logger">The logger.</param>
-        public AssetTickerDataRequestScheduler(
+        public CurrencyTickerDataRequestScheduler(
             IServiceProvider provider,
-            KafkaProducerWrapper<string, AssetTickerDataRequest> producerWrapper,
+            KafkaProducerWrapper<string, CurrencyTickerDataRequest> producerWrapper,
             IOptionsMonitor<DataRequestSchedulerOptions> optionsMonitor,
             IDatabase database,
             ISystemClock systemClock,
-            ILogger<AssetTickerDataRequestScheduler> logger
+            ILogger logger
         ) : base(provider, producerWrapper, optionsMonitor, database, systemClock, logger)
         {
         }
 
         /// <inheritdoc/>
-        protected override async Task<IEnumerable<Message<string, AssetTickerDataRequest>>> PrepareMessages(CryptofolioContext context, CancellationToken cancellationToken)
+        protected override async Task<IEnumerable<Message<string, CurrencyTickerDataRequest>>> PrepareMessages(CryptofolioContext context, CancellationToken cancellationToken)
         {
-            var idsKey = $"{typeof(AssetTickerDataRequestScheduler).FullName}:Ids";
-            var vsCurrenciesKey = $"{typeof(AssetTickerDataRequestScheduler).FullName}:VsCurrencies";
-            var settingsGroup = new[] { idsKey, vsCurrenciesKey };
+            var currencyKey = $"{typeof(CurrencyTickerDataRequestScheduler).FullName}:Currency";
+            var vsCurrenciesKey = $"{typeof(CurrencyTickerDataRequestScheduler).FullName}:VsCurrencies";
+            var settingsGroup = new[] { currencyKey, vsCurrenciesKey };
             var settings = await context.Settings
                 .Where(s => settingsGroup.Contains(s.Group))
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);
             var guid = Guid.NewGuid().ToString();
-            return new[]
-            {
-                new Message<string, AssetTickerDataRequest>
+            return settings
+                .Where(s => s.Group == currencyKey)
+                .Select(setting => new Message<string, CurrencyTickerDataRequest>
                 {
                     Key = guid,
                     Value = new()
                     {
                         TraceIdentifier = guid,
                         Date = SystemClock.UtcNow,
-                        Ids = settings.Where(s => s.Group == idsKey).Select(s => s.Value).ToList(),
-                        VsCurrencies = settings.Where(s => s.Group == vsCurrenciesKey).Select(s => s.Value).ToList()
+                        Currency = setting.Value,
+                        VsCurrencies = settings.Where(s => s.Key.StartsWith(setting.Key)).Select(s => s.Value).ToList()
                     }
-                }
-            };
+                })
+                .ToList();
         }
     }
 }

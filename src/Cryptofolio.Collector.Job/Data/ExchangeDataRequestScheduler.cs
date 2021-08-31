@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace Cryptofolio.Collector.Job.Data
 {
     /// <summary>
-    /// Provides an implementation of <see cref="DataRequestSchedulerBase{ExchangeDataRequest}"/> to schedule <see cref="ExchangeDataRequest"/>.
+    /// Provides an implementation of <see cref="DataRequestSchedulerBase{TRequest}"/> to schedule <see cref="ExchangeDataRequest"/>.
     /// </summary>
     public class ExchangeDataRequestScheduler : DataRequestSchedulerBase<ExchangeDataRequest>
     {

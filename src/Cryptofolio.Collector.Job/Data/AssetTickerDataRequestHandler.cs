@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 namespace Cryptofolio.Collector.Job.Data
 {
     /// <summary>
-    /// Provides an implementation of <see cref="IPipelineBehavior{AssetTickerDataRequest, Unit}"/> to handle <see cref="AssetTickerDataRequest"/> message.
+    /// Provides an implementation of <see cref="IPipelineBehavior{TRequest, TResponse}"/> to handle <see cref="AssetTickerDataRequest"/> message.
     /// </summary>
     public class AssetTickerDataRequestHandler : IPipelineBehavior<AssetTickerDataRequest, Unit>
     {
@@ -89,15 +89,15 @@ namespace Cryptofolio.Collector.Job.Data
                 var asset = await _context.Assets.SingleOrDefaultAsync(a => a.Id == id, cancellationToken);
                 if (asset == null)
                 {
-                    _logger.LogError("The {0} asset does not exists.", id);
+                    _logger.LogError("The {0} asset does not exist.", id);
                     continue;
                 }
 
                 foreach (var currency in request.VsCurrencies)
                 {
                     var tickerValue = price[id][currency].Value;
-                    var tickerLastUpdatedAtMs = price[id]["last_updated_at"].Value;
-                    var tickerLastUpdatedAt = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(tickerLastUpdatedAtMs));
+                    var tickerLastUpdatedAtSeconds = price[id]["last_updated_at"].Value;
+                    var tickerLastUpdatedAt = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(tickerLastUpdatedAtSeconds));
                     var tickerExists = await _context.AssetTickers
                         .AnyAsync(t =>
                             t.Asset.Id == id &&
@@ -108,7 +108,7 @@ namespace Cryptofolio.Collector.Job.Data
                     if (!tickerExists)
                     {
                         _logger.LogDebug("Ticker at {0} for {1} versus currency {2} does not exists.", tickerLastUpdatedAt, id, currency);
-                        _context.AssetTickers.Add(new AssetTicker
+                        _context.AssetTickers.Add(new()
                         {
                             Asset = asset,
                             Timestamp = tickerLastUpdatedAt,
