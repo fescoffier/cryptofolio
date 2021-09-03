@@ -15,7 +15,11 @@ namespace Cryptofolio.Infrastructure.TestsCommon
 
         public Currency USD { get; }
 
+        public CurrencyTicker USDTicker { get; }
+
         public Currency EUR { get; }
+
+        public CurrencyTicker EURTicker { get; }
 
         public Exchange Exchange1 { get; }
 
@@ -71,6 +75,20 @@ namespace Cryptofolio.Infrastructure.TestsCommon
                 Name = "Euro Members Countries",
                 Code = "eur",
                 Symbol = "€"
+            };
+            USDTicker = new()
+            {
+                Currency = USD,
+                VsCurrency = EUR,
+                Timestamp = DateTimeOffset.UtcNow,
+                Value = 0.8m
+            };
+            EURTicker = new()
+            {
+                Currency = EUR,
+                VsCurrency = USD,
+                Timestamp = DateTimeOffset.UtcNow,
+                Value = 1.2m
             };
             Exchange1 = new()
             {

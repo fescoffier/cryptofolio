@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -95,6 +96,8 @@ namespace Cryptofolio.Collector.Job.Data
 
             cancellationToken.ThrowIfCancellationRequested();
 
+            var tickers = new List<CurrencyTicker>();
+
             foreach (var vsCurrency in vsCurrencies)
             {
                 var tickerValue = ratesResponse.Rates[vsCurrency.Code.ToUpperInvariant()];
@@ -108,7 +111,7 @@ namespace Cryptofolio.Collector.Job.Data
                 if (!tickerExists)
                 {
                     _logger.LogDebug("Ticker at {0} for {1} versus currency {2} does not exists.", ratesResponse.Timestamp, currency.Code, vsCurrency.Code);
-                    _context.CurrencyTickers.Add(new()
+                    tickers.Add(new()
                     {
                         Currency = currency,
                         VsCurrency = vsCurrency,
@@ -125,6 +128,7 @@ namespace Cryptofolio.Collector.Job.Data
             try
             {
                 _logger.LogDebug("Saving changes.");
+                _context.CurrencyTickers.AddRange(tickers);
                 var count = await _context.SaveChangesAsync(cancellationToken);
                 _logger.LogDebug("Changes saved with {0} row(s) modified.", count);
             }
@@ -134,13 +138,12 @@ namespace Cryptofolio.Collector.Job.Data
                 return Unit.Value;
             }
 
-            _logger.LogDebug("Dispatching an {0} event.", nameof(CurrencyTickerUpsertedEvent));
-            await _dispatcher.DispatchAsync(new CurrencyTickerUpsertedEvent
+            _logger.LogDebug("Dispatching an {0} event.", nameof(CurrencyTickersUpsertedEvent));
+            await _dispatcher.DispatchAsync(new CurrencyTickersUpsertedEvent
             {
                 Id = Guid.NewGuid().ToString(),
                 Date = _systemClock.UtcNow,
-                Currency = currency,
-                VsCurrencies = vsCurrencies
+                Tickers = tickers
             });
 
             _logger.LogInformation("Currency ticker data request {0} submitted at {1} for the {2} currency versus currencies [{3}] handled successfully.",

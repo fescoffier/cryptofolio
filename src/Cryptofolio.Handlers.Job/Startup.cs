@@ -1,6 +1,8 @@
 using Confluent.Kafka;
+using Cryptofolio.Handlers.Job.Currencies;
 using Cryptofolio.Handlers.Job.Transactions;
 using Cryptofolio.Infrastructure;
+using Cryptofolio.Infrastructure.Caching;
 using Cryptofolio.Infrastructure.Entities;
 using Elasticsearch.Net;
 using MediatR;
@@ -13,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Internal;
 using Nest;
+using StackExchange.Redis;
 using System.Linq;
 using System.Text.Json;
 
@@ -86,12 +89,22 @@ namespace Cryptofolio.Handlers.Job
             });
             services.AddSingleton<IElasticClient>(p => new ElasticClient(p.GetRequiredService<IConnectionSettingsValues>()));
 
+            // Redis
+            services.AddSingleton(ConnectionMultiplexer.Connect(Configuration.GetConnectionString("Redis")));
+            services.AddSingleton<IConnectionMultiplexer>(p => p.GetRequiredService<ConnectionMultiplexer>());
+            services.AddTransient(p => p.GetRequiredService<ConnectionMultiplexer>().GetDatabase());
+
             // MediatR
             services.AddMediatR(typeof(IMediator));
+
+            // Caching
+            services.AddTransient<AssetTickerCache>();
+            services.AddTransient<CurrencyTickerCache>();
 
             // Events
             services.AddDefaultEventHandler<AssetInfosUpsertedEvent>();
             services.AddDefaultEventHandler<AssetTickerUpsertedEvent>();
+            services.AddEventHandler<CurrencyTickersUpsertedEvent, CurrencyTickersUpsertedEventHandler>();
             services.AddDefaultEventHandler<ExchangeInfosUpsertedEvent>();
             services.AddEventHandler<TransactionCreatedEvent, TransactionEventHandler>();
             services.AddEventHandler<TransactionUpdatedEvent, TransactionEventHandler>();

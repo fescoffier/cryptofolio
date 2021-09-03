@@ -5,7 +5,7 @@ namespace Cryptofolio.Infrastructure.Caching
     /// <summary>
     /// Models a ticker of pair.
     /// </summary>
-    public class Ticker
+    public struct Ticker
     {
         /// <summary>
         /// The pair.

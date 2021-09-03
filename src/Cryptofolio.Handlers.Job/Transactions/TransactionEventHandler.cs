@@ -34,16 +34,25 @@ namespace Cryptofolio.Handlers.Job.Transactions
         }
 
         /// <inheritdoc/>
-        public Task<Unit> Handle(TransactionCreatedEvent request, CancellationToken cancellationToken, RequestHandlerDelegate<Unit> next) =>
-            ComputeHolding(request.Transaction.Asset, request.Transaction.Wallet, false, cancellationToken).ContinueWith(_ => Unit.Value);
+        public Task<Unit> Handle(TransactionCreatedEvent @event, CancellationToken cancellationToken, RequestHandlerDelegate<Unit> next)
+        {
+            _logger.LogInformation("Handling the event occurence {0} of type {1}.", @event.Id, typeof(TransactionCreatedEvent).FullName);
+            return ComputeHolding(@event.Transaction.Asset, @event.Transaction.Wallet, false, cancellationToken).ContinueWith(_ => Unit.Value);
+        }
 
         /// <inheritdoc/>
-        public Task<Unit> Handle(TransactionUpdatedEvent request, CancellationToken cancellationToken, RequestHandlerDelegate<Unit> next) =>
-            ComputeHolding(request.Transaction.Asset, request.Transaction.Wallet, false, cancellationToken).ContinueWith(_ => Unit.Value);
+        public Task<Unit> Handle(TransactionUpdatedEvent @event, CancellationToken cancellationToken, RequestHandlerDelegate<Unit> next)
+        {
+            _logger.LogInformation("Handling the event occurence {0} of type {1}.", @event.Id, typeof(TransactionUpdatedEvent).FullName);
+            return ComputeHolding(@event.Transaction.Asset, @event.Transaction.Wallet, false, cancellationToken).ContinueWith(_ => Unit.Value);
+        }
 
         /// <inheritdoc/>
-        public Task<Unit> Handle(TransactionDeletedEvent request, CancellationToken cancellationToken, RequestHandlerDelegate<Unit> next) =>
-            ComputeHolding(request.Transaction.Asset, request.Transaction.Wallet, true, cancellationToken).ContinueWith(_ => Unit.Value);
+        public Task<Unit> Handle(TransactionDeletedEvent @event, CancellationToken cancellationToken, RequestHandlerDelegate<Unit> next)
+        {
+            _logger.LogInformation("Handling the event occurence {0} of type {1}.", @event.Id, typeof(TransactionDeletedEvent).FullName);
+            return ComputeHolding(@event.Transaction.Asset, @event.Transaction.Wallet, true, cancellationToken).ContinueWith(_ => Unit.Value);
+        }
 
         private async Task ComputeHolding(Asset asset, Wallet wallet, bool delete, CancellationToken cancellationToken)
         {
@@ -73,7 +82,7 @@ namespace Cryptofolio.Handlers.Job.Transactions
                 .ToListAsync(cancellationToken);
             if (transactions.Count == 0 && delete)
             {
-                _logger.LogDebug("The holding amount is equal to 0 after a transaction delete. Removing the holding.");
+                _logger.LogDebug("The holding amount is equal to 0 after a transaction delete. Removing it.");
                 _context.Holdings.Remove(holding);
             }
             else
@@ -100,6 +109,8 @@ namespace Cryptofolio.Handlers.Job.Transactions
             _logger.LogInformation("Holding computed for the asset {0} in the wallet {1}.", asset.Id, wallet.Id);
 
             await _context.SaveChangesAsync(cancellationToken);
+
+            // TODO: Trigger wallet balance recompute.
         }
     }
 }
