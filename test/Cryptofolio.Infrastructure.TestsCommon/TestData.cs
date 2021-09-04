@@ -177,6 +177,7 @@ namespace Cryptofolio.Infrastructure.TestsCommon
                 Currency = USD,
                 Price = 2500,
                 Qty = 10,
+                InitialValue = 10 * 2500,
                 Note = "Lorem ipsum dolor sit amet"
             };
             Transaction2 = new BuyOrSellTransaction
@@ -190,6 +191,7 @@ namespace Cryptofolio.Infrastructure.TestsCommon
                 Currency = USD,
                 Price = 1500,
                 Qty = 10,
+                InitialValue = 10 * 1500,
                 Note = "Lorem ipsum dolor sit amet"
             };
             Transaction3 = new BuyOrSellTransaction
@@ -203,6 +205,7 @@ namespace Cryptofolio.Infrastructure.TestsCommon
                 Currency = EUR,
                 Price = 150,
                 Qty = 100,
+                InitialValue = 100 * 150,
                 Note = "Lorem ipsum dolor sit amet"
             };
             Transaction4 = new TransferTransaction

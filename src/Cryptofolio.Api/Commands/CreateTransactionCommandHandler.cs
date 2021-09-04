@@ -100,6 +100,7 @@ namespace Cryptofolio.Api.Commands
                     Currency = await _context.Currencies.SingleOrDefaultAsync(c => c.Id == command.CurrencyId, cancellationToken),
                     Price = command.Price,
                     Qty = command.Qty,
+                    InitialValue = command.Qty * command.Price,
                     Type = command.Type,
                     Note = command.Note
                 };

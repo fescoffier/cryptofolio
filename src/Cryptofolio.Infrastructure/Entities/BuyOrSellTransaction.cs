@@ -21,5 +21,20 @@ namespace Cryptofolio.Infrastructure.Entities
         /// The price per asset in the currency.
         /// </summary>
         public decimal Price { get; set; }
+
+        /// <summary>
+        /// The value of the transaction in the currency.
+        /// </summary>
+        public decimal InitialValue { get; set; }
+
+        /// <summary>
+        /// The current value (computed with the latest ticker) of the transaction in the currency.
+        /// </summary>
+        public decimal CurrentValue { get; set; }
+
+        /// <summary>
+        /// The change in percent.
+        /// </summary>
+        public decimal Change { get; set; }
     }
 }

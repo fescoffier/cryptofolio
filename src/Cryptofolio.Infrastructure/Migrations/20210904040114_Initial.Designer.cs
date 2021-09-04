@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Cryptofolio.Infrastructure.Migrations
 {
     [DbContext(typeof(CryptofolioContext))]
-    [Migration("20210904002013_Initial")]
+    [Migration("20210904040114_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -304,6 +304,18 @@ namespace Cryptofolio.Infrastructure.Migrations
             modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.BuyOrSellTransaction", b =>
                 {
                     b.HasBaseType("Cryptofolio.Infrastructure.Entities.Transaction");
+
+                    b.Property<decimal>("Change")
+                        .HasColumnType("numeric")
+                        .HasColumnName("change");
+
+                    b.Property<decimal>("CurrentValue")
+                        .HasColumnType("numeric")
+                        .HasColumnName("current_value");
+
+                    b.Property<decimal>("InitialValue")
+                        .HasColumnType("numeric")
+                        .HasColumnName("initial_value");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric")

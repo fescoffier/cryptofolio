@@ -303,6 +303,18 @@ namespace Cryptofolio.Infrastructure.Migrations
                 {
                     b.HasBaseType("Cryptofolio.Infrastructure.Entities.Transaction");
 
+                    b.Property<decimal>("Change")
+                        .HasColumnType("numeric")
+                        .HasColumnName("change");
+
+                    b.Property<decimal>("CurrentValue")
+                        .HasColumnType("numeric")
+                        .HasColumnName("current_value");
+
+                    b.Property<decimal>("InitialValue")
+                        .HasColumnType("numeric")
+                        .HasColumnName("initial_value");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric")
                         .HasColumnName("price");

@@ -16,6 +16,9 @@ namespace Cryptofolio.Infrastructure.Entities
             builder.Property(p => p.Price).HasColumnName("price").IsRequired();
             builder.Property<string>("currency_id");
             builder.HasOne(p => p.Currency).WithMany().HasForeignKey("currency_id").IsRequired();
+            builder.Property(p => p.InitialValue).HasColumnName("initial_value").IsRequired();
+            builder.Property(p => p.CurrentValue).HasColumnName("current_value").IsRequired();
+            builder.Property(p => p.Change).HasColumnName("change").IsRequired();
             builder.HasIndex(p => p.Type);
         }
     }

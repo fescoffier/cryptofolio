@@ -192,6 +192,9 @@ namespace Cryptofolio.Infrastructure.Migrations
                     type = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: true),
                     currency_id = table.Column<string>(type: "character varying(36)", nullable: true),
                     price = table.Column<decimal>(type: "numeric", nullable: true),
+                    initial_value = table.Column<decimal>(type: "numeric", nullable: true),
+                    current_value = table.Column<decimal>(type: "numeric", nullable: true),
+                    change = table.Column<decimal>(type: "numeric", nullable: true),
                     source = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     destination = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true)
                 },

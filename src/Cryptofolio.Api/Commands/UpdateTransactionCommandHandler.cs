@@ -93,6 +93,7 @@ namespace Cryptofolio.Api.Commands
                     Currency = await _context.Currencies.SingleOrDefaultAsync(c => c.Id == command.CurrencyId, cancellationToken),
                     Price = command.Price,
                     Qty = command.Qty,
+                    InitialValue = command.Qty * command.Price,
                     Type = command.Type,
                     Note = command.Note
                 };
@@ -100,6 +101,7 @@ namespace Cryptofolio.Api.Commands
                 buyOrSellTransactionEntry.Property(p => p.Type).IsModified = true;
                 buyOrSellTransactionEntry.Reference(p => p.Currency).IsModified = true;
                 buyOrSellTransactionEntry.Property(p => p.Price).IsModified = true;
+                buyOrSellTransactionEntry.Property(p => p.InitialValue).IsModified = true;
                 transaction = buyOrSellTransaction;
             }
             else if (command.Type == CommandConstants.Transaction.Types.Transfer)
