@@ -11,15 +11,23 @@ namespace Cryptofolio.Infrastructure.TestsCommon
 
         public Asset BTC { get; }
 
+        public AssetTicker BTC_USD_Ticker { get; }
+
+        public AssetTicker BTC_EUR_Ticker { get; }
+
         public Asset ETH { get; }
+
+        public AssetTicker ETH_USD_Ticker { get; }
+
+        public AssetTicker ETH_EUR_Ticker { get; }
 
         public Currency USD { get; }
 
-        public CurrencyTicker USDTicker { get; }
+        public CurrencyTicker USD_EUR_Ticker { get; }
 
         public Currency EUR { get; }
 
-        public CurrencyTicker EURTicker { get; }
+        public CurrencyTicker EUR_USD_Ticker { get; }
 
         public Exchange Exchange1 { get; }
 
@@ -76,14 +84,42 @@ namespace Cryptofolio.Infrastructure.TestsCommon
                 Code = "eur",
                 Symbol = "€"
             };
-            USDTicker = new()
+            BTC_USD_Ticker = new()
+            {
+                Asset = BTC,
+                VsCurrency = USD,
+                Timestamp = DateTimeOffset.UtcNow,
+                Value = 100000m
+            };
+            BTC_EUR_Ticker = new()
+            {
+                Asset = BTC,
+                VsCurrency = EUR,
+                Timestamp = DateTimeOffset.UtcNow,
+                Value = 80000m
+            };
+            ETH_USD_Ticker = new()
+            {
+                Asset = ETH,
+                VsCurrency = USD,
+                Timestamp = DateTimeOffset.UtcNow,
+                Value = 20000m
+            };
+            ETH_EUR_Ticker = new()
+            {
+                Asset = ETH,
+                VsCurrency = EUR,
+                Timestamp = DateTimeOffset.UtcNow,
+                Value = 18000m
+            };
+            USD_EUR_Ticker = new()
             {
                 Currency = USD,
                 VsCurrency = EUR,
                 Timestamp = DateTimeOffset.UtcNow,
                 Value = 0.8m
             };
-            EURTicker = new()
+            EUR_USD_Ticker = new()
             {
                 Currency = EUR,
                 VsCurrency = USD,

@@ -15,14 +15,14 @@ namespace Cryptofolio.Handlers.Job.Currencies
     public class CurrencyTickersUpsertedEventHandler : IPipelineBehavior<CurrencyTickersUpsertedEvent, Unit>
     {
         private readonly CurrencyTickerCache _cache;
-        private readonly ILogger<CurrencyTickersUpsertedEvent> _logger;
+        private readonly ILogger<CurrencyTickersUpsertedEventHandler> _logger;
 
         /// <summary>
         /// Creates a new instance of <see cref="CurrencyTickersUpsertedEventHandler"/>.
         /// </summary>
         /// <param name="cache">The cache.</param>
         /// <param name="logger">The logger.</param>
-        public CurrencyTickersUpsertedEventHandler(CurrencyTickerCache cache, ILogger<CurrencyTickersUpsertedEvent> logger)
+        public CurrencyTickersUpsertedEventHandler(CurrencyTickerCache cache, ILogger<CurrencyTickersUpsertedEventHandler> logger)
         {
             _cache = cache;
             _logger = logger;

@@ -40,8 +40,8 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Currencies
                 UserId = Guid.NewGuid().ToString(),
                 Tickers = new[]
                 {
-                    Data.USDTicker,
-                    Data.EURTicker
+                    Data.USD_EUR_Ticker,
+                    Data.EUR_USD_Ticker
                 }
             };
             var cancellationToken = CancellationToken.None;
@@ -54,16 +54,16 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Currencies
             {
                 new Ticker
                 {
-                    Pair = $"{Data.USDTicker.Currency.Code}/{Data.USDTicker.VsCurrency.Code}",
-                    Timestamp = Data.USDTicker.Timestamp,
-                    Value = Data.USDTicker.Value
+                    Pair = $"{Data.USD_EUR_Ticker.Currency.Code}/{Data.USD_EUR_Ticker.VsCurrency.Code}",
+                    Timestamp = Data.USD_EUR_Ticker.Timestamp,
+                    Value = Data.USD_EUR_Ticker.Value
                 },
                 new Ticker
                 {
-                    Pair = $"{Data.EURTicker.Currency.Code}/{Data.EURTicker.VsCurrency.Code}",
-                    Timestamp = Data.EURTicker.Timestamp,
-                    Value = Data.EURTicker.Value
-                },
+                    Pair = $"{Data.EUR_USD_Ticker.Currency.Code}/{Data.EUR_USD_Ticker.VsCurrency.Code}",
+                    Timestamp = Data.EUR_USD_Ticker.Timestamp,
+                    Value = Data.EUR_USD_Ticker.Value
+                }
             };
             var tickers = await _cache.GetTickersAsync(expectedTickers.Select(t => t.Pair).ToArray());
             tickers.Should().BeEquivalentTo(expectedTickers);

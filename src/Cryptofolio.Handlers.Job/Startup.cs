@@ -1,4 +1,5 @@
 using Confluent.Kafka;
+using Cryptofolio.Handlers.Job.Assets;
 using Cryptofolio.Handlers.Job.Currencies;
 using Cryptofolio.Handlers.Job.Transactions;
 using Cryptofolio.Infrastructure;
@@ -103,7 +104,7 @@ namespace Cryptofolio.Handlers.Job
 
             // Events
             services.AddDefaultEventHandler<AssetInfosUpsertedEvent>();
-            services.AddDefaultEventHandler<AssetTickersUpsertedEvent>();
+            services.AddEventHandler<AssetTickersUpsertedEvent, AssetTickersUpsertedEventHandler>();
             services.AddEventHandler<CurrencyTickersUpsertedEvent, CurrencyTickersUpsertedEventHandler>();
             services.AddDefaultEventHandler<ExchangeInfosUpsertedEvent>();
             services.AddEventHandler<TransactionCreatedEvent, TransactionEventHandler>();
