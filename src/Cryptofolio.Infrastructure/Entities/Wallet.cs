@@ -23,6 +23,11 @@ namespace Cryptofolio.Infrastructure.Entities
         public string Description { get; set; }
 
         /// <summary>
+        /// The currency.
+        /// </summary>
+        public Currency Currency { get; set; }
+
+        /// <summary>
         /// Defines if it's user selected wallet.
         /// </summary>
         public bool Selected { get; set; }

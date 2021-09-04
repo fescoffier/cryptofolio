@@ -22,7 +22,8 @@ namespace Cryptofolio.Api.Controllers
         private readonly CryptofolioContext _context;
 
         private IQueryable<Transaction> Transactions => _context.Transactions
-            .Include(t => t.Wallet)
+            .AsNoTracking()
+            .Include(t => t.Wallet).ThenInclude(w => w.Currency)
             .Include(t => t.Asset)
             .Include(t => t.Exchange)
             .Include(nameof(BuyOrSellTransaction.Currency));
@@ -35,7 +36,7 @@ namespace Cryptofolio.Api.Controllers
 
         [HttpGet("{id}")]
         public Task<Transaction> Get(string id, [FromServices] RequestContext requestContext, CancellationToken cancellationToken) =>
-            Transactions.AsNoTracking().SingleOrDefaultAsync(t => t.Id == id && t.Wallet.UserId == requestContext.UserId, cancellationToken);
+            Transactions.SingleOrDefaultAsync(t => t.Id == id && t.Wallet.UserId == requestContext.UserId, cancellationToken);
 
         [HttpGet]
         public Task<List<Transaction>> Get(

@@ -16,6 +16,8 @@ namespace Cryptofolio.Infrastructure.Entities
             builder.Property(p => p.Id).HasMaxLength(36).HasColumnName("id");
             builder.Property(p => p.Name).IsRequired().HasMaxLength(250).HasColumnName("name");
             builder.Property(p => p.Description).HasColumnType("text").HasColumnName("description");
+            builder.Property<string>("currency_id");
+            builder.HasOne(p => p.Currency).WithMany().IsRequired().HasForeignKey("currency_id");
             builder.Property(p => p.Selected).HasColumnName("selected");
             builder.Property(p => p.UserId).IsRequired().HasMaxLength(36).HasColumnName("user_id");
         }

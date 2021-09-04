@@ -15,8 +15,8 @@ namespace Cryptofolio.Infrastructure.Entities
             builder.Property<string>("asset_id");
             builder.Property<string>("vs_currency_id");
             builder.HasKey("asset_id", "vs_currency_id", nameof(AssetTicker.Timestamp));
-            builder.HasOne(p => p.Asset).WithMany().HasForeignKey("asset_id");
-            builder.HasOne(p => p.VsCurrency).WithMany().HasForeignKey("vs_currency_id");
+            builder.HasOne(p => p.Asset).WithMany().HasForeignKey("asset_id").IsRequired();
+            builder.HasOne(p => p.VsCurrency).WithMany().HasForeignKey("vs_currency_id").IsRequired();
             builder.Property(p => p.Timestamp).HasColumnName("timestamp");
             builder.Property(p => p.Value).HasColumnName("value");
             builder.HasIndex(p => p.Timestamp);

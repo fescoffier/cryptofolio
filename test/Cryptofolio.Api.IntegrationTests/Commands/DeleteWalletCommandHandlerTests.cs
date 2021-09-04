@@ -33,6 +33,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             _context = _scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
             _systemClockMock = _scope.ServiceProvider.GetRequiredService<Mock<ISystemClock>>();
             _dispatcherMock = _scope.ServiceProvider.GetRequiredService<Mock<IEventDispatcher>>();
+            _factory.PurgeData();
         }
 
         [Fact]

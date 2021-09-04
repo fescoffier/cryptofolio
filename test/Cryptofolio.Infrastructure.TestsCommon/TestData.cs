@@ -149,6 +149,7 @@ namespace Cryptofolio.Infrastructure.TestsCommon
                 Id = Guid.NewGuid().ToString(),
                 Name = "Wallet 1",
                 Description = "Lorem ipsum dolor sit amet",
+                Currency = USD,
                 Selected = true,
                 UserId = UserId
             };
@@ -157,6 +158,7 @@ namespace Cryptofolio.Infrastructure.TestsCommon
                 Id = Guid.NewGuid().ToString(),
                 Name = "Wallet 2",
                 Description = "Lorem ipsum dolor sit amet",
+                Currency = USD,
                 UserId = UserId
             };
             Wallet3 = new()
@@ -164,6 +166,7 @@ namespace Cryptofolio.Infrastructure.TestsCommon
                 Id = Guid.NewGuid().ToString(),
                 Name = "Wallet 3",
                 Description = "Lorem ipsum dolor sit amet",
+                Currency = EUR,
                 UserId = UserId
             };
             Transaction1 = new BuyOrSellTransaction

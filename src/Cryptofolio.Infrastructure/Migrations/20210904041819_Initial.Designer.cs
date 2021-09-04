@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Cryptofolio.Infrastructure.Migrations
 {
     [DbContext(typeof(CryptofolioContext))]
-    [Migration("20210904040114_Initial")]
+    [Migration("20210904041819_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,6 +44,8 @@ namespace Cryptofolio.Infrastructure.Migrations
                         .HasColumnName("symbol");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Symbol");
 
                     b.ToTable("asset");
                 });
@@ -216,6 +218,8 @@ namespace Cryptofolio.Infrastructure.Migrations
 
                     b.HasKey("Key");
 
+                    b.HasIndex("Group");
+
                     b.ToTable("setting");
                 });
 
@@ -296,7 +300,12 @@ namespace Cryptofolio.Infrastructure.Migrations
                         .HasColumnType("character varying(36)")
                         .HasColumnName("user_id");
 
+                    b.Property<string>("currency_id")
+                        .HasColumnType("character varying(36)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("currency_id");
 
                     b.ToTable("wallet");
                 });
@@ -441,6 +450,17 @@ namespace Cryptofolio.Infrastructure.Migrations
                     b.Navigation("Exchange");
 
                     b.Navigation("Wallet");
+                });
+
+            modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.Wallet", b =>
+                {
+                    b.HasOne("Cryptofolio.Infrastructure.Entities.Currency", "Currency")
+                        .WithMany()
+                        .HasForeignKey("currency_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Currency");
                 });
 
             modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.BuyOrSellTransaction", b =>
