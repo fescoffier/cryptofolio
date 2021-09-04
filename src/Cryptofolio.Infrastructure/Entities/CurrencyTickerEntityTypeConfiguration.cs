@@ -19,6 +19,7 @@ namespace Cryptofolio.Infrastructure.Entities
             builder.HasOne(p => p.VsCurrency).WithMany().HasForeignKey("vs_currency_id");
             builder.Property(p => p.Timestamp).HasColumnName("timestamp");
             builder.Property(p => p.Value).HasColumnName("value");
+            builder.HasIndex(p => p.Timestamp);
         }
     }
 }

@@ -51,20 +51,19 @@ namespace Cryptofolio.Collector.Job.Data
         /// <inheritdoc/>
         public async Task<Unit> Handle(AssetTickerDataRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<Unit> next)
         {
-            var ids = string.Join(',', request.Ids);
-            var vsCurrencies = string.Join(',', request.VsCurrencies);
-
             _logger.LogInformation("Handling asset ticker data request {0} submitted at {1} for the [{2}] assets versus currencies [{3}].",
                 request.TraceIdentifier,
                 request.Date,
-                ids,
-                vsCurrencies);
+                string.Join(',', request.Ids),
+                string.Join(',', request.VsCurrencies));
 
             Price price;
 
             try
             {
-                _logger.LogDebug("Fetching [{0}] coins price versus currencies [{1}] from Coingecko.", ids, vsCurrencies);
+                _logger.LogDebug("Fetching [{0}] coins price versus currencies [{1}] from Coingecko.",
+                    string.Join(',', request.Ids),
+                    string.Join(',', request.VsCurrencies));
                 price = await _simpleClient.GetSimplePrice(
                     request.Ids.ToArray(),
                     request.VsCurrencies.ToArray(),
@@ -76,51 +75,63 @@ namespace Cryptofolio.Collector.Job.Data
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "An error has occured while fetching [{0}] coins price versus currencies [{1}] from Coingecko.", ids, vsCurrencies);
+                _logger.LogError(e, "An error has occured while fetching [{0}] coins price versus currencies [{1}] from Coingecko.",
+                    string.Join(',', request.Ids),
+                    string.Join(',', request.VsCurrencies));
                 return Unit.Value;
             }
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var updatedIds = new HashSet<string>();
-            var updatedCurrencies = new HashSet<string>();
+            var assets = await _context.Assets
+                .Where(a => request.Ids.Contains(a.Id))
+                .ToListAsync(cancellationToken);
+            var vsCurrencies = await _context.Currencies
+                .Where(c => request.VsCurrencies.Contains(c.Code))
+                .ToListAsync(cancellationToken);
+            var tickers = new List<AssetTicker>();
             foreach (var id in request.Ids)
             {
-                var asset = await _context.Assets.SingleOrDefaultAsync(a => a.Id == id, cancellationToken);
+                var asset = assets.SingleOrDefault(a => a.Id == id);
                 if (asset == null)
                 {
                     _logger.LogError("The {0} asset does not exist.", id);
                     continue;
                 }
 
-                foreach (var currency in request.VsCurrencies)
+                foreach (var code in request.VsCurrencies)
                 {
-                    var tickerValue = price[id][currency].Value;
+                    var vsCurrency = vsCurrencies.SingleOrDefault(c => c.Code == code);
+                    if (vsCurrency == null)
+                    {
+                        _logger.LogError("The {0} currency does not exist.", code);
+                        continue;
+                    }
+
+                    var tickerValue = price[id][vsCurrency.Code].Value;
                     var tickerLastUpdatedAtSeconds = price[id]["last_updated_at"].Value;
                     var tickerLastUpdatedAt = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(tickerLastUpdatedAtSeconds));
                     var tickerExists = await _context.AssetTickers
                         .AnyAsync(t =>
                             t.Asset.Id == id &&
-                            t.Timestamp == tickerLastUpdatedAt &&
-                            t.VsCurrency == currency,
+                            t.VsCurrency.Id == vsCurrency.Id &&
+                            t.Timestamp == tickerLastUpdatedAt,
                             cancellationToken
                         );
                     if (!tickerExists)
                     {
-                        _logger.LogDebug("Ticker at {0} for {1} versus currency {2} does not exists.", tickerLastUpdatedAt, id, currency);
-                        _context.AssetTickers.Add(new()
+                        _logger.LogDebug("Ticker at {0} for {1} versus currency {2} does not exists.", tickerLastUpdatedAt, id, vsCurrency);
+                        tickers.Add(new()
                         {
                             Asset = asset,
                             Timestamp = tickerLastUpdatedAt,
                             Value = tickerValue,
-                            VsCurrency = currency
+                            VsCurrency = vsCurrency
                         });
-                        updatedIds.Add(id);
-                        updatedCurrencies.Add(currency);
                     }
                     else
                     {
-                        _logger.LogDebug("Ticker at {0} for {1} versus currency {2} exists.", tickerLastUpdatedAt, id, currency);
+                        _logger.LogDebug("Ticker at {0} for {1} versus currency {2} exists.", tickerLastUpdatedAt, id, vsCurrency);
                     }
                 }
             }
@@ -128,6 +139,7 @@ namespace Cryptofolio.Collector.Job.Data
             try
             {
                 _logger.LogDebug("Saving changes.");
+                _context.AssetTickers.AddRange(tickers);
                 var count = await _context.SaveChangesAsync(cancellationToken);
                 _logger.LogDebug("Changes saved with {0} row(s) modified.", count);
             }
@@ -137,20 +149,19 @@ namespace Cryptofolio.Collector.Job.Data
                 return Unit.Value;
             }
 
-            _logger.LogDebug("Dispatching an {0} event.", nameof(AssetTickerUpsertedEvent));
-            await _dispatcher.DispatchAsync(new AssetTickerUpsertedEvent
+            _logger.LogDebug("Dispatching an {0} event.", nameof(AssetTickersUpsertedEvent));
+            await _dispatcher.DispatchAsync(new AssetTickersUpsertedEvent
             {
                 Id = Guid.NewGuid().ToString(),
                 Date = _systemClock.UtcNow,
-                Ids = updatedIds,
-                VsCurrencies = updatedCurrencies
+                Tickers = tickers
             });
 
             _logger.LogInformation("Asset ticker data request {0} submitted at {1} for the [{2}] assets versus currencies [{3}] handled successfully.",
                 request.TraceIdentifier,
                 request.Date,
-                ids,
-                vsCurrencies);
+                string.Join(',', request.Ids),
+                string.Join(',', request.VsCurrencies));
 
             return Unit.Value;
         }

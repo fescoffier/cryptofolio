@@ -103,7 +103,7 @@ namespace Cryptofolio.Handlers.Job
 
             // Events
             services.AddDefaultEventHandler<AssetInfosUpsertedEvent>();
-            services.AddDefaultEventHandler<AssetTickerUpsertedEvent>();
+            services.AddDefaultEventHandler<AssetTickersUpsertedEvent>();
             services.AddEventHandler<CurrencyTickersUpsertedEvent, CurrencyTickersUpsertedEventHandler>();
             services.AddDefaultEventHandler<ExchangeInfosUpsertedEvent>();
             services.AddEventHandler<TransactionCreatedEvent, TransactionEventHandler>();

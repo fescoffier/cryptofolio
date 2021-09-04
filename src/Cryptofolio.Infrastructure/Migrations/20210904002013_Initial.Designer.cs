@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Cryptofolio.Infrastructure.Migrations
 {
     [DbContext(typeof(CryptofolioContext))]
-    [Migration("20210826222810_Initial")]
+    [Migration("20210904002013_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,24 +53,22 @@ namespace Cryptofolio.Infrastructure.Migrations
                     b.Property<string>("asset_id")
                         .HasColumnType("character varying(100)");
 
+                    b.Property<string>("vs_currency_id")
+                        .HasColumnType("character varying(36)");
+
                     b.Property<DateTimeOffset>("Timestamp")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("timestamp");
-
-                    b.Property<string>("VsCurrency")
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)")
-                        .HasColumnName("vs_currency");
 
                     b.Property<decimal>("Value")
                         .HasColumnType("numeric")
                         .HasColumnName("value");
 
-                    b.HasKey("asset_id", "Timestamp", "VsCurrency");
+                    b.HasKey("asset_id", "vs_currency_id", "Timestamp");
 
                     b.HasIndex("Timestamp");
 
-                    b.HasIndex("VsCurrency");
+                    b.HasIndex("vs_currency_id");
 
                     b.ToTable("asset_ticker");
                 });
@@ -105,7 +103,35 @@ namespace Cryptofolio.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Code")
+                        .IsUnique();
+
                     b.ToTable("currency");
+                });
+
+            modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.CurrencyTicker", b =>
+                {
+                    b.Property<string>("currency_id")
+                        .HasColumnType("character varying(36)");
+
+                    b.Property<string>("vs_currency_id")
+                        .HasColumnType("character varying(36)");
+
+                    b.Property<DateTimeOffset>("Timestamp")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("timestamp");
+
+                    b.Property<decimal>("Value")
+                        .HasColumnType("numeric")
+                        .HasColumnName("value");
+
+                    b.HasKey("currency_id", "vs_currency_id", "Timestamp");
+
+                    b.HasIndex("Timestamp");
+
+                    b.HasIndex("vs_currency_id");
+
+                    b.ToTable("currency_ticker");
                 });
 
             modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.Exchange", b =>
@@ -141,6 +167,35 @@ namespace Cryptofolio.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("exchange");
+                });
+
+            modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.Holding", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)")
+                        .HasColumnName("id");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric")
+                        .HasColumnName("amount");
+
+                    b.Property<string>("asset_id")
+                        .IsRequired()
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("wallet_id")
+                        .IsRequired()
+                        .HasColumnType("character varying(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("asset_id");
+
+                    b.HasIndex("wallet_id", "asset_id")
+                        .IsUnique();
+
+                    b.ToTable("holding");
                 });
 
             modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.Setting", b =>
@@ -302,7 +357,53 @@ namespace Cryptofolio.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Cryptofolio.Infrastructure.Entities.Currency", "VsCurrency")
+                        .WithMany()
+                        .HasForeignKey("vs_currency_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Asset");
+
+                    b.Navigation("VsCurrency");
+                });
+
+            modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.CurrencyTicker", b =>
+                {
+                    b.HasOne("Cryptofolio.Infrastructure.Entities.Currency", "Currency")
+                        .WithMany()
+                        .HasForeignKey("currency_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Cryptofolio.Infrastructure.Entities.Currency", "VsCurrency")
+                        .WithMany()
+                        .HasForeignKey("vs_currency_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Currency");
+
+                    b.Navigation("VsCurrency");
+                });
+
+            modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.Holding", b =>
+                {
+                    b.HasOne("Cryptofolio.Infrastructure.Entities.Asset", "Asset")
+                        .WithMany()
+                        .HasForeignKey("asset_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Cryptofolio.Infrastructure.Entities.Wallet", "Wallet")
+                        .WithMany("Holdings")
+                        .HasForeignKey("wallet_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Asset");
+
+                    b.Navigation("Wallet");
                 });
 
             modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.Transaction", b =>
@@ -339,6 +440,11 @@ namespace Cryptofolio.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Currency");
+                });
+
+            modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.Wallet", b =>
+                {
+                    b.Navigation("Holdings");
                 });
 #pragma warning restore 612, 618
         }

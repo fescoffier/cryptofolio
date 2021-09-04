@@ -51,24 +51,22 @@ namespace Cryptofolio.Infrastructure.Migrations
                     b.Property<string>("asset_id")
                         .HasColumnType("character varying(100)");
 
+                    b.Property<string>("vs_currency_id")
+                        .HasColumnType("character varying(36)");
+
                     b.Property<DateTimeOffset>("Timestamp")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("timestamp");
-
-                    b.Property<string>("VsCurrency")
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)")
-                        .HasColumnName("vs_currency");
 
                     b.Property<decimal>("Value")
                         .HasColumnType("numeric")
                         .HasColumnName("value");
 
-                    b.HasKey("asset_id", "Timestamp", "VsCurrency");
+                    b.HasKey("asset_id", "vs_currency_id", "Timestamp");
 
                     b.HasIndex("Timestamp");
 
-                    b.HasIndex("VsCurrency");
+                    b.HasIndex("vs_currency_id");
 
                     b.ToTable("asset_ticker");
                 });
@@ -103,6 +101,9 @@ namespace Cryptofolio.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Code")
+                        .IsUnique();
+
                     b.ToTable("currency");
                 });
 
@@ -123,6 +124,8 @@ namespace Cryptofolio.Infrastructure.Migrations
                         .HasColumnName("value");
 
                     b.HasKey("currency_id", "vs_currency_id", "Timestamp");
+
+                    b.HasIndex("Timestamp");
 
                     b.HasIndex("vs_currency_id");
 
@@ -352,7 +355,15 @@ namespace Cryptofolio.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Cryptofolio.Infrastructure.Entities.Currency", "VsCurrency")
+                        .WithMany()
+                        .HasForeignKey("vs_currency_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Asset");
+
+                    b.Navigation("VsCurrency");
                 });
 
             modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.CurrencyTicker", b =>

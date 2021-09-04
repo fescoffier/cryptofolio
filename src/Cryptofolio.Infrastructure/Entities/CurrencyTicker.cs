@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace Cryptofolio.Infrastructure.Entities
 {
@@ -15,6 +16,7 @@ namespace Cryptofolio.Infrastructure.Entities
         /// <summary>
         /// The currency which the price is calculated against.
         /// </summary>
+        [JsonPropertyName("vs_currency")]
         public Currency VsCurrency { get; set; }
 
         /// <summary>

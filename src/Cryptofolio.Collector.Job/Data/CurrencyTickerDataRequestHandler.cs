@@ -90,7 +90,7 @@ namespace Cryptofolio.Collector.Job.Data
                 .ToListAsync(cancellationToken);
             foreach (var unsupportedVsCurrency in vsCurrencies.Where(c => !ratesResponse.Rates.ContainsKey(c.Code.ToUpperInvariant())).ToArray())
             {
-                _logger.LogWarning("Fixer did non return a ticker for the currency {0}.", unsupportedVsCurrency);
+                _logger.LogWarning("Fixer did not return a ticker for the currency {0}.", unsupportedVsCurrency);
                 vsCurrencies.Remove(unsupportedVsCurrency);
             }
 

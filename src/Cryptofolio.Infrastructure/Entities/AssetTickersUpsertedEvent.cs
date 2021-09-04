@@ -6,7 +6,7 @@ namespace Cryptofolio.Infrastructure.Entities
     /// <summary>
     /// Models an inserted or updated event occured on <see cref="AssetTicker"/>.
     /// </summary>
-    public class AssetTickerUpsertedEvent : IEvent
+    public class AssetTickersUpsertedEvent : IEvent
     {
         /// <inheritdoc/>
         public string Id { get; init; }
@@ -21,13 +21,8 @@ namespace Cryptofolio.Infrastructure.Entities
         public string Category => InfrastructureConstants.Events.Categories.Asset;
 
         /// <summary>
-        /// The assets ids.
+        /// The tickers.
         /// </summary>
-        public IEnumerable<string> Ids { get; set; }
-
-        /// <summary>
-        /// The versus currencies.
-        /// </summary>
-        public IEnumerable<string> VsCurrencies { get; set; }
+        public IEnumerable<AssetTicker> Tickers { get; set; }
     }
 }

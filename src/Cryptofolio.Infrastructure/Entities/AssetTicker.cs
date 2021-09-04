@@ -14,6 +14,12 @@ namespace Cryptofolio.Infrastructure.Entities
         public Asset Asset { get; set; }
 
         /// <summary>
+        /// The currency which the price is calculated against.
+        /// </summary>
+        [JsonPropertyName("vs_currency")]
+        public Currency VsCurrency { get; set; }
+
+        /// <summary>
         /// The timestamp.
         /// </summary>
         public DateTimeOffset Timestamp { get; set; }
@@ -22,11 +28,5 @@ namespace Cryptofolio.Infrastructure.Entities
         /// The value expressed in <see cref="VsCurrency"/>.
         /// </summary>
         public decimal Value { get; set; }
-
-        /// <summary>
-        /// The currency price of the ticker.
-        /// </summary>
-        [JsonPropertyName("vs_currency")]
-        public string VsCurrency { get; set; }
     }
 }

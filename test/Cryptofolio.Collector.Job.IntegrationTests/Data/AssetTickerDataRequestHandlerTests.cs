@@ -2,8 +2,9 @@ using CoinGecko.Interfaces;
 using Cryptofolio.Collector.Job.Data;
 using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Data;
-using Cryptofolio.Infrastructure.Entities;
+using Cryptofolio.Infrastructure.TestsCommon;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
@@ -15,13 +16,17 @@ namespace Cryptofolio.Collector.Job.IntegrationTests.Data
 {
     public class AssetTickerDataRequestHandlerTests : IClassFixture<WebApplicationFactory>, IDisposable
     {
+        private readonly WebApplicationFactory _factory;
         private readonly IServiceScope _scope;
         private readonly AssetTickerDataRequestHandler _handler;
         private readonly ISimpleClient _simpleClient;
         private readonly CryptofolioContext _context;
 
+        private TestData Data => _factory.Data;
+
         public AssetTickerDataRequestHandlerTests(WebApplicationFactory factory)
         {
+            _factory = factory;
             _scope = factory.Services.CreateScope();
             _handler = _scope.ServiceProvider.GetRequiredService<AssetTickerDataRequestHandler>();
             _simpleClient = _scope.ServiceProvider.GetRequiredService<ISimpleClient>();
@@ -34,53 +39,46 @@ namespace Cryptofolio.Collector.Job.IntegrationTests.Data
         public async Task Handle_Test()
         {
             // Setup
-            var bitcoin = new Asset
+            var ids = new[]
             {
-                Id = "bitcoin",
-                Name = "Bitcoin",
-                Symbol = "BTC",
-                Description = "Lorem ipsum dolor sit amet."
+                Data.BTC.Id,
+                Data.ETH.Id
             };
-            var ethereum = new Asset
+            var vsCurrencies = new[]
             {
-                Id = "ethereum",
-                Name = "Ethereum",
-                Symbol = "ETH",
-                Description = "Lorem ipsum dolor sit amet."
+                Data.USD.Code,
+                Data.EUR.Code
             };
-            var usd = "usd";
-            var eur = "eur";
-            var vsCurrencies = new[] { usd, eur };
             var request = new AssetTickerDataRequest
             {
                 TraceIdentifier = Guid.NewGuid().ToString(),
                 Date = DateTimeOffset.UtcNow,
-                Ids = new[]
-                {
-                    bitcoin.Id,
-                    ethereum.Id
-                },
+                Ids = ids,
                 VsCurrencies = vsCurrencies
             };
-            _context.Assets.AddRange(bitcoin, ethereum);
+            _context.Assets.AddRange(Data.BTC, Data.ETH);
+            _context.Currencies.AddRange(Data.USD, Data.EUR);
             _context.SaveChanges();
 
             // Act
             await _handler.Handle(request, CancellationToken.None, null);
 
             // Assert
-            var price = await _simpleClient.GetSimplePrice(new[] { bitcoin.Id, ethereum.Id }, vsCurrencies, false, false, false, true);
-            var tickers = _context.AssetTickers.ToList();
+            var price = await _simpleClient.GetSimplePrice(ids, vsCurrencies, false, false, false, true);
+            var tickers = _context.AssetTickers
+                .Include(t => t.Asset)
+                .Include(t => t.VsCurrency)
+                .ToList();
             // Bitcoin
-            tickers.Single(t => t.Asset.Id == bitcoin.Id && t.VsCurrency == usd).Timestamp.ToUnixTimeSeconds().Should().Be(Convert.ToInt64(price[bitcoin.Id]["last_updated_at"]));
-            tickers.Single(t => t.Asset.Id == bitcoin.Id && t.VsCurrency == usd).Value.Should().Be(price[bitcoin.Id][usd]);
-            tickers.Single(t => t.Asset.Id == bitcoin.Id && t.VsCurrency == eur).Timestamp.ToUnixTimeSeconds().Should().Be(Convert.ToInt64(price[bitcoin.Id]["last_updated_at"]));
-            tickers.Single(t => t.Asset.Id == bitcoin.Id && t.VsCurrency == eur).Value.Should().Be(price[bitcoin.Id][eur]);
+            tickers.Single(t => t.Asset.Id == Data.BTC.Id && t.VsCurrency.Id == Data.USD.Id).Timestamp.ToUnixTimeSeconds().Should().Be(Convert.ToInt64(price[Data.BTC.Id]["last_updated_at"]));
+            tickers.Single(t => t.Asset.Id == Data.BTC.Id && t.VsCurrency.Id == Data.USD.Id).Value.Should().Be(price[Data.BTC.Id][Data.USD.Code]);
+            tickers.Single(t => t.Asset.Id == Data.BTC.Id && t.VsCurrency.Id == Data.EUR.Id).Timestamp.ToUnixTimeSeconds().Should().Be(Convert.ToInt64(price[Data.BTC.Id]["last_updated_at"]));
+            tickers.Single(t => t.Asset.Id == Data.BTC.Id && t.VsCurrency.Id == Data.EUR.Id).Value.Should().Be(price[Data.BTC.Id][Data.EUR.Code]);
             // Ethereum
-            tickers.Single(t => t.Asset.Id == ethereum.Id && t.VsCurrency == usd).Timestamp.ToUnixTimeSeconds().Should().Be(Convert.ToInt64(price[ethereum.Id]["last_updated_at"]));
-            tickers.Single(t => t.Asset.Id == ethereum.Id && t.VsCurrency == usd).Value.Should().Be(price[ethereum.Id][usd]);
-            tickers.Single(t => t.Asset.Id == ethereum.Id && t.VsCurrency == eur).Timestamp.ToUnixTimeSeconds().Should().Be(Convert.ToInt64(price[ethereum.Id]["last_updated_at"]));
-            tickers.Single(t => t.Asset.Id == ethereum.Id && t.VsCurrency == eur).Value.Should().Be(price[ethereum.Id][eur]);
+            tickers.Single(t => t.Asset.Id == Data.ETH.Id && t.VsCurrency.Id == Data.USD.Id).Timestamp.ToUnixTimeSeconds().Should().Be(Convert.ToInt64(price[Data.ETH.Id]["last_updated_at"]));
+            tickers.Single(t => t.Asset.Id == Data.ETH.Id && t.VsCurrency.Id == Data.USD.Id).Value.Should().Be(price[Data.ETH.Id][Data.USD.Code]);
+            tickers.Single(t => t.Asset.Id == Data.ETH.Id && t.VsCurrency.Id == Data.EUR.Id).Timestamp.ToUnixTimeSeconds().Should().Be(Convert.ToInt64(price[Data.ETH.Id]["last_updated_at"]));
+            tickers.Single(t => t.Asset.Id == Data.ETH.Id && t.VsCurrency.Id == Data.EUR.Id).Value.Should().Be(price[Data.ETH.Id][Data.EUR.Code]);
         }
 
         [Fact]
@@ -93,13 +91,13 @@ namespace Cryptofolio.Collector.Job.IntegrationTests.Data
                 Date = DateTimeOffset.UtcNow,
                 Ids = new[]
                 {
-                    "bitcoin",
-                    "ethereum"
+                    Data.BTC.Id,
+                    Data.ETH.Id
                 },
                 VsCurrencies = new[]
                 {
-                    "usd",
-                    "eur"
+                    Data.USD.Code,
+                    Data.EUR.Code
                 }
             };
             var cancellationToken = new CancellationToken(true);

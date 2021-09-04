@@ -13,7 +13,7 @@ using Xunit;
 
 namespace Cryptofolio.Collector.Job.IntegrationTests.Data
 {
-    public class CurrencyTickerDataRequestHandlerTests : IClassFixture<WebApplicationFactory>
+    public class CurrencyTickerDataRequestHandlerTests : IClassFixture<WebApplicationFactory>, IDisposable
     {
         private readonly WebApplicationFactory _factory;
         private readonly IServiceScope _scope;
