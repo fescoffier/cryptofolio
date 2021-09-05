@@ -87,6 +87,7 @@ namespace Cryptofolio.Handlers.Job.Transactions
             }
             else
             {
+                // TODO: Compute initial value.
                 holding.Qty = transactions.Sum(t =>
                 {
                     if (t is BuyOrSellTransaction buyOrSellTransaction)
@@ -106,9 +107,11 @@ namespace Cryptofolio.Handlers.Job.Transactions
                 _logger.LogTrace("Amount of {0} in the wallet {1}: {2}", asset.Id, wallet.Id, holding.Qty);
             }
 
-            _logger.LogInformation("Holding computed for the asset {0} in the wallet {1}.", asset.Id, wallet.Id);
+            // TODO: Compute wallet initial value.
 
             await _context.SaveChangesAsync(cancellationToken);
+
+            _logger.LogInformation("Holding computed for the asset {0} in the wallet {1}.", asset.Id, wallet.Id);
 
             // TODO: Trigger wallet balance recompute.
         }

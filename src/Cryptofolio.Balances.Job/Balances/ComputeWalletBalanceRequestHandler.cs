@@ -65,7 +65,10 @@ namespace Cryptofolio.Balances.Job.Balances
                     {
                         var ticker = await GetAssetTicker(new(transaction.Asset.Symbol, bst.Currency.Code));
                         bst.CurrentValue = bst.Qty * ticker;
-                        bst.Change = (bst.CurrentValue - bst.InitialValue) / bst.InitialValue * 100;
+                        if (bst.InitialValue > 0)
+                        {
+                            bst.Change = (bst.CurrentValue - bst.InitialValue) / bst.InitialValue * 100;
+                        }
                     }
                     else if (transaction is TransferTransaction tft)
                     {
@@ -84,11 +87,19 @@ namespace Cryptofolio.Balances.Job.Balances
                 {
                     var ticker = await GetAssetTicker(new(holding.Asset.Symbol, wallet.Currency.Code));
                     holding.CurrentValue = holding.Qty * ticker;
+                    if (holding.InitialValue > 0)
+                    {
+                        holding.Change = (holding.CurrentValue - holding.InitialValue) / holding.InitialValue * 100;
+                    }
                 }
 
                 _logger.LogDebug("Computing wallet balance.");
 
                 wallet.CurrentValue = wallet.Holdings.Sum(h => h.CurrentValue);
+                if (wallet.InitialValue > 0)
+                {
+                    wallet.Change = (wallet.CurrentValue - wallet.InitialValue) / wallet.InitialValue * 100;
+                }
 
                 async Task<decimal> GetAssetTicker(TickerPair pair)
                 {

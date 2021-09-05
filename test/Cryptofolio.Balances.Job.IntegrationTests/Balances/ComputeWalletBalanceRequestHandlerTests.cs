@@ -62,7 +62,9 @@ namespace Cryptofolio.Balances.Job.IntegrationTests.Balances
             Data.Transaction2.CurrentValue.Should().Be(6_000);
             Data.Transaction2.Change.Should().Be(9.090909090909090909090909090m);
             Data.Holding1.CurrentValue.Should().Be(24_000);
+            Data.Holding1.Change.Should().Be(23.076923076923076923076923080m);
             Data.Wallet1.CurrentValue.Should().Be(24_000);
+            Data.Wallet1.Change.Should().Be(23.076923076923076923076923080m);
         }
 
         [Fact]
@@ -99,7 +101,9 @@ namespace Cryptofolio.Balances.Job.IntegrationTests.Balances
             Data.Transaction3.CurrentValue.Should().Be(25_000);
             Data.Transaction3.Change.Should().Be(66.666666666666666666666666670m);
             Data.Holding2.CurrentValue.Should().Be(30_000);
+            Data.Holding2.Change.Should().Be(66.666666666666666666666666670m);
             Data.Wallet2.CurrentValue.Should().Be(30_000);
+            Data.Wallet2.Change.Should().Be(66.666666666666666666666666670m);
         }
 
         [Fact]
@@ -129,7 +133,9 @@ namespace Cryptofolio.Balances.Job.IntegrationTests.Balances
             // Assert
             Data.Transaction4.CurrentValue.Should().Be(12_500);
             Data.Holding3.CurrentValue.Should().Be(12_500);
+            Data.Holding3.Change.Should().Be(0);
             Data.Wallet3.CurrentValue.Should().Be(12_500);
+            Data.Wallet3.Change.Should().Be(0);
         }
     }
 }

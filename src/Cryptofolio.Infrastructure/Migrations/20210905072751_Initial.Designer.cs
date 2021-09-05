@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Cryptofolio.Infrastructure.Migrations
 {
     [DbContext(typeof(CryptofolioContext))]
-    [Migration("20210905044350_Initial")]
+    [Migration("20210905072751_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -186,6 +186,9 @@ namespace Cryptofolio.Infrastructure.Migrations
                         .HasColumnType("numeric")
                         .HasColumnName("current_value");
 
+                    b.Property<decimal>("InitialValue")
+                        .HasColumnType("numeric");
+
                     b.Property<decimal>("Qty")
                         .HasColumnType("numeric")
                         .HasColumnName("qty");
@@ -303,6 +306,9 @@ namespace Cryptofolio.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text")
                         .HasColumnName("description");
+
+                    b.Property<decimal>("InitialValue")
+                        .HasColumnType("numeric");
 
                     b.Property<string>("Name")
                         .IsRequired()

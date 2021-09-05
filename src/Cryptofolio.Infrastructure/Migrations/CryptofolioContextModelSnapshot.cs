@@ -184,6 +184,9 @@ namespace Cryptofolio.Infrastructure.Migrations
                         .HasColumnType("numeric")
                         .HasColumnName("current_value");
 
+                    b.Property<decimal>("InitialValue")
+                        .HasColumnType("numeric");
+
                     b.Property<decimal>("Qty")
                         .HasColumnType("numeric")
                         .HasColumnName("qty");
@@ -301,6 +304,9 @@ namespace Cryptofolio.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text")
                         .HasColumnName("description");
+
+                    b.Property<decimal>("InitialValue")
+                        .HasColumnType("numeric");
 
                     b.Property<string>("Name")
                         .IsRequired()

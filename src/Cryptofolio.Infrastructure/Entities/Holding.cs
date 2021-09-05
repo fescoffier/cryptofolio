@@ -28,6 +28,13 @@ namespace Cryptofolio.Infrastructure.Entities
         public decimal Qty { get; set; }
 
         /// <summary>
+        /// The initial value in the wallet currency.
+        /// It's the sum of all initial values of every transaction in the holding.
+        /// </summary>
+        [JsonPropertyName("initial_value")]
+        public decimal InitialValue { get; set; }
+
+        /// <summary>
         /// The current value in the wallet currency.
         /// </summary>
         [JsonPropertyName("current_value")]

@@ -29,6 +29,13 @@ namespace Cryptofolio.Infrastructure.Entities
         public Currency Currency { get; set; }
 
         /// <summary>
+        /// The initial value in the wallet currency.
+        /// It's the sum of all initial values of every transaction in the wallet.
+        /// </summary>
+        [JsonPropertyName("initial_value")]
+        public decimal InitialValue { get; set; }
+
+        /// <summary>
         /// The current value in the currency.
         /// </summary>
         [JsonPropertyName("current_value")]

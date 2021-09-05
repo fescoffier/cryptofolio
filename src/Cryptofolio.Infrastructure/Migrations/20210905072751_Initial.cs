@@ -140,6 +140,7 @@ namespace Cryptofolio.Infrastructure.Migrations
                     name = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
                     description = table.Column<string>(type: "text", nullable: true),
                     currency_id = table.Column<string>(type: "character varying(36)", nullable: true),
+                    InitialValue = table.Column<decimal>(type: "numeric", nullable: false),
                     current_value = table.Column<decimal>(type: "numeric", nullable: false),
                     change = table.Column<decimal>(type: "numeric", nullable: false),
                     selected = table.Column<bool>(type: "boolean", nullable: false),
@@ -166,6 +167,7 @@ namespace Cryptofolio.Infrastructure.Migrations
                     wallet_id = table.Column<string>(type: "character varying(36)", nullable: false),
                     asset_id = table.Column<string>(type: "character varying(100)", nullable: false),
                     qty = table.Column<decimal>(type: "numeric", nullable: false),
+                    InitialValue = table.Column<decimal>(type: "numeric", nullable: false),
                     current_value = table.Column<decimal>(type: "numeric", nullable: false),
                     change = table.Column<decimal>(type: "numeric", nullable: false)
                 },

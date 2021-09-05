@@ -58,7 +58,15 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
 
             // Assert
             result.Succeeded.Should().BeTrue();
-            result.Data.Should().BeEquivalentTo(Data.Wallet1, options => options.Excluding(m => m.Id).Excluding(m => m.Selected));
+            result.Data
+                .Should()
+                .BeEquivalentTo(
+                    Data.Wallet1,
+                    options => options
+                        .Excluding(m => m.Id)
+                        .Excluding(m => m.Selected)
+                        .Excluding(m => m.InitialValue)
+                );
             _context.Wallets
                 .Include(w => w.Currency)
                 .Single(w => w.Id == result.Data.Id)

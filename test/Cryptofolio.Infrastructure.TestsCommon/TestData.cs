@@ -228,22 +228,27 @@ namespace Cryptofolio.Infrastructure.TestsCommon
                 Id = Guid.NewGuid().ToString(),
                 Asset = BTC,
                 Wallet = Wallet1,
-                Qty = Transaction1.Qty - Transaction2.Qty
+                Qty = Transaction1.Qty - Transaction2.Qty,
+                InitialValue = (Transaction1.Qty * Transaction1.Price) - (Transaction2.Qty * Transaction2.Price)
             };
             Holding2 = new()
             {
                 Id = Guid.NewGuid().ToString(),
                 Asset = BTC,
                 Wallet = Wallet2,
-                Qty = Transaction3.Qty
+                Qty = Transaction3.Qty,
+                InitialValue = Transaction3.Qty * Transaction3.Price * EUR_USD_Ticker.Value
             };
             Holding3 = new()
             {
                 Id = Guid.NewGuid().ToString(),
                 Asset = ETH,
                 Wallet = Wallet3,
-                Qty = Transaction4.Qty
+                Qty = Transaction4.Qty,
             };
+            Wallet1.InitialValue = Holding1.InitialValue;
+            Wallet2.InitialValue = Holding2.InitialValue;
+            Wallet3.InitialValue = Holding3.InitialValue;
         }
 
         public void ChangUserId(string userId) => _userId = userId;
