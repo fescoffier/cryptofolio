@@ -87,7 +87,7 @@ namespace Cryptofolio.Handlers.Job.Transactions
             }
             else
             {
-                holding.Amount = transactions.Sum(t =>
+                holding.Qty = transactions.Sum(t =>
                 {
                     if (t is BuyOrSellTransaction buyOrSellTransaction)
                     {
@@ -103,7 +103,7 @@ namespace Cryptofolio.Handlers.Job.Transactions
                     }
                     return 0m;
                 });
-                _logger.LogTrace("Amount of {0} in the wallet {1}: {2}", asset.Id, wallet.Id, holding.Amount);
+                _logger.LogTrace("Amount of {0} in the wallet {1}: {2}", asset.Id, wallet.Id, holding.Qty);
             }
 
             _logger.LogInformation("Holding computed for the asset {0} in the wallet {1}.", asset.Id, wallet.Id);

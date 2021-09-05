@@ -33,12 +33,14 @@ namespace Cryptofolio.Handlers.Job.Assets
         {
             _logger.LogInformation("Handling the event occurence {0} of type {1}.", @event.Id, typeof(AssetTickersUpsertedEvent).FullName);
             _logger.LogDebug("Tickers tickers in cache.");
-            await _cache.StoreTickersAsync(@event.Tickers.Select(t => new Ticker
-            {
-                Pair = new(t.Asset.Symbol, t.VsCurrency.Code),
-                Timestamp = t.Timestamp,
-                Value = t.Value
-            }));
+            await _cache.StoreTickersAsync(@event.Tickers
+                .Select(t => new Ticker
+                {
+                    Pair = new(t.Asset.Symbol, t.VsCurrency.Code),
+                    Timestamp = t.Timestamp,
+                    Value = t.Value
+                })
+                .ToArray());
             _logger.LogDebug("Tickers stored in cache.");
             // TODO: Trigger wallet balance recompute.
             return Unit.Value;

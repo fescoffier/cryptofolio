@@ -192,9 +192,9 @@ namespace Cryptofolio.Infrastructure.TestsCommon
                 Exchange = Exchange1,
                 Type = InfrastructureConstants.Transactions.Types.Sell,
                 Currency = USD,
-                Price = 1500,
-                Qty = 10,
-                InitialValue = 10 * 1500,
+                Price = 2750,
+                Qty = 2,
+                InitialValue = 2 * 2750,
                 Note = "Lorem ipsum dolor sit amet"
             };
             Transaction3 = new BuyOrSellTransaction
@@ -228,21 +228,21 @@ namespace Cryptofolio.Infrastructure.TestsCommon
                 Id = Guid.NewGuid().ToString(),
                 Asset = BTC,
                 Wallet = Wallet1,
-                Amount = Transaction1.Qty - Transaction2.Qty
+                Qty = Transaction1.Qty - Transaction2.Qty
             };
             Holding2 = new()
             {
                 Id = Guid.NewGuid().ToString(),
                 Asset = BTC,
                 Wallet = Wallet2,
-                Amount = Transaction3.Qty
+                Qty = Transaction3.Qty
             };
             Holding3 = new()
             {
                 Id = Guid.NewGuid().ToString(),
                 Asset = ETH,
                 Wallet = Wallet3,
-                Amount = Transaction4.Qty
+                Qty = Transaction4.Qty
             };
         }
 

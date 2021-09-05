@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Cryptofolio.Infrastructure.Entities
 {
     /// <summary>
@@ -25,12 +27,8 @@ namespace Cryptofolio.Infrastructure.Entities
         /// <summary>
         /// The value of the transaction in the currency.
         /// </summary>
+        [JsonPropertyName("initial_value")]
         public decimal InitialValue { get; set; }
-
-        /// <summary>
-        /// The current value (computed with the latest ticker) of the transaction in the currency.
-        /// </summary>
-        public decimal CurrentValue { get; set; }
 
         /// <summary>
         /// The change in percent.

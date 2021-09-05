@@ -53,9 +53,9 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
             result.Should().Be(Unit.Value);
             _context.Holdings
                 .Single(h => h.Wallet.Id == Data.Transaction1.Wallet.Id && h.Asset.Id == Data.Transaction1.Asset.Id)
-                .Amount
+                .Qty
                 .Should()
-                .Be(Data.Holding1.Amount);
+                .Be(Data.Holding1.Qty);
         }
 
         [Fact]
@@ -81,7 +81,7 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
             result.Should().Be(Unit.Value);
             _context.Holdings
                 .Single(h => h.Wallet.Id == Data.Transaction2.Wallet.Id && h.Asset.Id == Data.Transaction2.Asset.Id)
-                .Amount
+                .Qty
                 .Should()
                 .Be(0);
         }
@@ -108,7 +108,7 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
             result.Should().Be(Unit.Value);
             _context.Holdings
                 .Single(h => h.Wallet.Id == Data.Transaction2.Wallet.Id && h.Asset.Id == Data.Transaction2.Asset.Id)
-                .Amount
+                .Qty
                 .Should()
                 .Be(Data.Transaction1.Qty);
         }

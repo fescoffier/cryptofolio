@@ -18,6 +18,7 @@ namespace Cryptofolio.Infrastructure.Entities
             builder.Property(p => p.Id).HasMaxLength(36).HasColumnName("id");
             builder.Property(p => p.Date).HasColumnName("date").HasConversion(p => p, p => p.ToUniversalTime());
             builder.Property(p => p.Qty).HasColumnName("qty");
+            builder.Property(p => p.CurrentValue).HasColumnName("current_value").IsRequired();
             builder.Property(p => p.Note).HasColumnType("text").HasColumnName("note");
             builder.Property<string>("wallet_id");
             builder.HasOne(p => p.Wallet).WithMany().HasForeignKey("wallet_id").IsRequired();

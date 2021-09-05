@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Cryptofolio.Infrastructure.Entities
 {
@@ -26,6 +27,17 @@ namespace Cryptofolio.Infrastructure.Entities
         /// The currency.
         /// </summary>
         public Currency Currency { get; set; }
+
+        /// <summary>
+        /// The current value in the currency.
+        /// </summary>
+        [JsonPropertyName("current_value")]
+        public decimal CurrentValue { get; set; }
+
+        /// <summary>
+        /// The change in percent.
+        /// </summary>
+        public decimal Change { get; set; }
 
         /// <summary>
         /// Defines if it's user selected wallet.

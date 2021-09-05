@@ -14,7 +14,9 @@ namespace Cryptofolio.Infrastructure.Entities
             builder.ToTable("holding");
             builder.HasKey(p => p.Id);
             builder.Property(p => p.Id).HasMaxLength(36).HasColumnName("id");
-            builder.Property(p => p.Amount).HasColumnName("amount");
+            builder.Property(p => p.Qty).HasColumnName("qty");
+            builder.Property(p => p.CurrentValue).HasColumnName("current_value");
+            builder.Property(p => p.Change).HasColumnName("change");
             builder.Property<string>("wallet_id");
             builder.HasOne(p => p.Wallet).WithMany(p => p.Holdings).HasForeignKey("wallet_id").IsRequired();
             builder.Property<string>("asset_id");

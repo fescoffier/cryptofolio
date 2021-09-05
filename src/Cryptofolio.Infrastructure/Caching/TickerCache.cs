@@ -40,7 +40,7 @@ namespace Cryptofolio.Infrastructure.Caching
         /// </summary>
         /// <param name="tickers">The tickers.</param>
         /// <returns>A <see cref="Task"/> that represents the asynchronous task.</returns>
-        public Task StoreTickersAsync(IEnumerable<Ticker> tickers) =>
+        public Task StoreTickersAsync(params Ticker[] tickers) =>
             _database.HashSetAsync(HashKey, tickers.Select(t => new HashEntry(t.Pair.ToString(), JsonSerializer.Serialize(t, SerializerOptions))).ToArray());
 
         /// <summary>

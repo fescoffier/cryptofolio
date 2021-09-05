@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Cryptofolio.Infrastructure.Entities
 {
     /// <summary>
@@ -21,8 +23,19 @@ namespace Cryptofolio.Infrastructure.Entities
         public Asset Asset { get; set; }
 
         /// <summary>
-        /// The amount held
+        /// The quantity held.
         /// </summary>
-        public decimal Amount { get; set; }
+        public decimal Qty { get; set; }
+
+        /// <summary>
+        /// The current value in the wallet currency.
+        /// </summary>
+        [JsonPropertyName("current_value")]
+        public decimal CurrentValue { get; set; }
+
+        /// <summary>
+        /// The change in percent.
+        /// </summary>
+        public decimal Change { get; set; }
     }
 }

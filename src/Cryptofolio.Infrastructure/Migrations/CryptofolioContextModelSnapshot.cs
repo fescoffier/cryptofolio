@@ -176,9 +176,17 @@ namespace Cryptofolio.Infrastructure.Migrations
                         .HasColumnType("character varying(36)")
                         .HasColumnName("id");
 
-                    b.Property<decimal>("Amount")
+                    b.Property<decimal>("Change")
                         .HasColumnType("numeric")
-                        .HasColumnName("amount");
+                        .HasColumnName("change");
+
+                    b.Property<decimal>("CurrentValue")
+                        .HasColumnType("numeric")
+                        .HasColumnName("current_value");
+
+                    b.Property<decimal>("Qty")
+                        .HasColumnType("numeric")
+                        .HasColumnName("qty");
 
                     b.Property<string>("asset_id")
                         .IsRequired()
@@ -227,6 +235,10 @@ namespace Cryptofolio.Infrastructure.Migrations
                         .HasMaxLength(36)
                         .HasColumnType("character varying(36)")
                         .HasColumnName("id");
+
+                    b.Property<decimal>("CurrentValue")
+                        .HasColumnType("numeric")
+                        .HasColumnName("current_value");
 
                     b.Property<DateTimeOffset>("Date")
                         .HasColumnType("timestamp with time zone")
@@ -278,6 +290,14 @@ namespace Cryptofolio.Infrastructure.Migrations
                         .HasColumnType("character varying(36)")
                         .HasColumnName("id");
 
+                    b.Property<decimal>("Change")
+                        .HasColumnType("numeric")
+                        .HasColumnName("change");
+
+                    b.Property<decimal>("CurrentValue")
+                        .HasColumnType("numeric")
+                        .HasColumnName("current_value");
+
                     b.Property<string>("Description")
                         .HasColumnType("text")
                         .HasColumnName("description");
@@ -315,10 +335,6 @@ namespace Cryptofolio.Infrastructure.Migrations
                     b.Property<decimal>("Change")
                         .HasColumnType("numeric")
                         .HasColumnName("change");
-
-                    b.Property<decimal>("CurrentValue")
-                        .HasColumnType("numeric")
-                        .HasColumnName("current_value");
 
                     b.Property<decimal>("InitialValue")
                         .HasColumnType("numeric")

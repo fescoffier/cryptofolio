@@ -140,6 +140,8 @@ namespace Cryptofolio.Infrastructure.Migrations
                     name = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
                     description = table.Column<string>(type: "text", nullable: true),
                     currency_id = table.Column<string>(type: "character varying(36)", nullable: true),
+                    current_value = table.Column<decimal>(type: "numeric", nullable: false),
+                    change = table.Column<decimal>(type: "numeric", nullable: false),
                     selected = table.Column<bool>(type: "boolean", nullable: false),
                     user_id = table.Column<string>(type: "character varying(36)", maxLength: 36, nullable: false)
                 },
@@ -163,7 +165,9 @@ namespace Cryptofolio.Infrastructure.Migrations
                     id = table.Column<string>(type: "character varying(36)", maxLength: 36, nullable: false),
                     wallet_id = table.Column<string>(type: "character varying(36)", nullable: false),
                     asset_id = table.Column<string>(type: "character varying(100)", nullable: false),
-                    amount = table.Column<decimal>(type: "numeric", nullable: false)
+                    qty = table.Column<decimal>(type: "numeric", nullable: false),
+                    current_value = table.Column<decimal>(type: "numeric", nullable: false),
+                    change = table.Column<decimal>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -195,13 +199,13 @@ namespace Cryptofolio.Infrastructure.Migrations
                     asset_id = table.Column<string>(type: "character varying(100)", nullable: false),
                     exchange_id = table.Column<string>(type: "character varying(100)", nullable: true),
                     qty = table.Column<decimal>(type: "numeric", nullable: false),
+                    current_value = table.Column<decimal>(type: "numeric", nullable: false),
                     note = table.Column<string>(type: "text", nullable: true),
                     discriminator = table.Column<string>(type: "text", nullable: false),
                     type = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: true),
                     currency_id = table.Column<string>(type: "character varying(36)", nullable: true),
                     price = table.Column<decimal>(type: "numeric", nullable: true),
                     initial_value = table.Column<decimal>(type: "numeric", nullable: true),
-                    current_value = table.Column<decimal>(type: "numeric", nullable: true),
                     change = table.Column<decimal>(type: "numeric", nullable: true),
                     source = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     destination = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true)
