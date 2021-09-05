@@ -6,8 +6,10 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -42,7 +44,7 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
 
             // Assert
             transaction.Should().BeEquivalentTo(Data.Transaction1, options => options.Excluding(m => m.Date));
-            transaction.Date.Should().BeCloseTo(Data.Transaction1.Date, precision: 1);
+            transaction.Date.Should().BeCloseTo(Data.Transaction1.Date, precision: TimeSpan.FromTicks(10));
         }
 
         [Fact]
@@ -61,9 +63,9 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             // Assert
             transactions.Should().HaveCount(2);
             transactions.Should().ContainEquivalentOf(Data.Transaction2, options => options.Excluding(m => m.Date));
-            transactions.Single(t => t.Id == Data.Transaction2.Id).Date.Should().BeCloseTo(Data.Transaction2.Date, precision: 1);
+            transactions.Single(t => t.Id == Data.Transaction2.Id).Date.Should().BeCloseTo(Data.Transaction2.Date, precision: TimeSpan.FromTicks(10));
             transactions.Should().ContainEquivalentOf(Data.Transaction3, options => options.Excluding(m => m.Date));
-            transactions.Single(t => t.Id == Data.Transaction3.Id).Date.Should().BeCloseTo(Data.Transaction3.Date, precision: 1);
+            transactions.Single(t => t.Id == Data.Transaction3.Id).Date.Should().BeCloseTo(Data.Transaction3.Date, precision: TimeSpan.FromTicks(10));
         }
 
         [Fact]
@@ -82,9 +84,9 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             // Assert
             transactions.Should().HaveCount(2);
             transactions.Should().ContainEquivalentOf(Data.Transaction1, options => options.Excluding(m => m.Date));
-            transactions.Single(t => t.Id == Data.Transaction1.Id).Date.Should().BeCloseTo(Data.Transaction1.Date, precision: 1);
+            transactions.Single(t => t.Id == Data.Transaction1.Id).Date.Should().BeCloseTo(Data.Transaction1.Date, precision: TimeSpan.FromTicks(10));
             transactions.Should().ContainEquivalentOf(Data.Transaction2, options => options.Excluding(m => m.Date));
-            transactions.Single(t => t.Id == Data.Transaction2.Id).Date.Should().BeCloseTo(Data.Transaction2.Date, precision: 1);
+            transactions.Single(t => t.Id == Data.Transaction2.Id).Date.Should().BeCloseTo(Data.Transaction2.Date, precision: TimeSpan.FromTicks(10));
         }
 
         [Fact]
@@ -115,7 +117,7 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             var response = await client.PostAsJsonAsync("/transactions", command);
 
             // Assert
-            response.StatusCode.Should().Be(StatusCodes.Status201Created);
+            response.StatusCode.Should().Be((HttpStatusCode)StatusCodes.Status201Created);
             var createdTransaction = await response.Content.ReadFromJsonAsync<BuyOrSellTransaction>();
             var transaction = context.Transactions
                 .Include(t => t.Wallet)
@@ -123,7 +125,7 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
                 .Include(t => t.Exchange)
                 .Single(w => w.Id == createdTransaction.Id);
             createdTransaction.Should().BeEquivalentTo(transaction, options => options.Excluding(m => m.Date));
-            createdTransaction.Date.Should().BeCloseTo(transaction.Date, precision: 1);
+            createdTransaction.Date.Should().BeCloseTo(transaction.Date, precision: TimeSpan.FromTicks(10));
         }
 
         [Fact]
@@ -137,7 +139,7 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             var response = await client.PostAsJsonAsync("/transactions", command);
 
             // Assert
-            response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+            response.StatusCode.Should().Be((HttpStatusCode)StatusCodes.Status400BadRequest);
         }
 
         [Fact]
@@ -166,7 +168,7 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             var response = await client.PostAsJsonAsync("/transactions", command);
 
             // Assert
-            response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
+            response.StatusCode.Should().Be((HttpStatusCode)StatusCodes.Status500InternalServerError);
             var document = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
             document.RootElement.GetProperty("errors").EnumerateArray().Should().HaveCount(1);
             document.RootElement.GetProperty("errors").EnumerateArray().First().GetString().Should().Be(CommandConstants.Transaction.Errors.CreateError);
@@ -202,7 +204,7 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             var response = await client.PutAsJsonAsync("/transactions", command);
 
             // Assert
-            response.StatusCode.Should().Be(StatusCodes.Status204NoContent);
+            response.StatusCode.Should().Be((HttpStatusCode)StatusCodes.Status204NoContent);
             using (var scope = _factory.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
@@ -211,7 +213,7 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
                     .Include(t => t.Exchange)
                     .Include(t => t.Currency)
                     .Single(t => t.Id == Data.Transaction1.Id);
-                transaction.Date.Should().BeCloseTo(command.Date, precision: 1);
+                transaction.Date.Should().BeCloseTo(command.Date, precision: TimeSpan.FromTicks(10));
                 transaction.Exchange.Id.Should().Be(command.ExchangeId);
                 transaction.Currency.Id.Should().Be(command.CurrencyId);
                 transaction.Price.Should().Be(command.Price);
@@ -231,7 +233,7 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             var response = await client.PutAsJsonAsync("/transactions", command);
 
             // Assert
-            response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+            response.StatusCode.Should().Be((HttpStatusCode)StatusCodes.Status400BadRequest);
         }
 
         [Fact]
@@ -255,7 +257,7 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             var response = await client.PutAsJsonAsync("/transactions", command);
 
             // Assert
-            response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
+            response.StatusCode.Should().Be((HttpStatusCode)StatusCodes.Status500InternalServerError);
             var document = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
             document.RootElement.GetProperty("errors").EnumerateArray().Should().HaveCount(1);
             document.RootElement.GetProperty("errors").EnumerateArray().First().GetString().Should().Be(CommandConstants.Transaction.Errors.UpdateError);
@@ -278,7 +280,7 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             var response = await client.DeleteAsync($"/transactions/{Data.Transaction1.Id}");
 
             // Assert
-            response.StatusCode.Should().Be(StatusCodes.Status204NoContent);
+            response.StatusCode.Should().Be((HttpStatusCode)StatusCodes.Status204NoContent);
             using (var scope = _factory.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
@@ -296,7 +298,7 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             var response = await client.DeleteAsync($"/transactions/{Data.Transaction1.Id}");
 
             // Assert
-            response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
+            response.StatusCode.Should().Be((HttpStatusCode)StatusCodes.Status500InternalServerError);
             var document = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
             document.RootElement.GetProperty("errors").EnumerateArray().Should().HaveCount(1);
             document.RootElement.GetProperty("errors").EnumerateArray().First().GetString().Should().Be(CommandConstants.Transaction.Errors.DeleteError);

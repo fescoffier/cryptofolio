@@ -33,11 +33,11 @@ namespace Cryptofolio.Collector.Job.IntegrationTests.Fixer
             // Assert
             rates.Success.Should().BeTrue();
             rates.Error.Should().BeNull();
-            rates.Timestamp.Should().BeCloseTo(DateTimeOffset.UtcNow, (int)TimeSpan.FromMinutes(10).TotalMilliseconds);
+            rates.Timestamp.Should().BeCloseTo(DateTimeOffset.UtcNow, precision: TimeSpan.FromMinutes(10));
             rates.Date.Should().Be(DateTime.UtcNow.Date);
             rates.Base.Should().Be("USD");
-            rates.Rates.Should().ContainKey("EUR").WhichValue.Should().BeGreaterThan(0);
-            rates.Rates.Should().ContainKey("GBP").WhichValue.Should().BeGreaterThan(0);
+            rates.Rates.Should().ContainKey("EUR").WhoseValue.Should().BeGreaterThan(0);
+            rates.Rates.Should().ContainKey("GBP").WhoseValue.Should().BeGreaterThan(0);
         }
     }
 }

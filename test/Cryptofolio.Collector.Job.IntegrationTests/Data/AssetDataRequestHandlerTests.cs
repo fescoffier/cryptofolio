@@ -54,7 +54,7 @@ namespace Cryptofolio.Collector.Job.IntegrationTests.Data
         }
 
         [Fact]
-        public void Handle_RequestCancelled_Test()
+        public async Task Handle_RequestCancelled_Test()
         {
             // Setup
             var assetId = "ethereum";
@@ -67,7 +67,7 @@ namespace Cryptofolio.Collector.Job.IntegrationTests.Data
             var cancellationToken = new CancellationToken(true);
 
             // Act
-            _handler.Awaiting(h => h.Handle(request, cancellationToken, null)).Should().Throw<OperationCanceledException>();
+            await _handler.Awaiting(h => h.Handle(request, cancellationToken, null)).Should().ThrowAsync<OperationCanceledException>();
         }
     }
 }
