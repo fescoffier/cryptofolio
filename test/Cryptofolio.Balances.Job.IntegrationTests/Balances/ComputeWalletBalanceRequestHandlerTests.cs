@@ -45,7 +45,7 @@ namespace Cryptofolio.Balances.Job.IntegrationTests.Balances
                 {
                     Pair = new(Data.BTC.Symbol, Data.USD.Code),
                     Timestamp = DateTimeOffset.UtcNow,
-                    Value = 3000
+                    Value = Data.BTC_USD_Ticker.Value * 1.2m
                 });
             var request = new ComputeWalletBalanceRequest
             {
@@ -57,14 +57,14 @@ namespace Cryptofolio.Balances.Job.IntegrationTests.Balances
             await _handler.Handle(request, cancellationToken);
 
             // Assert
-            Data.Transaction1.CurrentValue.Should().Be(30_000);
+            Data.Transaction1.CurrentValue.Should().Be(1_200_000);
             Data.Transaction1.Change.Should().Be(20);
-            Data.Transaction2.CurrentValue.Should().Be(6_000);
-            Data.Transaction2.Change.Should().Be(9.090909090909090909090909090m);
-            Data.Holding1.CurrentValue.Should().Be(24_000);
-            Data.Holding1.Change.Should().Be(23.076923076923076923076923080m);
-            Data.Wallet1.CurrentValue.Should().Be(24_000);
-            Data.Wallet1.Change.Should().Be(23.076923076923076923076923080m);
+            Data.Transaction2.CurrentValue.Should().Be(240_000);
+            Data.Transaction2.Change.Should().Be(-5.948742064425111685868798500m);
+            Data.Holding1.CurrentValue.Should().Be(960_000);
+            Data.Holding1.Change.Should().Be(28.890201659461346365564834460m);
+            Data.Wallet1.CurrentValue.Should().Be(960_000);
+            Data.Wallet1.Change.Should().Be(28.890201659461346365564834460m);
         }
 
         [Fact]
@@ -80,13 +80,13 @@ namespace Cryptofolio.Balances.Job.IntegrationTests.Balances
                 {
                     Pair = new(Data.BTC.Symbol, Data.USD.Code),
                     Timestamp = DateTimeOffset.UtcNow,
-                    Value = 300
+                    Value = Data.BTC_USD_Ticker.Value * 0.9856m
                 },
                 new Ticker
                 {
                     Pair = new(Data.BTC.Symbol, Data.EUR.Code),
                     Timestamp = DateTimeOffset.UtcNow,
-                    Value = 250
+                    Value = Data.BTC_EUR_Ticker.Value * 0.9856m
                 });
             var request = new ComputeWalletBalanceRequest
             {
@@ -98,12 +98,12 @@ namespace Cryptofolio.Balances.Job.IntegrationTests.Balances
             await _handler.Handle(request, cancellationToken);
 
             // Assert
-            Data.Transaction3.CurrentValue.Should().Be(25_000);
-            Data.Transaction3.Change.Should().Be(66.666666666666666666666666670m);
-            Data.Holding2.CurrentValue.Should().Be(30_000);
-            Data.Holding2.Change.Should().Be(66.666666666666666666666666670m);
-            Data.Wallet2.CurrentValue.Should().Be(30_000);
-            Data.Wallet2.Change.Should().Be(66.666666666666666666666666670m);
+            Data.Transaction3.CurrentValue.Should().Be(7_884_800);
+            Data.Transaction3.Change.Should().Be(-1.44m);
+            Data.Holding2.CurrentValue.Should().Be(9_856_000);
+            Data.Holding2.Change.Should().Be(2.6666666666666666666666666700m);
+            Data.Wallet2.CurrentValue.Should().Be(9_856_000);
+            Data.Wallet2.Change.Should().Be(2.6666666666666666666666666700m);
         }
 
         [Fact]
@@ -119,7 +119,7 @@ namespace Cryptofolio.Balances.Job.IntegrationTests.Balances
                 {
                     Pair = new(Data.ETH.Symbol, Data.EUR.Code),
                     Timestamp = DateTimeOffset.UtcNow,
-                    Value = 21000m
+                    Value = Data.ETH_EUR_Ticker.Value * 1.3759m
                 });
             var request = new ComputeWalletBalanceRequest
             {
@@ -131,12 +131,12 @@ namespace Cryptofolio.Balances.Job.IntegrationTests.Balances
             await _handler.Handle(request, cancellationToken);
 
             // Assert
-            Data.Transaction4.CurrentValue.Should().Be(1_050_000);
-            Data.Transaction4.Change.Should().Be(16.666666666666666666666666670m);
-            Data.Holding3.CurrentValue.Should().Be(1_050_000);
-            Data.Holding3.Change.Should().Be(16.666666666666666666666666670m);
-            Data.Wallet3.CurrentValue.Should().Be(1_050_000);
-            Data.Wallet3.Change.Should().Be(16.666666666666666666666666670m);
+            Data.Transaction4.CurrentValue.Should().Be(1100720);
+            Data.Transaction4.Change.Should().Be(37.59m);
+            Data.Holding3.CurrentValue.Should().Be(1100720);
+            Data.Holding3.Change.Should().Be(37.59m);
+            Data.Wallet3.CurrentValue.Should().Be(1100720);
+            Data.Wallet3.Change.Should().Be(37.59m);
         }
     }
 }

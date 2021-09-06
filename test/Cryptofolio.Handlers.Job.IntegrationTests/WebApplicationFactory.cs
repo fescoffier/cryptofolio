@@ -18,7 +18,7 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests
     {
         public string DbName { get; } = Guid.NewGuid().ToString();
 
-        public TestData Data { get; } = new();
+        public TestData Data { get; set; } = new();
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {

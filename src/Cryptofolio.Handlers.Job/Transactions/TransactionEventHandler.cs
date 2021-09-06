@@ -78,6 +78,7 @@ namespace Cryptofolio.Handlers.Job.Transactions
 
             var transactions = await _context.Transactions
                 .AsNoTracking()
+                .Include(nameof(BuyOrSellTransaction.Currency))
                 .Where(t => t.Wallet.Id == wallet.Id && t.Asset.Id == asset.Id)
                 .ToListAsync(cancellationToken);
             if (transactions.Count == 0 && delete)
@@ -104,39 +105,37 @@ namespace Cryptofolio.Handlers.Job.Transactions
                     }
                     return 0m;
                 });
-                // TODO: Test
-                foreach (var transaction in transactions)
-                {
-                    if (transaction is BuyOrSellTransaction bst)
-                    {
-                        var rate = default(decimal);
-                        if (bst.Currency.Id != wallet.Currency.Id)
-                        {
-                            rate = await _context.CurrencyTickers
-                                .AsNoTracking()
-                                .Where(t => t.Currency.Id == bst.Currency.Id && t.VsCurrency.Id == wallet.Currency.Id && t.Timestamp <= bst.Date)
-                                .OrderByDescending(t => t.Timestamp)
-                                .Select(t => t.Value)
-                                .FirstOrDefaultAsync(cancellationToken);
-                        }
-                        if (rate == default)
-                        {
-                            // Avoids 0 mutiplication.
-                            rate = 1;
-                        }
 
-                        if (bst.Type == InfrastructureConstants.Transactions.Types.Buy)
-                        {
-                            holding.InitialValue += (bst.InitialValue * rate);
-                        }
-                        else
-                        {
-                            holding.InitialValue -= (bst.InitialValue * rate);
-                        }
-                    }
-                    else if (transaction is TransferTransaction tft)
+                if (holding.Qty > 0)
+                {
+                    foreach (var transaction in transactions)
                     {
-                        holding.InitialValue += tft.InitialValue;
+                        if (transaction is BuyOrSellTransaction bst)
+                        {
+                            var rate = 1m;
+                            if (bst.Currency.Id != wallet.Currency.Id)
+                            {
+                                rate = await _context.CurrencyTickers
+                                    .AsNoTracking()
+                                    .Where(t => t.Currency.Id == bst.Currency.Id && t.VsCurrency.Id == wallet.Currency.Id && t.Timestamp <= bst.Date)
+                                    .OrderByDescending(t => t.Timestamp)
+                                    .Select(t => t.Value)
+                                    .FirstOrDefaultAsync(cancellationToken);
+                            }
+
+                            if (bst.Type == InfrastructureConstants.Transactions.Types.Buy)
+                            {
+                                holding.InitialValue += (bst.InitialValue * rate);
+                            }
+                            else
+                            {
+                                holding.InitialValue -= (bst.InitialValue * rate);
+                            }
+                        }
+                        else if (transaction is TransferTransaction tft)
+                        {
+                            holding.InitialValue += tft.InitialValue;
+                        }
                     }
                 }
 

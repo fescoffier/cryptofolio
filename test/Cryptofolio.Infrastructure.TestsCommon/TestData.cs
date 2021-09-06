@@ -84,34 +84,6 @@ namespace Cryptofolio.Infrastructure.TestsCommon
                 Code = "eur",
                 Symbol = "€"
             };
-            BTC_USD_Ticker = new()
-            {
-                Asset = BTC,
-                VsCurrency = USD,
-                Timestamp = DateTimeOffset.UtcNow,
-                Value = 100000m
-            };
-            BTC_EUR_Ticker = new()
-            {
-                Asset = BTC,
-                VsCurrency = EUR,
-                Timestamp = DateTimeOffset.UtcNow,
-                Value = 80000m
-            };
-            ETH_USD_Ticker = new()
-            {
-                Asset = ETH,
-                VsCurrency = USD,
-                Timestamp = DateTimeOffset.UtcNow,
-                Value = 20000m
-            };
-            ETH_EUR_Ticker = new()
-            {
-                Asset = ETH,
-                VsCurrency = EUR,
-                Timestamp = DateTimeOffset.UtcNow,
-                Value = 18000m
-            };
             USD_EUR_Ticker = new()
             {
                 Currency = USD,
@@ -125,6 +97,34 @@ namespace Cryptofolio.Infrastructure.TestsCommon
                 VsCurrency = USD,
                 Timestamp = DateTimeOffset.UtcNow,
                 Value = 1.2m
+            };
+            BTC_USD_Ticker = new()
+            {
+                Asset = BTC,
+                VsCurrency = USD,
+                Timestamp = DateTimeOffset.UtcNow,
+                Value = 100_000m
+            };
+            ETH_USD_Ticker = new()
+            {
+                Asset = ETH,
+                VsCurrency = USD,
+                Timestamp = DateTimeOffset.UtcNow,
+                Value = 20_000m
+            };
+            BTC_EUR_Ticker = new()
+            {
+                Asset = BTC,
+                VsCurrency = EUR,
+                Timestamp = DateTimeOffset.UtcNow,
+                Value = BTC_USD_Ticker.Value * USD_EUR_Ticker.Value
+            };
+            ETH_EUR_Ticker = new()
+            {
+                Asset = ETH,
+                VsCurrency = EUR,
+                Timestamp = DateTimeOffset.UtcNow,
+                Value = ETH_USD_Ticker.Value * USD_EUR_Ticker.Value
             };
             Exchange1 = new()
             {
@@ -178,10 +178,9 @@ namespace Cryptofolio.Infrastructure.TestsCommon
                 Exchange = Exchange1,
                 Type = InfrastructureConstants.Transactions.Types.Buy,
                 Currency = USD,
-                // TODO: Use ticker.
-                Price = 2500,
+                Price = BTC_USD_Ticker.Value,
                 Qty = 10,
-                InitialValue = 10 * 2500,
+                InitialValue = 10 * BTC_USD_Ticker.Value,
                 Note = "Lorem ipsum dolor sit amet"
             };
             Transaction2 = new BuyOrSellTransaction
@@ -193,10 +192,9 @@ namespace Cryptofolio.Infrastructure.TestsCommon
                 Exchange = Exchange1,
                 Type = InfrastructureConstants.Transactions.Types.Sell,
                 Currency = USD,
-                // TODO: Use ticker.
-                Price = 2750,
+                Price = BTC_USD_Ticker.Value * 1.2759m,
                 Qty = 2,
-                InitialValue = 2 * 2750,
+                InitialValue = 2 * BTC_USD_Ticker.Value * 1.2759m,
                 Note = "Lorem ipsum dolor sit amet"
             };
             Transaction3 = new BuyOrSellTransaction
@@ -208,10 +206,9 @@ namespace Cryptofolio.Infrastructure.TestsCommon
                 Exchange = Exchange1,
                 Type = InfrastructureConstants.Transactions.Types.Buy,
                 Currency = EUR,
-                // TODO: Use ticker.
-                Price = 150,
+                Price = BTC_EUR_Ticker.Value,
                 Qty = 100,
-                InitialValue = 100 * 150,
+                InitialValue = 100 * BTC_EUR_Ticker.Value,
                 Note = "Lorem ipsum dolor sit amet"
             };
             Transaction4 = new TransferTransaction
@@ -233,7 +230,7 @@ namespace Cryptofolio.Infrastructure.TestsCommon
                 Asset = BTC,
                 Wallet = Wallet1,
                 Qty = Transaction1.Qty - Transaction2.Qty,
-                InitialValue = (Transaction1.Qty * Transaction1.Price) - (Transaction2.Qty * Transaction2.Price)
+                InitialValue = Transaction1.InitialValue - Transaction2.InitialValue
             };
             Holding2 = new()
             {
@@ -241,7 +238,7 @@ namespace Cryptofolio.Infrastructure.TestsCommon
                 Asset = BTC,
                 Wallet = Wallet2,
                 Qty = Transaction3.Qty,
-                InitialValue = Transaction3.Qty * Transaction3.Price * EUR_USD_Ticker.Value
+                InitialValue = Transaction3.InitialValue * EUR_USD_Ticker.Value
             };
             Holding3 = new()
             {
