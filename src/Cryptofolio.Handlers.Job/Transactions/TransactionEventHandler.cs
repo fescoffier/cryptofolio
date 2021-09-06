@@ -87,7 +87,7 @@ namespace Cryptofolio.Handlers.Job.Transactions
             }
             else
             {
-                // TODO: Compute initial value.
+                holding.InitialValue = 0;
                 holding.Qty = transactions.Sum(t =>
                 {
                     if (t is BuyOrSellTransaction buyOrSellTransaction)
@@ -104,11 +104,51 @@ namespace Cryptofolio.Handlers.Job.Transactions
                     }
                     return 0m;
                 });
-                _logger.LogTrace("Amount of {0} in the wallet {1}: {2}", asset.Id, wallet.Id, holding.Qty);
+                // TODO: Test
+                foreach (var transaction in transactions)
+                {
+                    if (transaction is BuyOrSellTransaction bst)
+                    {
+                        var rate = default(decimal);
+                        if (bst.Currency.Id != wallet.Currency.Id)
+                        {
+                            rate = await _context.CurrencyTickers
+                                .AsNoTracking()
+                                .Where(t => t.Currency.Id == bst.Currency.Id && t.VsCurrency.Id == wallet.Currency.Id && t.Timestamp <= bst.Date)
+                                .OrderByDescending(t => t.Timestamp)
+                                .Select(t => t.Value)
+                                .FirstOrDefaultAsync(cancellationToken);
+                        }
+                        if (rate == default)
+                        {
+                            // Avoids 0 mutiplication.
+                            rate = 1;
+                        }
+
+                        if (bst.Type == InfrastructureConstants.Transactions.Types.Buy)
+                        {
+                            holding.InitialValue += (bst.InitialValue * rate);
+                        }
+                        else
+                        {
+                            holding.InitialValue -= (bst.InitialValue * rate);
+                        }
+                    }
+                    else if (transaction is TransferTransaction tft)
+                    {
+                        holding.InitialValue += tft.InitialValue;
+                    }
+                }
+
+                _logger.LogTrace("Quantity of {0} in the wallet {1}: {2}", asset.Id, wallet.Id, holding.Qty);
+                _logger.LogTrace("Initial value of {0} in the wallet {1}: {2}", asset.Id, wallet.Id, holding.InitialValue);
             }
 
-            // TODO: Compute wallet initial value.
-
+            wallet.InitialValue = holding.InitialValue +
+                await _context.Holdings
+                    .AsNoTracking()
+                    .Where(h => h.Wallet.Id == wallet.Id && h.Id != holding.Id)
+                    .SumAsync(h => h.InitialValue, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Holding computed for the asset {0} in the wallet {1}.", asset.Id, wallet.Id);

@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace Cryptofolio.Infrastructure.Entities
 {
     /// <summary>
@@ -23,16 +21,5 @@ namespace Cryptofolio.Infrastructure.Entities
         /// The price per asset in the currency.
         /// </summary>
         public decimal Price { get; set; }
-
-        /// <summary>
-        /// The value of the transaction in the currency.
-        /// </summary>
-        [JsonPropertyName("initial_value")]
-        public decimal InitialValue { get; set; }
-
-        /// <summary>
-        /// The change in percent.
-        /// </summary>
-        public decimal Change { get; set; }
     }
 }

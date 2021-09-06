@@ -17,7 +17,7 @@ namespace Cryptofolio.Infrastructure.Migrations
             modelBuilder
                 .HasDefaultSchema("data")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.8")
+                .HasAnnotation("ProductVersion", "5.0.9")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
             modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.Asset", b =>
@@ -239,6 +239,10 @@ namespace Cryptofolio.Infrastructure.Migrations
                         .HasColumnType("character varying(36)")
                         .HasColumnName("id");
 
+                    b.Property<decimal>("Change")
+                        .HasColumnType("numeric")
+                        .HasColumnName("change");
+
                     b.Property<decimal>("CurrentValue")
                         .HasColumnType("numeric")
                         .HasColumnName("current_value");
@@ -246,6 +250,10 @@ namespace Cryptofolio.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("Date")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("date");
+
+                    b.Property<decimal>("InitialValue")
+                        .HasColumnType("numeric")
+                        .HasColumnName("initial_value");
 
                     b.Property<string>("Note")
                         .HasColumnType("text")
@@ -337,14 +345,6 @@ namespace Cryptofolio.Infrastructure.Migrations
             modelBuilder.Entity("Cryptofolio.Infrastructure.Entities.BuyOrSellTransaction", b =>
                 {
                     b.HasBaseType("Cryptofolio.Infrastructure.Entities.Transaction");
-
-                    b.Property<decimal>("Change")
-                        .HasColumnType("numeric")
-                        .HasColumnName("change");
-
-                    b.Property<decimal>("InitialValue")
-                        .HasColumnType("numeric")
-                        .HasColumnName("initial_value");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric")

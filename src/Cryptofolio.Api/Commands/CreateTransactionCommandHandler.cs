@@ -115,6 +115,7 @@ namespace Cryptofolio.Api.Commands
                     Asset = await _context.Assets.SingleOrDefaultAsync(a => a.Id == command.AssetId, cancellationToken),
                     Exchange = await _context.Exchanges.SingleOrDefaultAsync(e => e.Id == command.ExchangeId, cancellationToken),
                     Qty = command.Qty,
+                    // TODO: Compute initial value.
                     Source = command.Source,
                     Destination = command.Destination,
                     Note = command.Note

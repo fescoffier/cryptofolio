@@ -74,6 +74,10 @@ namespace Cryptofolio.Balances.Job.Balances
                     {
                         var ticker = await GetAssetTicker(new(transaction.Asset.Symbol, wallet.Currency.Code));
                         tft.CurrentValue = tft.Qty * ticker;
+                        if (tft.InitialValue > 0)
+                        {
+                            tft.Change = (tft.CurrentValue - tft.InitialValue) / tft.InitialValue * 100;
+                        }
                     }
                     else
                     {

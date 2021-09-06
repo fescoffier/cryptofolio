@@ -51,11 +51,9 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
 
             // Assert
             result.Should().Be(Unit.Value);
-            _context.Holdings
-                .Single(h => h.Wallet.Id == Data.Transaction1.Wallet.Id && h.Asset.Id == Data.Transaction1.Asset.Id)
-                .Qty
-                .Should()
-                .Be(Data.Holding1.Qty);
+            var holding = _context.Holdings.Single(h => h.Wallet.Id == Data.Transaction1.Wallet.Id && h.Asset.Id == Data.Transaction1.Asset.Id);
+            holding.Qty.Should().Be(Data.Holding1.Qty);
+            holding.InitialValue.Should().Be(Data.Holding1.InitialValue);
         }
 
         [Fact]
@@ -79,11 +77,9 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
 
             // Assert
             result.Should().Be(Unit.Value);
-            _context.Holdings
-                .Single(h => h.Wallet.Id == Data.Transaction2.Wallet.Id && h.Asset.Id == Data.Transaction2.Asset.Id)
-                .Qty
-                .Should()
-                .Be(0);
+            var holding = _context.Holdings.Single(h => h.Wallet.Id == Data.Transaction2.Wallet.Id && h.Asset.Id == Data.Transaction2.Asset.Id);
+            holding.Qty.Should().Be(0);
+            holding.InitialValue.Should().Be(0);
         }
 
         [Fact]
@@ -106,11 +102,9 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
 
             // Assert
             result.Should().Be(Unit.Value);
-            _context.Holdings
-                .Single(h => h.Wallet.Id == Data.Transaction2.Wallet.Id && h.Asset.Id == Data.Transaction2.Asset.Id)
-                .Qty
-                .Should()
-                .Be(Data.Transaction1.Qty);
+            var holding = _context.Holdings.Single(h => h.Wallet.Id == Data.Transaction2.Wallet.Id && h.Asset.Id == Data.Transaction2.Asset.Id);
+            holding.Qty.Should().Be(Data.Transaction1.Qty);
+            holding.InitialValue.Should().Be(Data.Transaction1.InitialValue);
         }
 
         [Fact]

@@ -119,7 +119,7 @@ namespace Cryptofolio.Balances.Job.IntegrationTests.Balances
                 {
                     Pair = new(Data.ETH.Symbol, Data.EUR.Code),
                     Timestamp = DateTimeOffset.UtcNow,
-                    Value = 250
+                    Value = 21000m
                 });
             var request = new ComputeWalletBalanceRequest
             {
@@ -131,11 +131,12 @@ namespace Cryptofolio.Balances.Job.IntegrationTests.Balances
             await _handler.Handle(request, cancellationToken);
 
             // Assert
-            Data.Transaction4.CurrentValue.Should().Be(12_500);
-            Data.Holding3.CurrentValue.Should().Be(12_500);
-            Data.Holding3.Change.Should().Be(0);
-            Data.Wallet3.CurrentValue.Should().Be(12_500);
-            Data.Wallet3.Change.Should().Be(0);
+            Data.Transaction4.CurrentValue.Should().Be(1_050_000);
+            Data.Transaction4.Change.Should().Be(16.666666666666666666666666670m);
+            Data.Holding3.CurrentValue.Should().Be(1_050_000);
+            Data.Holding3.Change.Should().Be(16.666666666666666666666666670m);
+            Data.Wallet3.CurrentValue.Should().Be(1_050_000);
+            Data.Wallet3.Change.Should().Be(16.666666666666666666666666670m);
         }
     }
 }

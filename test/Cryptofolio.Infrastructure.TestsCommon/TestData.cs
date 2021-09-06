@@ -178,6 +178,7 @@ namespace Cryptofolio.Infrastructure.TestsCommon
                 Exchange = Exchange1,
                 Type = InfrastructureConstants.Transactions.Types.Buy,
                 Currency = USD,
+                // TODO: Use ticker.
                 Price = 2500,
                 Qty = 10,
                 InitialValue = 10 * 2500,
@@ -186,12 +187,13 @@ namespace Cryptofolio.Infrastructure.TestsCommon
             Transaction2 = new BuyOrSellTransaction
             {
                 Id = Guid.NewGuid().ToString(),
-                Date = DateTimeOffset.UtcNow.AddMinutes(-2),
+                Date = DateTimeOffset.UtcNow,
                 Asset = BTC,
                 Wallet = Wallet1,
                 Exchange = Exchange1,
                 Type = InfrastructureConstants.Transactions.Types.Sell,
                 Currency = USD,
+                // TODO: Use ticker.
                 Price = 2750,
                 Qty = 2,
                 InitialValue = 2 * 2750,
@@ -200,12 +202,13 @@ namespace Cryptofolio.Infrastructure.TestsCommon
             Transaction3 = new BuyOrSellTransaction
             {
                 Id = Guid.NewGuid().ToString(),
-                Date = DateTimeOffset.UtcNow.AddMinutes(-4),
+                Date = DateTimeOffset.UtcNow,
                 Asset = BTC,
                 Wallet = Wallet2,
                 Exchange = Exchange1,
                 Type = InfrastructureConstants.Transactions.Types.Buy,
                 Currency = EUR,
+                // TODO: Use ticker.
                 Price = 150,
                 Qty = 100,
                 InitialValue = 100 * 150,
@@ -214,13 +217,14 @@ namespace Cryptofolio.Infrastructure.TestsCommon
             Transaction4 = new TransferTransaction
             {
                 Id = Guid.NewGuid().ToString(),
-                Date = DateTimeOffset.UtcNow.AddMinutes(-5),
+                Date = DateTimeOffset.UtcNow,
                 Asset = ETH,
                 Wallet = Wallet3,
                 Exchange = Exchange2,
                 Source = InfrastructureConstants.Transactions.Sources.MyExchange,
                 Destination = InfrastructureConstants.Transactions.Destinations.MyWallet,
                 Qty = 50,
+                InitialValue = 50 * ETH_EUR_Ticker.Value,
                 Note = "Lorem ipsum dolor sit amet"
             };
             Holding1 = new()
@@ -245,6 +249,7 @@ namespace Cryptofolio.Infrastructure.TestsCommon
                 Asset = ETH,
                 Wallet = Wallet3,
                 Qty = Transaction4.Qty,
+                InitialValue = Transaction4.InitialValue
             };
             Wallet1.InitialValue = Holding1.InitialValue;
             Wallet2.InitialValue = Holding2.InitialValue;
