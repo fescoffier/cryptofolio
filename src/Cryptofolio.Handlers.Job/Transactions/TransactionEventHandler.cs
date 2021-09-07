@@ -105,8 +105,11 @@ namespace Cryptofolio.Handlers.Job.Transactions
                     }
                     return 0m;
                 });
-
-                if (holding.Qty > 0)
+                if (holding.Qty < 0)
+                {
+                    holding.Qty = 0;
+                }
+                else if (holding.Qty > 0)
                 {
                     foreach (var transaction in transactions)
                     {
@@ -134,8 +137,10 @@ namespace Cryptofolio.Handlers.Job.Transactions
                         }
                         else if (transaction is TransferTransaction tft)
                         {
-                            // TODO: Do not increment the initial value if the destination is not "My wallet".
-                            holding.InitialValue += tft.InitialValue;
+                            if (tft.Destination == InfrastructureConstants.Transactions.Destinations.MyWallet)
+                            {
+                                holding.InitialValue += tft.InitialValue;
+                            }
                         }
                     }
                 }

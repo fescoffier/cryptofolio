@@ -232,6 +232,41 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
         }
 
         [Fact]
+        public async Task Handle_Wallet3_DestinationNotMyWallet_TransactionCreatedEvent_Test()
+        {
+            // Setup
+            Data.Transaction1.Wallet = Data.Wallet3;
+            Data.Transaction1.Asset = Data.ETH;
+            Data.Transaction1.Qty = Data.Transaction4.Qty * 2;
+            Data.Transaction1.Price = Data.ETH_USD_Ticker.Value;
+            Data.Transaction1.InitialValue = Data.Transaction1.Qty * Data.Transaction1.Price;
+            Data.Transaction4.Destination = InfrastructureConstants.Transactions.Destinations.ExternalDestination;
+            _context.Transactions.AddRange(Data.Transaction1, Data.Transaction4);
+            _context.CurrencyTickers.Add(Data.USD_EUR_Ticker);
+            _context.SaveChanges();
+            var @event = new TransactionCreatedEvent
+            {
+                Id = Guid.NewGuid().ToString(),
+                Date = DateTimeOffset.UtcNow,
+                UserId = Guid.NewGuid().ToString(),
+                Transaction = Data.Transaction4
+            };
+            var cancellationToken = CancellationToken.None;
+
+            // Act
+            var result = await _handler.Handle(@event, cancellationToken, null);
+
+            // Assert
+            result.Should().Be(Unit.Value);
+            var holding = _context.Holdings
+                .Include(h => h.Wallet)
+                .Single(h => h.Wallet.Id == Data.Transaction4.Wallet.Id && h.Asset.Id == Data.Transaction4.Asset.Id);
+            holding.Qty.Should().Be(50);
+            holding.InitialValue.Should().Be(1_600_000);
+            holding.Wallet.InitialValue.Should().Be(1_600_000);
+        }
+
+        [Fact]
         public async Task Handle_Wallet3_TransactionUpdatedEvent_Test()
         {
             // Setup

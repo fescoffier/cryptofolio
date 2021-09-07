@@ -313,7 +313,7 @@ namespace Cryptofolio.Api.Tests.Commands
 
             // Assert
             result.Should().BeFalse();
-            validationResults.Should().ContainEquivalentOf(new ValidationResult(ErrorMessage, new[] { nameof(ITransactionCommand.Destination) }));
+            validationResults.Should().ContainEquivalentOf(new ValidationResult(ErrorMessage, new[] { nameof(ITransactionCommand.Source), nameof(ITransactionCommand.Destination) }));
         }
 
         [Fact]

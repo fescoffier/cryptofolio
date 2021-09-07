@@ -99,7 +99,9 @@ namespace Cryptofolio.Api.Commands
                 errorMemberNames.Add(nameof(ITransactionCommand.ExchangeId));
             }
 
-            if (command.Source == command.Destination)
+            if (command.Source == command.Destination ||
+                (command.Source == InfrastructureConstants.Transactions.Sources.ExternalSource && command.Destination != InfrastructureConstants.Transactions.Destinations.MyWallet) ||
+                (command.Destination == InfrastructureConstants.Transactions.Destinations.ExternalDestination && command.Source != InfrastructureConstants.Transactions.Sources.MyWallet))
             {
                 errorMemberNames.Add(nameof(ITransactionCommand.Source));
                 errorMemberNames.Add(nameof(ITransactionCommand.Destination));
