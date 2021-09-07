@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -101,7 +102,6 @@ namespace Cryptofolio.Api.Commands
                 buyOrSellTransactionEntry.Property(p => p.Type).IsModified = true;
                 buyOrSellTransactionEntry.Reference(p => p.Currency).IsModified = true;
                 buyOrSellTransactionEntry.Property(p => p.Price).IsModified = true;
-                buyOrSellTransactionEntry.Property(p => p.InitialValue).IsModified = true;
                 transaction = buyOrSellTransaction;
             }
             else if (command.Type == CommandConstants.Transaction.Types.Transfer)
@@ -112,11 +112,31 @@ namespace Cryptofolio.Api.Commands
                     Date = command.Date,
                     Exchange = await _context.Exchanges.SingleOrDefaultAsync(e => e.Id == command.ExchangeId, cancellationToken),
                     Qty = command.Qty,
-                    // TODO: Compute initial value.
                     Source = command.Source,
                     Destination = command.Destination,
                     Note = command.Note
                 };
+
+                var @params = await _context.Transactions
+                    .AsNoTracking()
+                    .Where(t => t.Id == command.Id)
+                    .Select(t => new
+                    {
+                        AssetId = t.Asset.Id,
+                        CurrencyId = t.Wallet.Currency.Id
+                    })
+                    .FirstOrDefaultAsync(cancellationToken);
+                if (@params != null)
+                {
+                    var ticker = await _context.AssetTickers
+                        .AsNoTracking()
+                        .Where(t => t.Asset.Id == @params.AssetId && t.VsCurrency.Id == @params.CurrencyId && t.Timestamp <= command.Date)
+                        .OrderByDescending(t => t.Timestamp)
+                        .Select(t => t.Value)
+                        .FirstOrDefaultAsync(cancellationToken);
+                    transferTransaction.InitialValue = transferTransaction.Qty * ticker;
+                }
+
                 var transferTransactionEntry = _context.Attach(transferTransaction);
                 transferTransactionEntry.Property(p => p.Source).IsModified = true;
                 transferTransactionEntry.Property(p => p.Destination).IsModified = true;
@@ -131,6 +151,7 @@ namespace Cryptofolio.Api.Commands
             transactionEntry.Property(p => p.Date).IsModified = true;
             transactionEntry.Reference(p => p.Exchange).IsModified = true;
             transactionEntry.Property(p => p.Qty).IsModified = true;
+            transactionEntry.Property(p => p.InitialValue).IsModified = true;
             transactionEntry.Property(p => p.Note).IsModified = true;
 
             return transaction;

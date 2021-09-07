@@ -39,7 +39,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
         }
 
         [Fact]
-        public async Task Handle_Test()
+        public async Task Handle_Buy_Test()
         {
             // Setup
             var utcNow = DateTimeOffset.UtcNow;
@@ -83,7 +83,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
         }
 
         [Fact]
-        public async Task Handle_InvalidWallet_Test()
+        public async Task Handle_Buy_InvalidWallet_Test()
         {
             // Setup
             var utcNow = DateTimeOffset.UtcNow;
@@ -117,13 +117,171 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
         }
 
         [Fact]
-        public async Task Handle_Failed_Test()
+        public async Task Handle_Sell_Test()
         {
             // Setup
             var utcNow = DateTimeOffset.UtcNow;
+            _systemClockMock.SetupGet(m => m.UtcNow).Returns(utcNow);
+            _context.Wallets.Add(Data.Transaction2.Wallet);
+            _context.Assets.Add(Data.Transaction2.Asset);
+            _context.Exchanges.Add(Data.Transaction2.Exchange);
+            _context.Currencies.Add(Data.Transaction2.Currency);
+            _context.SaveChanges();
             var command = new CreateTransactionCommand
             {
-                RequestContext = new(null, Data.UserId)
+                RequestContext = new(null, Data.UserId),
+                Type = CommandConstants.Transaction.Types.Sell,
+                Date = Data.Transaction2.Date,
+                WalletId = Data.Transaction2.Wallet.Id,
+                AssetId = Data.Transaction2.Asset.Id,
+                ExchangeId = Data.Transaction2.Exchange.Id,
+                CurrencyId = Data.Transaction2.Currency.Id,
+                Price = Data.Transaction2.Price,
+                Qty = Data.Transaction2.Qty,
+                Note = Data.Transaction2.Note
+            };
+            var cancellationToken = CancellationToken.None;
+
+            // Act
+            var result = await _handler.Handle(command, cancellationToken);
+
+            // Assert
+            result.Succeeded.Should().BeTrue();
+            result.Data.Should().BeEquivalentTo(Data.Transaction2, options => options.Excluding(m => m.Id));
+            _context.Transactions
+                .OfType<BuyOrSellTransaction>()
+                .Include(t => t.Wallet)
+                .Include(t => t.Asset)
+                .Include(t => t.Exchange)
+                .Include(t => t.Currency)
+                .Single(t => t.Id == result.Data.Id)
+                .Should()
+                .BeEquivalentTo(result.Data);
+            _dispatcherMock.Verify(m => m.DispatchAsync(It.Is<TransactionCreatedEvent>(w => w.Date == utcNow)), Times.Once());
+        }
+
+        [Fact]
+        public async Task Handle_Sell_InvalidWallet_Test()
+        {
+            // Setup
+            var utcNow = DateTimeOffset.UtcNow;
+            _systemClockMock.SetupGet(m => m.UtcNow).Returns(utcNow);
+            _context.Assets.Add(Data.Transaction2.Asset);
+            _context.Exchanges.Add(Data.Transaction2.Exchange);
+            _context.SaveChanges();
+            var command = new CreateTransactionCommand
+            {
+                RequestContext = new(null, Data.UserId),
+                Type = CommandConstants.Transaction.Types.Buy,
+                Date = Data.Transaction2.Date,
+                WalletId = Data.Transaction2.Wallet.Id,
+                AssetId = Data.Transaction2.Asset.Id,
+                ExchangeId = Data.Transaction2.Exchange.Id,
+                CurrencyId = Data.Transaction2.Currency.Id,
+                Price = Data.Transaction2.Price,
+                Qty = Data.Transaction2.Qty,
+                Note = Data.Transaction2.Note
+            };
+            var cancellationToken = CancellationToken.None;
+
+            // Act
+            var result = await _handler.Handle(command, cancellationToken);
+
+            // Assert
+            result.Succeeded.Should().BeFalse();
+            result.Data.Should().BeNull();
+            result.Errors.Should().HaveCount(1).And.Contain(CommandConstants.Transaction.Errors.CreateInvalidWalletError);
+            _dispatcherMock.Verify(m => m.DispatchAsync(It.Is<TransactionCreatedEvent>(w => w.Date == utcNow)), Times.Never());
+        }
+
+        [Fact]
+        public async Task Handle_Transfer_Test()
+        {
+            // Setup
+            var utcNow = DateTimeOffset.UtcNow;
+            _systemClockMock.SetupGet(m => m.UtcNow).Returns(utcNow);
+            _context.Wallets.Add(Data.Transaction4.Wallet);
+            _context.Assets.Add(Data.Transaction4.Asset);
+            _context.AssetTickers.Add(Data.ETH_EUR_Ticker);
+            _context.Exchanges.Add(Data.Transaction4.Exchange);
+            _context.SaveChanges();
+            var command = new CreateTransactionCommand
+            {
+                RequestContext = new(null, Data.UserId),
+                Type = CommandConstants.Transaction.Types.Transfer,
+                Date = Data.Transaction4.Date,
+                WalletId = Data.Transaction4.Wallet.Id,
+                AssetId = Data.Transaction4.Asset.Id,
+                ExchangeId = Data.Transaction4.Exchange.Id,
+                Qty = Data.Transaction4.Qty,
+                Source = Data.Transaction4.Source,
+                Destination = Data.Transaction4.Destination,
+                Note = Data.Transaction4.Note
+            };
+            var cancellationToken = CancellationToken.None;
+
+            // Act
+            var result = await _handler.Handle(command, cancellationToken);
+
+            // Assert
+            result.Succeeded.Should().BeTrue();
+            result.Data.Should().BeEquivalentTo(Data.Transaction4, options => options.Excluding(m => m.Id));
+            _context.Transactions
+                .OfType<TransferTransaction>()
+                .Include(t => t.Wallet)
+                .Include(t => t.Asset)
+                .Include(t => t.Exchange)
+                .Single(t => t.Id == result.Data.Id)
+                .Should()
+                .BeEquivalentTo(result.Data);
+            _dispatcherMock.Verify(m => m.DispatchAsync(It.Is<TransactionCreatedEvent>(w => w.Date == utcNow)), Times.Once());
+        }
+
+        [Fact]
+        public async Task Handle_Transfer_InvalidWallet_Test()
+        {
+            // Setup
+            var utcNow = DateTimeOffset.UtcNow;
+            _systemClockMock.SetupGet(m => m.UtcNow).Returns(utcNow);
+            _context.Assets.Add(Data.Transaction4.Asset);
+            _context.AssetTickers.Add(Data.ETH_EUR_Ticker);
+            _context.Exchanges.Add(Data.Transaction4.Exchange);
+            _context.SaveChanges();
+            var command = new CreateTransactionCommand
+            {
+                RequestContext = new(null, Data.UserId),
+                Type = CommandConstants.Transaction.Types.Transfer,
+                Date = Data.Transaction4.Date,
+                WalletId = Data.Transaction4.Wallet.Id,
+                AssetId = Data.Transaction4.Asset.Id,
+                ExchangeId = Data.Transaction4.Exchange.Id,
+                Qty = Data.Transaction4.Qty,
+                Source = Data.Transaction4.Source,
+                Destination = Data.Transaction4.Destination,
+                Note = Data.Transaction4.Note
+            };
+            var cancellationToken = CancellationToken.None;
+
+            // Act
+            var result = await _handler.Handle(command, cancellationToken);
+
+            // Assert
+            result.Succeeded.Should().BeFalse();
+            result.Data.Should().BeNull();
+            result.Errors.Should().HaveCount(1).And.Contain(CommandConstants.Transaction.Errors.CreateInvalidWalletError);
+            _dispatcherMock.Verify(m => m.DispatchAsync(It.Is<TransactionCreatedEvent>(w => w.Date == utcNow)), Times.Never());
+        }
+
+        [Fact]
+        public async Task Handle_Failed_Test()
+        {
+            // Setup
+            _context.Wallets.Add(Data.Wallet1);
+            _context.SaveChanges();
+            var command = new CreateTransactionCommand
+            {
+                RequestContext = new(null, Data.UserId),
+                WalletId = Data.Wallet1.Id
             };
             var cancellationToken = CancellationToken.None;
 
@@ -134,7 +292,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             result.Succeeded.Should().BeFalse();
             result.Data.Should().BeNull();
             result.Errors.Should().HaveCount(1).And.Contain(CommandConstants.Transaction.Errors.CreateError);
-            _dispatcherMock.Verify(m => m.DispatchAsync(It.Is<TransactionCreatedEvent>(w => w.Date == utcNow)), Times.Never());
+            _dispatcherMock.Verify(m => m.DispatchAsync(It.Is<TransactionCreatedEvent>(w => w.Date == DateTimeOffset.UtcNow)), Times.Never());
         }
     }
 }

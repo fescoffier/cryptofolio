@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -50,13 +51,13 @@ namespace Cryptofolio.Api.Commands
                 using var dbTransaction = await _context.Database.BeginTransactionAsync(cancellationToken);
                 _logger.LogDebug("Transaction {0} just begun.", dbTransaction.TransactionId);
 
-                var transaction = await CreateEntity(command, cancellationToken);
                 if (!await _context.Wallets.AnyAsync(w => w.Id == command.WalletId && w.UserId == command.UserId, cancellationToken))
                 {
                     _logger.LogWarning("The wallet {0} doesn't exist for the user {1}.", command.WalletId, command.UserId);
                     return CommandResult<Transaction>.Failed(CommandConstants.Transaction.Errors.CreateInvalidWalletError);
                 }
 
+                var transaction = await CreateEntity(command, cancellationToken);
                 _context.Transactions.Add(transaction);
                 _logger.LogDebug("Storing the created transaction in database.");
                 await _context.SaveChangesAsync(cancellationToken);
@@ -107,19 +108,29 @@ namespace Cryptofolio.Api.Commands
             }
             else if (command.Type == CommandConstants.Transaction.Types.Transfer)
             {
-                return new TransferTransaction
+                var tft = new TransferTransaction
                 {
                     Id = Guid.NewGuid().ToString(),
                     Date = command.Date,
-                    Wallet = await _context.Wallets.SingleOrDefaultAsync(w => w.Id == command.WalletId, cancellationToken),
+                    Wallet = await _context.Wallets.Include(w => w.Currency).SingleOrDefaultAsync(w => w.Id == command.WalletId, cancellationToken),
                     Asset = await _context.Assets.SingleOrDefaultAsync(a => a.Id == command.AssetId, cancellationToken),
                     Exchange = await _context.Exchanges.SingleOrDefaultAsync(e => e.Id == command.ExchangeId, cancellationToken),
                     Qty = command.Qty,
-                    // TODO: Compute initial value.
                     Source = command.Source,
                     Destination = command.Destination,
                     Note = command.Note
                 };
+                tft.InitialValue = command.Qty *
+                    await _context.AssetTickers
+                        .AsNoTracking()
+                        .Where(t => t.Asset.Id == command.AssetId &&
+                                    t.VsCurrency.Id == tft.Wallet.Currency.Id &&
+                                    t.Timestamp <= command.Date
+                        )
+                        .OrderByDescending(t => t.Timestamp)
+                        .Select(t => t.Value)
+                        .FirstOrDefaultAsync(cancellationToken);
+                return tft;
             }
 
             throw new InvalidOperationException($"Unsupported transaction type: {command.Type}");

@@ -134,6 +134,7 @@ namespace Cryptofolio.Handlers.Job.Transactions
                         }
                         else if (transaction is TransferTransaction tft)
                         {
+                            // TODO: Do not increment the initial value if the destination is not "My wallet".
                             holding.InitialValue += tft.InitialValue;
                         }
                     }
