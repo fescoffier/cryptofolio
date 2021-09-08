@@ -1,4 +1,6 @@
 using Cryptofolio.Handlers.Job.Currencies;
+using Cryptofolio.Infrastructure;
+using Cryptofolio.Infrastructure.Balances;
 using Cryptofolio.Infrastructure.Caching;
 using Cryptofolio.Infrastructure.Entities;
 using Cryptofolio.Infrastructure.TestsCommon;
@@ -18,6 +20,8 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Currencies
         private readonly IServiceScope _scope;
         private readonly CurrencyTickersUpsertedEventHandler _handler;
         private readonly CurrencyTickerCache _cache;
+        private readonly KafkaProducerWrapper<string, BulkComputeWalletBalanceRequest> _producerWrapper;
+        private readonly KafkaConsumerWrapper<string, BulkComputeWalletBalanceRequest> _consumerWrapper;
 
         private TestData Data => _factory.Data;
 
@@ -27,6 +31,8 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Currencies
             _scope = factory.Services.CreateScope();
             _handler = _scope.ServiceProvider.GetRequiredService<CurrencyTickersUpsertedEventHandler>();
             _cache = _scope.ServiceProvider.GetRequiredService<CurrencyTickerCache>();
+            _producerWrapper = _scope.ServiceProvider.GetRequiredService<KafkaProducerWrapper<string, BulkComputeWalletBalanceRequest>>();
+            _consumerWrapper = _scope.ServiceProvider.GetRequiredService<KafkaConsumerWrapper<string, BulkComputeWalletBalanceRequest>>();
         }
 
         [Fact]
@@ -45,6 +51,7 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Currencies
                 }
             };
             var cancellationToken = CancellationToken.None;
+            _producerWrapper.Options.Topic = _consumerWrapper.Options.Topic = Guid.NewGuid().ToString();
 
             // Act
             await _handler.Handle(@event, cancellationToken, null);
@@ -67,6 +74,17 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Currencies
             };
             var tickers = await _cache.GetTickersAsync(expectedTickers.Select(t => t.Pair).ToArray());
             tickers.Should().BeEquivalentTo(expectedTickers);
+            _consumerWrapper.Consumer.Subscribe(_consumerWrapper.Options.Topic);
+            var cr = _consumerWrapper.Consumer.Consume();
+            _consumerWrapper.Consumer.Unsubscribe();
+            cr.Message.Value.Should().BeEquivalentTo(new BulkComputeWalletBalanceRequest
+            {
+                CurrencyIds = new[]
+                {
+                    Data.USD.Id,
+                    Data.EUR.Id
+                }
+            });
         }
     }
 }

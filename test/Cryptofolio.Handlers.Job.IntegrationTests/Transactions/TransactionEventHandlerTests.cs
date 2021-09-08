@@ -1,5 +1,6 @@
 using Cryptofolio.Handlers.Job.Transactions;
 using Cryptofolio.Infrastructure;
+using Cryptofolio.Infrastructure.Balances;
 using Cryptofolio.Infrastructure.Entities;
 using Cryptofolio.Infrastructure.TestsCommon;
 using FluentAssertions;
@@ -19,6 +20,8 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
         private readonly WebApplicationFactory _factory;
         private readonly IServiceScope _scope;
         private readonly TransactionEventHandler _handler;
+        private readonly KafkaProducerWrapper<string, ComputeWalletBalanceRequest> _producerWrapper;
+        private readonly KafkaConsumerWrapper<string, ComputeWalletBalanceRequest> _consumerWrapper;
         private readonly CryptofolioContext _context;
 
         private TestData Data => _factory.Data;
@@ -29,6 +32,8 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
             _scope = factory.Services.CreateScope();
             _handler = _scope.ServiceProvider.GetRequiredService<TransactionEventHandler>();
             _context = _scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
+            _producerWrapper = _scope.ServiceProvider.GetRequiredService<KafkaProducerWrapper<string, ComputeWalletBalanceRequest>>();
+            _consumerWrapper = _scope.ServiceProvider.GetRequiredService<KafkaConsumerWrapper<string, ComputeWalletBalanceRequest>>();
             factory.PurgeData();
             factory.Data = new();
         }
@@ -47,6 +52,7 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
                 Transaction = Data.Transaction1
             };
             var cancellationToken = CancellationToken.None;
+            EnsureRandomTopic();
 
             // Act
             var result = await _handler.Handle(@event, cancellationToken, null);
@@ -59,6 +65,7 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
             holding.Qty.Should().Be(Data.Holding1.Qty);
             holding.InitialValue.Should().Be(Data.Holding1.InitialValue);
             holding.Wallet.InitialValue.Should().Be(Data.Wallet1.InitialValue);
+            EnsureRequestProduced(Data.Wallet1);
         }
 
         [Fact]
@@ -76,6 +83,7 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
                 Transaction = Data.Transaction2
             };
             var cancellationToken = CancellationToken.None;
+            EnsureRandomTopic();
 
             // Act
             var result = await _handler.Handle(@event, cancellationToken, null);
@@ -88,6 +96,7 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
             holding.Qty.Should().Be(0);
             holding.InitialValue.Should().Be(0);
             holding.Wallet.InitialValue.Should().Be(0);
+            EnsureRequestProduced(Data.Wallet1);
         }
 
         [Fact]
@@ -105,6 +114,7 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
                 Transaction = Data.Transaction2
             };
             var cancellationToken = CancellationToken.None;
+            EnsureRandomTopic();
 
             // Act
             var result = await _handler.Handle(@event, cancellationToken, null);
@@ -117,12 +127,15 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
             holding.Qty.Should().Be(Data.Transaction1.Qty);
             holding.InitialValue.Should().Be(Data.Transaction1.InitialValue);
             holding.Wallet.InitialValue.Should().Be(Data.Transaction1.InitialValue);
+            EnsureRequestProduced(Data.Wallet1);
         }
 
         [Fact]
         public async Task Handle_Wallet1_TransactionDeletedEvent_WithHoldingRemoval_Test()
         {
             // Setup
+            _context.Holdings.Add(Data.Holding1);
+            _context.SaveChanges();
             var @event = new TransactionDeletedEvent
             {
                 Id = Guid.NewGuid().ToString(),
@@ -131,6 +144,7 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
                 Transaction = Data.Transaction2
             };
             var cancellationToken = CancellationToken.None;
+            EnsureRandomTopic();
 
             // Act
             var result = await _handler.Handle(@event, cancellationToken, null);
@@ -141,6 +155,7 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
                 .SingleOrDefault(h => h.Wallet.Id == Data.Transaction2.Wallet.Id && h.Asset.Id == Data.Transaction2.Asset.Id)
                 .Should()
                 .BeNull();
+            EnsureRequestProduced(Data.Wallet1);
         }
 
         [Fact]
@@ -158,6 +173,7 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
                 Transaction = Data.Transaction3
             };
             var cancellationToken = CancellationToken.None;
+            EnsureRandomTopic();
 
             // Act
             var result = await _handler.Handle(@event, cancellationToken, null);
@@ -170,6 +186,7 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
             holding.Qty.Should().Be(Data.Holding2.Qty);
             holding.InitialValue.Should().Be(Data.Holding2.InitialValue);
             holding.Wallet.InitialValue.Should().Be(Data.Wallet2.InitialValue);
+            EnsureRequestProduced(Data.Wallet2);
         }
 
         [Fact]
@@ -189,6 +206,7 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
                 Transaction = Data.Transaction3
             };
             var cancellationToken = CancellationToken.None;
+            EnsureRandomTopic();
 
             // Act
             var result = await _handler.Handle(@event, cancellationToken, null);
@@ -201,6 +219,7 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
             holding.Qty.Should().Be(Data.Holding2.Qty * 2);
             holding.InitialValue.Should().Be(Data.Holding2.InitialValue * 2);
             holding.Wallet.InitialValue.Should().Be(Data.Holding2.InitialValue * 2);
+            EnsureRequestProduced(Data.Wallet2);
         }
 
         [Fact]
@@ -217,6 +236,7 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
                 Transaction = Data.Transaction4
             };
             var cancellationToken = CancellationToken.None;
+            EnsureRandomTopic();
 
             // Act
             var result = await _handler.Handle(@event, cancellationToken, null);
@@ -229,6 +249,7 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
             holding.Qty.Should().Be(Data.Holding3.Qty);
             holding.InitialValue.Should().Be(Data.Holding3.InitialValue);
             holding.Wallet.InitialValue.Should().Be(Data.Wallet3.InitialValue);
+            EnsureRequestProduced(Data.Wallet3);
         }
 
         [Fact]
@@ -252,6 +273,7 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
                 Transaction = Data.Transaction4
             };
             var cancellationToken = CancellationToken.None;
+            EnsureRandomTopic();
 
             // Act
             var result = await _handler.Handle(@event, cancellationToken, null);
@@ -264,6 +286,7 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
             holding.Qty.Should().Be(50);
             holding.InitialValue.Should().Be(1_600_000);
             holding.Wallet.InitialValue.Should().Be(1_600_000);
+            EnsureRequestProduced(Data.Wallet3);
         }
 
         [Fact]
@@ -282,6 +305,7 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
                 Transaction = Data.Transaction4
             };
             var cancellationToken = CancellationToken.None;
+            EnsureRandomTopic();
 
             // Act
             var result = await _handler.Handle(@event, cancellationToken, null);
@@ -294,6 +318,21 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Transactions
             holding.Qty.Should().Be(Data.Holding3.Qty * 2);
             holding.InitialValue.Should().Be(Data.Holding3.InitialValue * 2);
             holding.Wallet.InitialValue.Should().Be(Data.Holding3.InitialValue * 2);
+            EnsureRequestProduced(Data.Wallet3);
+        }
+
+        private void EnsureRandomTopic() =>
+            _producerWrapper.Options.Topic = _consumerWrapper.Options.Topic = Guid.NewGuid().ToString();
+
+        private void EnsureRequestProduced(Wallet wallet)
+        {
+            _consumerWrapper.Consumer.Subscribe(_consumerWrapper.Options.Topic);
+            var cr = _consumerWrapper.Consumer.Consume();
+            _consumerWrapper.Consumer.Unsubscribe();
+            cr.Message.Value.Should().BeEquivalentTo(new ComputeWalletBalanceRequest
+            {
+                WalletId = wallet.Id
+            });
         }
     }
 }

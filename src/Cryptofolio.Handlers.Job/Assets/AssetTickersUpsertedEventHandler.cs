@@ -1,7 +1,11 @@
+using Confluent.Kafka;
+using Cryptofolio.Infrastructure;
+using Cryptofolio.Infrastructure.Balances;
 using Cryptofolio.Infrastructure.Caching;
 using Cryptofolio.Infrastructure.Entities;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,16 +19,26 @@ namespace Cryptofolio.Handlers.Job.Assets
     public class AssetTickersUpsertedEventHandler : IPipelineBehavior<AssetTickersUpsertedEvent, Unit>
     {
         private readonly CurrencyTickerCache _cache;
+        private readonly KafkaProducerWrapper<string, BulkComputeWalletBalanceRequest> _producerWrapper;
         private readonly ILogger<AssetTickersUpsertedEventHandler> _logger;
+
+        private IProducer<string, BulkComputeWalletBalanceRequest> Producer => _producerWrapper.Producer;
+
+        private KafkaProducerOptions<BulkComputeWalletBalanceRequest> ProducerOptions => _producerWrapper.Options;
 
         /// <summary>
         /// Creates a new instance of <see cref="AssetTickersUpsertedEventHandler"/>.
         /// </summary>
         /// <param name="cache">The cache.</param>
+        /// <param name="producerWrapper">The producer wrapper.</param>
         /// <param name="logger">The logger.</param>
-        public AssetTickersUpsertedEventHandler(CurrencyTickerCache cache, ILogger<AssetTickersUpsertedEventHandler> logger)
+        public AssetTickersUpsertedEventHandler(
+            CurrencyTickerCache cache,
+            KafkaProducerWrapper<string, BulkComputeWalletBalanceRequest> producerWrapper,
+            ILogger<AssetTickersUpsertedEventHandler> logger)
         {
             _cache = cache;
+            _producerWrapper = producerWrapper;
             _logger = logger;
         }
 
@@ -42,7 +56,19 @@ namespace Cryptofolio.Handlers.Job.Assets
                 })
                 .ToArray());
             _logger.LogDebug("Tickers stored in cache.");
-            // TODO: Trigger wallet balance recompute.
+            _logger.LogInformation("Triggering bulk wallets balance computing.");
+            await Producer.ProduceAsync(
+                ProducerOptions.Topic,
+                new()
+                {
+                    Key = Guid.NewGuid().ToString(),
+                    Value = new()
+                    {
+                        AssetIds = @event.Tickers.Select(t => t.Asset.Id).Distinct().ToArray(),
+                        CurrencyIds = @event.Tickers.Select(t => t.VsCurrency.Id).Distinct().ToArray()
+                    }
+                }
+            );
             return Unit.Value;
         }
     }

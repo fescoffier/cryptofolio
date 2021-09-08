@@ -1,4 +1,6 @@
+using Confluent.Kafka;
 using Cryptofolio.Infrastructure;
+using Cryptofolio.Infrastructure.Balances;
 using Cryptofolio.Infrastructure.TestsCommon;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -40,7 +42,19 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests
                 services.AddSingleton(systemClockMock.Object);
                 services.AddSingleton(systemClockMock);
                 services.AddScoped<EventTraceWriter<FakeEvent>>();
+                services.AddConsumer<ComputeWalletBalanceRequest>(options =>
+                {
+                    options.Topic = ctx.Configuration.GetSection($"Kafka:Topics:{typeof(ComputeWalletBalanceRequest).FullName}").Get<string>();
+                    options.Config = ctx.Configuration.GetSection("Kafka:Consumer").Get<ConsumerConfig>();
+                });
+                services.AddConsumer<BulkComputeWalletBalanceRequest>(options =>
+                {
+                    options.Topic = ctx.Configuration.GetSection($"Kafka:Topics:{typeof(BulkComputeWalletBalanceRequest).FullName}").Get<string>();
+                    options.Config = ctx.Configuration.GetSection("Kafka:Consumer").Get<ConsumerConfig>();
+                });
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<IEvent>)));
+                services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<ComputeWalletBalanceRequest>)));
+                services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<BulkComputeWalletBalanceRequest>)));
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(DatabaseMigrationService<CryptofolioContext>)));
             });
         }

@@ -3,6 +3,7 @@ using Cryptofolio.Handlers.Job.Assets;
 using Cryptofolio.Handlers.Job.Currencies;
 using Cryptofolio.Handlers.Job.Transactions;
 using Cryptofolio.Infrastructure;
+using Cryptofolio.Infrastructure.Balances;
 using Cryptofolio.Infrastructure.Caching;
 using Cryptofolio.Infrastructure.Entities;
 using Elasticsearch.Net;
@@ -60,6 +61,16 @@ namespace Cryptofolio.Handlers.Job
                         new TransactionPolymorphicJsonConverter()
                     }
                 };
+            });
+            services.AddProducer<ComputeWalletBalanceRequest>(options =>
+            {
+                options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(ComputeWalletBalanceRequest).FullName}").Get<string>();
+                options.Config = Configuration.GetSection("Kafka:Producer").Get<ProducerConfig>();
+            });
+            services.AddProducer<BulkComputeWalletBalanceRequest>(options =>
+            {
+                options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(BulkComputeWalletBalanceRequest).FullName}").Get<string>();
+                options.Config = Configuration.GetSection("Kafka:Producer").Get<ProducerConfig>();
             });
 
             // Elasticsearch

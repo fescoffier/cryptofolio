@@ -1,4 +1,6 @@
+using Confluent.Kafka;
 using Cryptofolio.Infrastructure;
+using Cryptofolio.Infrastructure.Balances;
 using Cryptofolio.Infrastructure.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -20,16 +22,25 @@ namespace Cryptofolio.Handlers.Job.Transactions
         IPipelineBehavior<TransactionDeletedEvent, Unit>
     {
         private readonly CryptofolioContext _context;
+        private readonly KafkaProducerWrapper<string, ComputeWalletBalanceRequest> _producerWrapper;
         private readonly ILogger<TransactionEventHandler> _logger;
+
+        private IProducer<string, ComputeWalletBalanceRequest> Producer => _producerWrapper.Producer;
+
+        private KafkaProducerOptions<ComputeWalletBalanceRequest> ProducerOptions => _producerWrapper.Options;
 
         /// <summary>
         /// Creates a new instance of <see cref="TransactionEventHandler"/>.
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="logger">The logger.</param>
-        public TransactionEventHandler(CryptofolioContext context, ILogger<TransactionEventHandler> logger)
+        public TransactionEventHandler(
+            CryptofolioContext context,
+            KafkaProducerWrapper<string, ComputeWalletBalanceRequest> producerWrapper,
+            ILogger<TransactionEventHandler> logger)
         {
             _context = context;
+            _producerWrapper = producerWrapper;
             _logger = logger;
         }
 
@@ -157,8 +168,19 @@ namespace Cryptofolio.Handlers.Job.Transactions
             await _context.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Holding computed for the asset {0} in the wallet {1}.", asset.Id, wallet.Id);
+            _logger.LogInformation("Triggering a balance recompute of the wallet {0}.", wallet.Id);
 
-            // TODO: Trigger wallet balance recompute.
+            await Producer.ProduceAsync(
+                ProducerOptions.Topic,
+                new()
+                {
+                    Key = Guid.NewGuid().ToString(),
+                    Value = new()
+                    {
+                        WalletId = wallet.Id
+                    }
+                }
+            );
         }
     }
 }
