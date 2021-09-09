@@ -43,9 +43,19 @@ namespace Cryptofolio.Balances.Job
             services.AddHostedService<DatabaseMigrationService<CryptofolioContext>>();
 
             // Kafka
+            services.AddProducer<ComputeWalletBalanceRequest>(options =>
+            {
+                options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(ComputeWalletBalanceRequest).FullName}").Get<string>();
+                options.Config = Configuration.GetSection("Kafka:Producer").Get<ProducerConfig>();
+            });
             services.AddConsumer<ComputeWalletBalanceRequest>(options =>
             {
                 options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(ComputeWalletBalanceRequest).FullName}").Get<string>();
+                options.Config = Configuration.GetSection("Kafka:Consumer").Get<ConsumerConfig>();
+            });
+            services.AddConsumer<BulkComputeWalletBalanceRequest>(options =>
+            {
+                options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(BulkComputeWalletBalanceRequest).FullName}").Get<string>();
                 options.Config = Configuration.GetSection("Kafka:Consumer").Get<ConsumerConfig>();
             });
 
@@ -64,6 +74,9 @@ namespace Cryptofolio.Balances.Job
             // Balances
             services.AddScoped<ComputeWalletBalanceRequestHandler>();
             services.AddScoped<IRequestHandler<ComputeWalletBalanceRequest>>(p => p.GetRequiredService<ComputeWalletBalanceRequestHandler>());
+            services.AddScoped<BulkComputeWalletBalanceRequestHandler>();
+            services.AddScoped<IRequestHandler<BulkComputeWalletBalanceRequest>>(p => p.GetRequiredService<BulkComputeWalletBalanceRequestHandler>());
+            services.Configure<BulkComputeWalletBalanceOptions>(Configuration.GetSection("Bulk"));
 
             // Healthchecks
             services

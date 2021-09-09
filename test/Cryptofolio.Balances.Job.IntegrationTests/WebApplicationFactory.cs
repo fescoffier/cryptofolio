@@ -29,7 +29,9 @@ namespace Cryptofolio.Balances.Job.IntegrationTests
                 {
                     { "Serilog:MinimumLevel:Default", "Fatal" },
                     { "ConnectionStrings:CryptofolioContext", $"Host=localhost;Database={DbName};Username=cryptofolio;Password=Pass@word1;Port=55432;IncludeErrorDetails=true" },
-                    { "Kafka:Topics:Cryptofolio.Infrastructure.IEvent", Guid.NewGuid().ToString() }
+                    { "Kafka:Topics:Cryptofolio.Infrastructure.Balances.ComputeWalletBalanceRequest", Guid.NewGuid().ToString() },
+                    { "Kafka:Topics:Cryptofolio.Infrastructure.Balances.BulkComputeWalletBalanceRequest", Guid.NewGuid().ToString() },
+                    { "Bulk:BatchSize", "2" }
                 });
             });
             builder.ConfigureServices((ctx, services) =>
@@ -40,6 +42,7 @@ namespace Cryptofolio.Balances.Job.IntegrationTests
                 services.AddSingleton(systemClockMock.Object);
                 services.AddSingleton(systemClockMock);
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<ComputeWalletBalanceRequest>)));
+                services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<BulkComputeWalletBalanceRequest>)));
             });
         }
 
