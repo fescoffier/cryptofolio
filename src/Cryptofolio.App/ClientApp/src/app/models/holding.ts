@@ -1,18 +1,19 @@
-import { Currency } from "./currency";
+import { Asset } from "./asset";
+import { Wallet } from "./wallet";
 
-export class Wallet {
+export class Holding {
   id: string;
-  name: string;
-  description: string;
-  currency: Currency;
+  wallet: Wallet;
+  asset: Asset;
+  qty: number;
   initialValue: number;
   currentValue: number;
   change: number;
-  selected: boolean;
 
   constructor(properties?: any) {
     Object.assign(this, properties);
-    this.currency = new Currency(properties.currency);
+    this.wallet = new Wallet(properties.wallet);
+    this.asset = new Asset(properties.asset);
     this.initialValue = properties["initial_value"];
     this.currentValue = properties["current_value"];
   }
