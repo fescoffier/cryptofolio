@@ -16,8 +16,8 @@ namespace Cryptofolio.Infrastructure.Entities
             builder.HasDiscriminator<string>("discriminator");
             builder.HasKey(p => p.Id);
             builder.Property(p => p.Id).HasMaxLength(36).HasColumnName("id");
-            builder.Property(p => p.Date).HasColumnName("date").HasConversion(p => p, p => p.ToUniversalTime());
-            builder.Property(p => p.Qty).HasColumnName("qty");
+            builder.Property(p => p.Date).HasColumnName("date").HasConversion(p => p, p => p.ToUniversalTime()).IsRequired();
+            builder.Property(p => p.Qty).HasColumnName("qty").IsRequired();
             builder.Property(p => p.InitialValue).HasColumnName("initial_value").IsRequired();
             builder.Property(p => p.CurrentValue).HasColumnName("current_value").IsRequired();
             builder.Property(p => p.Change).HasColumnName("change").IsRequired();

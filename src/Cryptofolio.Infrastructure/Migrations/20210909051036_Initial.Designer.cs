@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Cryptofolio.Infrastructure.Migrations
 {
     [DbContext(typeof(CryptofolioContext))]
-    [Migration("20210906095113_Initial")]
+    [Migration("20210909051036_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,11 +34,13 @@ namespace Cryptofolio.Infrastructure.Migrations
                         .HasColumnName("description");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)")
                         .HasColumnName("name");
 
                     b.Property<string>("Symbol")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("symbol");
@@ -83,11 +85,13 @@ namespace Cryptofolio.Infrastructure.Migrations
                         .HasColumnName("id");
 
                     b.Property<string>("Code")
+                        .IsRequired()
                         .HasMaxLength(3)
                         .HasColumnType("character varying(3)")
                         .HasColumnName("code");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
                         .HasColumnName("name");
@@ -99,6 +103,7 @@ namespace Cryptofolio.Infrastructure.Migrations
                         .HasColumnName("precision");
 
                     b.Property<string>("Symbol")
+                        .IsRequired()
                         .HasMaxLength(3)
                         .HasColumnType("character varying(3)")
                         .HasColumnName("symbol");
@@ -148,16 +153,19 @@ namespace Cryptofolio.Infrastructure.Migrations
                         .HasColumnName("description");
 
                     b.Property<string>("Image")
+                        .IsRequired()
                         .HasMaxLength(2048)
                         .HasColumnType("character varying(2048)")
                         .HasColumnName("image");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)")
                         .HasColumnName("name");
 
                     b.Property<string>("Url")
+                        .IsRequired()
                         .HasMaxLength(2048)
                         .HasColumnType("character varying(2048)")
                         .HasColumnName("url");
@@ -219,11 +227,13 @@ namespace Cryptofolio.Infrastructure.Migrations
                         .HasColumnName("key");
 
                     b.Property<string>("Group")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
                         .HasColumnName("group");
 
                     b.Property<string>("Value")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("value");
 
@@ -325,7 +335,9 @@ namespace Cryptofolio.Infrastructure.Migrations
                         .HasColumnName("name");
 
                     b.Property<bool>("Selected")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
+                        .HasDefaultValue(false)
                         .HasColumnName("selected");
 
                     b.Property<string>("UserId")
@@ -335,6 +347,7 @@ namespace Cryptofolio.Infrastructure.Migrations
                         .HasColumnName("user_id");
 
                     b.Property<string>("currency_id")
+                        .IsRequired()
                         .HasColumnType("character varying(36)");
 
                     b.HasKey("Id");

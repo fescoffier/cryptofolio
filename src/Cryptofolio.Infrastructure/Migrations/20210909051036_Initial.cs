@@ -17,8 +17,8 @@ namespace Cryptofolio.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    symbol = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    name = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
+                    symbol = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    name = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
                     description = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
@@ -32,9 +32,9 @@ namespace Cryptofolio.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<string>(type: "character varying(36)", maxLength: 36, nullable: false),
-                    name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    code = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: true),
-                    symbol = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: true),
+                    name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    code = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: false),
+                    symbol = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: false),
                     precision = table.Column<int>(type: "integer", nullable: false, defaultValue: 2)
                 },
                 constraints: table =>
@@ -48,11 +48,11 @@ namespace Cryptofolio.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    name = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
+                    name = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
                     description = table.Column<string>(type: "text", nullable: true),
                     year_established = table.Column<long>(type: "bigint", nullable: true),
-                    url = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: true),
-                    image = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: true)
+                    url = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: false),
+                    image = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -65,8 +65,8 @@ namespace Cryptofolio.Infrastructure.Migrations
                 columns: table => new
                 {
                     key = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    group = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    value = table.Column<string>(type: "text", nullable: true)
+                    group = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    value = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -139,11 +139,11 @@ namespace Cryptofolio.Infrastructure.Migrations
                     id = table.Column<string>(type: "character varying(36)", maxLength: 36, nullable: false),
                     name = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
                     description = table.Column<string>(type: "text", nullable: true),
-                    currency_id = table.Column<string>(type: "character varying(36)", nullable: true),
+                    currency_id = table.Column<string>(type: "character varying(36)", nullable: false),
                     InitialValue = table.Column<decimal>(type: "numeric", nullable: false),
                     current_value = table.Column<decimal>(type: "numeric", nullable: false),
                     change = table.Column<decimal>(type: "numeric", nullable: false),
-                    selected = table.Column<bool>(type: "boolean", nullable: false),
+                    selected = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
                     user_id = table.Column<string>(type: "character varying(36)", maxLength: 36, nullable: false)
                 },
                 constraints: table =>

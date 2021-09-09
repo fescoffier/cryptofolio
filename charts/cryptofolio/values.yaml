@@ -257,9 +257,10 @@ jobs:
       data:
         cronCheckIntervalMs: 1000
         schedules:
-          assetDataRequest: "0 0 1 1 1"
+          assetDataRequest: "0 0 * * *"
           assetTickerDataRequest: "* * * * *"
-          exchangeDataRequest: "0 0 1 1 1"
+          currencyTickerDataRequest: "*/10 * * * *"
+          exchangeDataRequest: "0 0 * * *"
         schedulersLockKey: Collector:SchedulersLock
         schedulersLockExpiration: "00:01:00"
         schedulersLockCheckInterval: "00:00:01"

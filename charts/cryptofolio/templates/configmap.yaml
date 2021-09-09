@@ -84,6 +84,7 @@ data:
         "Schedules": {
           "Cryptofolio.Infrastructure.Data.AssetDataRequest": "{{ .Values.jobs.collector.config.data.schedules.assetDataRequest }}",
           "Cryptofolio.Infrastructure.Data.AssetTickerDataRequest": "{{ .Values.jobs.collector.config.data.schedules.assetTickerDataRequest }}",
+          "Cryptofolio.Infrastructure.Data.CurrencyTickerDataRequest": "{{ .Values.jobs.collector.config.data.schedules.currencyTickerDataRequest }}",
           "Cryptofolio.Infrastructure.Data.ExchangeDataRequest": "{{ .Values.jobs.collector.config.data.schedules.exchangeDataRequest }}"
         },
         "SchedulersLockKey": "{{ .Values.jobs.collector.config.data.schedulersLockKey }}",
