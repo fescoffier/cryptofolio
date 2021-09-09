@@ -158,7 +158,7 @@ export class TransactionEditComponent implements OnInit {
 
   setCurrency(currency: Currency) {
     this.form.controls.currency_id.setValue(currency.id);
-    this.form.controls.exchange_name.setValue(currency.code);
+    this.form.controls.currency_name.setValue(currency.code);
   }
 
   reset() {

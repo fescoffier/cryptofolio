@@ -38,8 +38,8 @@
                   <td class="text-center">
                     <input [checked]="wallet.selected" class=" form-check-input" type="checkbox" />
                   </td>
-                  <td></td>
-                  <td></td>
+                  <td>{{ wallet.currentValue }}</td>
+                  <td>{{ wallet.change }}</td>
                   <td class=" text-right">
                     <button (click)="select(wallet)" class=" btn btn-round btn-icon mr-2"
                       title="Set this wallet as your seleted wallet">
@@ -83,6 +83,25 @@
               <label class="error"
                 *ngIf="(formSubmitted && formControls.name.errors) || (formControls.name.value != null && formControls.name.errors)">
                 Please enter a valid name.</label>
+            </div>
+            <div class=" form-group has-label" [ngClass]="{
+              'has-danger': (formSubmitted && formControls.currency_id.errors) || (formControls.currency_id.value != null && formControls.currency_id.errors),
+              'has-success': !formControls.currency_id.errors
+            }">
+              <label class="d-block"> Currency * </label>
+              <div class="btn-group w-100" dropdown>
+                <button dropdownToggle type="button" class="btn dropdown-toggle text-left" [ngClass]="{'btn-info': form.controls.currency_id.value}">
+                  {{ (form.controls.currency_name.value | uppercase) || 'Select an currency' }}
+                </button>
+                <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu">
+                  <li role="menuitem" *ngFor="let currency of currencies">
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="setCurrency(currency)">{{ currency.symbol }} - {{ currency.code | uppercase }}</a>
+                  </li>
+                </ul>
+              </div>
+              <label class="error"
+                *ngIf="(formSubmitted && formControls.currency_id.errors) || (formControls.currency_id.value != null && formControls.currency_id.errors)">
+                Please select the currency the asset was bought with.</label>
             </div>
             <div class=" form-group has-label">
               <label> Description </label>
