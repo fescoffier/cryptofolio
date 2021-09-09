@@ -1,4 +1,3 @@
-using Confluent.Kafka;
 using Cryptofolio.Balances.Job.Balances;
 using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Balances;
@@ -58,11 +57,15 @@ namespace Cryptofolio.Balances.Job.IntegrationTests.Balances
             // Assert
             var ids = new List<string>();
             _consumerWrapper.Consumer.Subscribe(_consumerWrapper.Options.Topic);
-            ConsumeResult<string, ComputeWalletBalanceRequest> cr;
-            do
+            while (true)
             {
-                cr = _consumerWrapper.Consumer.Consume();
-            } while (!cr.IsPartitionEOF);
+                var cr = _consumerWrapper.Consumer.Consume();
+                if (cr.IsPartitionEOF)
+                {
+                    break;
+                }
+                ids.Add(cr.Message.Value.WalletId);
+            }
             _consumerWrapper.Consumer.Unsubscribe();
             ids.Should().BeEquivalentTo(new[] { Data.Wallet1.Id, Data.Wallet2.Id, Data.Wallet3.Id });
         }
