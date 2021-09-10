@@ -98,7 +98,7 @@ export class WalletsComponent implements OnInit {
     this.form.controls["id"].setValue(wallet.id);
     this.form.controls["name"].setValue(wallet.name);
     this.form.controls["currency_id"].setValue(wallet.currency.id);
-    this.form.controls["currency_name"].setValue(wallet.currency.name);
+    this.form.controls["currency_name"].setValue(wallet.currency.code);
     this.form.controls["description"].setValue(wallet.description);
     this.formSubmitted = false;
     this.formDisplayed = true;

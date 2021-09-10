@@ -18,6 +18,7 @@ namespace Cryptofolio.Infrastructure.Entities
             builder.Property(p => p.Code).HasMaxLength(3).HasColumnName("code").IsRequired();
             builder.Property(p => p.Symbol).HasMaxLength(3).HasColumnName("symbol").IsRequired();
             builder.Property(p => p.Precision).HasDefaultValue(2).HasColumnName("precision").IsRequired();
+            builder.Property(p => p.ValueFormat).HasDefaultValue("{0}{1}").HasColumnName("value_format").IsRequired();
             builder.HasIndex(p => p.Code).IsUnique();
         }
     }

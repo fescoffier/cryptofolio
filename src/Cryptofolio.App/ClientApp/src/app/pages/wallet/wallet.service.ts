@@ -20,11 +20,19 @@ export class WalletService {
   }
 
   get(): Observable<Wallet[]> {
-    return this.http.get<Wallet[]>(this.api.walletsEndpoint);
+    return this.http
+      .get<any[]>(this.api.walletsEndpoint)
+      .pipe(
+        map(wallets => wallets.map(w => new Wallet(w)))
+      );
   }
 
   create(wallet: Wallet): Observable<Wallet> {
-    return this.http.post<Wallet>(this.api.walletsEndpoint, wallet);
+    return this.http
+      .post<any>(this.api.walletsEndpoint, wallet)
+      .pipe(
+        map(wallet => new Wallet(wallet))
+      );
   }
 
   update(wallet: Wallet): Observable<void> {

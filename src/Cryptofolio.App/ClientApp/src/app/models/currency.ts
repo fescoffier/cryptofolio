@@ -4,9 +4,11 @@ export class Currency {
   code: string;
   symbol: string;
   precision: number;
+  valueFormat: string;
 
   constructor(properties?: any) {
     Object.assign(this, properties);
+    this.valueFormat = properties["value_format"];
   }
 }
 

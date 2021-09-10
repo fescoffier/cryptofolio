@@ -7,7 +7,6 @@
             <button (click)="create()" class=" btn btn-primary btn-round btn-icon" title="Add a new wallet">
               <i class=" tim-icons icon-simple-add"> </i>
             </button>
-            <h4>Your wallets worth $100,000.00</h4>
           </div>
         </div>
         <div class=" card-body">
@@ -18,8 +17,10 @@
                   <th>Name</th>
                   <th>Description</th>
                   <th>Selected</th>
+                  <th>Currency</th>
                   <th>Balance</th>
                   <th>Profits/Losses</th>
+                  <th>Change</th>
                   <th></th>
                 </tr>
               </thead>
@@ -27,6 +28,7 @@
                 <col />
                 <col />
                 <col style="width: 100px;" />
+                <col />
                 <col />
                 <col />
                 <col style="width: 150px;" />
@@ -38,8 +40,20 @@
                   <td class="text-center">
                     <input [checked]="wallet.selected" class=" form-check-input" type="checkbox" />
                   </td>
-                  <td>{{ wallet.currentValue }}</td>
-                  <td>{{ wallet.change }}</td>
+                  <td>{{ wallet.currency.code | uppercase }}</td>
+                  <td>{{ wallet.currentValue | currencyValue: wallet.currency }}</td>
+                  <td>
+                    <span [ngClass]="{
+                      'text-danger': wallet.change < 0,
+                      'text-success': wallet.change > 0
+                    }">{{ wallet.currentValue - wallet.initialValue | currencyValue: wallet.currency }}</span>
+                  </td>
+                  <td>
+                    <span [ngClass]="{
+                      'text-danger': wallet.change < 0,
+                      'text-success': wallet.change > 0
+                    }">{{ wallet.change | number: "1.0-2" }}%</span>
+                  </td>
                   <td class=" text-right">
                     <button (click)="select(wallet)" class=" btn btn-round btn-icon mr-2"
                       title="Set this wallet as your seleted wallet">

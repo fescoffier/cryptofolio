@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Cryptofolio.Infrastructure.Entities
 {
     /// <summary>
@@ -29,5 +31,11 @@ namespace Cryptofolio.Infrastructure.Entities
         /// The roungind precision.
         /// </summary>
         public int Precision { get; set; } = 2;
+
+        /// <summary>
+        /// The value format.
+        /// </summary>
+        [JsonPropertyName("value_format")]
+        public string ValueFormat { get; set; }
     }
 }

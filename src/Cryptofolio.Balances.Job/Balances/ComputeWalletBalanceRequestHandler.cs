@@ -105,6 +105,8 @@ namespace Cryptofolio.Balances.Job.Balances
                     wallet.Change = (wallet.CurrentValue - wallet.InitialValue) / wallet.InitialValue * 100;
                 }
 
+                await _context.SaveChangesAsync(cancellationToken);
+
                 async Task<decimal> GetAssetTicker(TickerPair pair)
                 {
                     if (!tickers.TryGetValue(pair, out var ticker))

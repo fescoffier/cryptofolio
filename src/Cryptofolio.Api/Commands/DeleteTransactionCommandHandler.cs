@@ -51,7 +51,10 @@ namespace Cryptofolio.Api.Commands
                 _logger.LogDebug("Transaction {0} just begun.", dbTransaction.TransactionId);
 
                 var transaction = await _context.Transactions
-                    .Include(w => w.Wallet)
+                    .Include(t => t.Wallet).ThenInclude(t => t.Currency)
+                    .Include(t => t.Asset)
+                    .Include(t => t.Exchange)
+                    .Include(nameof(BuyOrSellTransaction.Currency))
                     .SingleOrDefaultAsync(t => t.Id == command.Id, cancellationToken);
                 if (transaction.Wallet.UserId != command.UserId)
                 {

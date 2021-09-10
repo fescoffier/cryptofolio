@@ -19,7 +19,7 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Assets
         private readonly WebApplicationFactory _factory;
         private readonly IServiceScope _scope;
         private readonly AssetTickersUpsertedEventHandler _handler;
-        private readonly CurrencyTickerCache _cache;
+        private readonly AssetTickerCache _cache;
         private readonly KafkaProducerWrapper<string, BulkComputeWalletBalanceRequest> _producerWrapper;
         private readonly KafkaConsumerWrapper<string, BulkComputeWalletBalanceRequest> _consumerWrapper;
 
@@ -30,7 +30,7 @@ namespace Cryptofolio.Handlers.Job.IntegrationTests.Assets
             _factory = factory;
             _scope = factory.Services.CreateScope();
             _handler = _scope.ServiceProvider.GetRequiredService<AssetTickersUpsertedEventHandler>();
-            _cache = _scope.ServiceProvider.GetRequiredService<CurrencyTickerCache>();
+            _cache = _scope.ServiceProvider.GetRequiredService<AssetTickerCache>();
             _producerWrapper = _scope.ServiceProvider.GetRequiredService<KafkaProducerWrapper<string, BulkComputeWalletBalanceRequest>>();
             _consumerWrapper = _scope.ServiceProvider.GetRequiredService<KafkaConsumerWrapper<string, BulkComputeWalletBalanceRequest>>();
         }

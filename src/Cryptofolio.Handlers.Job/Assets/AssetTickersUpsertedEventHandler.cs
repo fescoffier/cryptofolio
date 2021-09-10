@@ -18,7 +18,7 @@ namespace Cryptofolio.Handlers.Job.Assets
     /// </summary>
     public class AssetTickersUpsertedEventHandler : IPipelineBehavior<AssetTickersUpsertedEvent, Unit>
     {
-        private readonly CurrencyTickerCache _cache;
+        private readonly AssetTickerCache _cache;
         private readonly KafkaProducerWrapper<string, BulkComputeWalletBalanceRequest> _producerWrapper;
         private readonly ILogger<AssetTickersUpsertedEventHandler> _logger;
 
@@ -33,7 +33,7 @@ namespace Cryptofolio.Handlers.Job.Assets
         /// <param name="producerWrapper">The producer wrapper.</param>
         /// <param name="logger">The logger.</param>
         public AssetTickersUpsertedEventHandler(
-            CurrencyTickerCache cache,
+            AssetTickerCache cache,
             KafkaProducerWrapper<string, BulkComputeWalletBalanceRequest> producerWrapper,
             ILogger<AssetTickersUpsertedEventHandler> logger)
         {

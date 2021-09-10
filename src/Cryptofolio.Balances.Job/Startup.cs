@@ -73,9 +73,9 @@ namespace Cryptofolio.Balances.Job
 
             // Balances
             services.AddScoped<ComputeWalletBalanceRequestHandler>();
-            services.AddScoped<IRequestHandler<ComputeWalletBalanceRequest>>(p => p.GetRequiredService<ComputeWalletBalanceRequestHandler>());
+            services.AddScoped<IRequestHandler<ComputeWalletBalanceRequest, Unit>>(p => p.GetRequiredService<ComputeWalletBalanceRequestHandler>());
             services.AddScoped<BulkComputeWalletBalanceRequestHandler>();
-            services.AddScoped<IRequestHandler<BulkComputeWalletBalanceRequest>>(p => p.GetRequiredService<BulkComputeWalletBalanceRequestHandler>());
+            services.AddScoped<IRequestHandler<BulkComputeWalletBalanceRequest, Unit>>(p => p.GetRequiredService<BulkComputeWalletBalanceRequestHandler>());
             services.Configure<BulkComputeWalletBalanceOptions>(Configuration.GetSection("Bulk"));
 
             // Healthchecks

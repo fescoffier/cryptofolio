@@ -81,7 +81,7 @@ export class TransactionEditComponent implements OnInit {
         exchange_id: [transaction?.exchange.id, [Validators.required]],
         exchange_name: [transaction?.exchange.name],
         currency_id: [transaction?.["currency"]["id"], [Validators.required]],
-        currency_name: [transaction?.["currency"]["name"]],
+        currency_name: [transaction?.["currency"]["code"]],
         price: [transaction?.["price"], [Validators.required]],
         qty: [transaction?.qty, [Validators.required, Validators.min(0), Validators.max(Number.MAX_VALUE)]],
         note: [transaction?.note]
