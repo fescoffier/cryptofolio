@@ -41,6 +41,9 @@ namespace Cryptofolio.Balances.Job.Balances
         /// <inheritdoc/>
         public async Task<Unit> Handle(BulkComputeWalletBalanceRequest request, CancellationToken cancellationToken)
         {
+            request.AssetIds ??= Enumerable.Empty<string>();
+            request.CurrencyIds ??= Enumerable.Empty<string>();
+
             var queryStr = $@"
                 select w.*
                 from ""data"".""wallet"" w

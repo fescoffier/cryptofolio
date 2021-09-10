@@ -8,7 +8,7 @@ export class CurrencyValuePipe implements PipeTransform {
 
   transform(value: number, currency: Currency) {
     return currency.valueFormat
-      .replace("{0}", formatNumber(value, this.locale, "1.0-2"))
+      .replace("{0}", formatNumber(value, this.locale, `1.0-${currency.precision}`))
       .replace("{1}", currency.symbol);
   }
 }

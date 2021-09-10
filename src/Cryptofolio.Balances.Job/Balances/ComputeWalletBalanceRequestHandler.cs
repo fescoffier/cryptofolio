@@ -69,6 +69,10 @@ namespace Cryptofolio.Balances.Job.Balances
                         {
                             bst.Change = (bst.CurrentValue - bst.InitialValue) / bst.InitialValue * 100;
                         }
+                        else
+                        {
+                            bst.Change = 0;
+                        }
                     }
                     else if (transaction is TransferTransaction tft)
                     {
@@ -77,6 +81,10 @@ namespace Cryptofolio.Balances.Job.Balances
                         if (tft.InitialValue > 0)
                         {
                             tft.Change = (tft.CurrentValue - tft.InitialValue) / tft.InitialValue * 100;
+                        }
+                        else
+                        {
+                            tft.Change = 0;
                         }
                     }
                     else
@@ -95,6 +103,10 @@ namespace Cryptofolio.Balances.Job.Balances
                     {
                         holding.Change = (holding.CurrentValue - holding.InitialValue) / holding.InitialValue * 100;
                     }
+                    else
+                    {
+                        holding.Change = 0;
+                    }
                 }
 
                 _logger.LogDebug("Computing wallet balance.");
@@ -103,6 +115,10 @@ namespace Cryptofolio.Balances.Job.Balances
                 if (wallet.InitialValue > 0)
                 {
                     wallet.Change = (wallet.CurrentValue - wallet.InitialValue) / wallet.InitialValue * 100;
+                }
+                else
+                {
+                    wallet.Change = 0;
                 }
 
                 await _context.SaveChangesAsync(cancellationToken);

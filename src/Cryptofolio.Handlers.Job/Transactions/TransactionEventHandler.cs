@@ -74,7 +74,9 @@ namespace Cryptofolio.Handlers.Job.Transactions
                 delete
             );
 
-            var holding = await _context.Holdings.SingleOrDefaultAsync(h => h.Asset.Id == asset.Id && h.Wallet.Id == wallet.Id, cancellationToken);
+            var holding = await _context.Holdings
+                .Include(h => h.Wallet)
+                .SingleOrDefaultAsync(h => h.Asset.Id == asset.Id && h.Wallet.Id == wallet.Id, cancellationToken);
             if (holding == null && !delete)
             {
                 _logger.LogDebug("The holding does not exist. Creating it.");
@@ -96,6 +98,7 @@ namespace Cryptofolio.Handlers.Job.Transactions
             {
                 _logger.LogDebug("The holding amount is equal to 0 after a transaction delete. Removing it.");
                 _context.Holdings.Remove(holding);
+                holding.Wallet.InitialValue -= holding.InitialValue;
             }
             else
             {
@@ -158,13 +161,14 @@ namespace Cryptofolio.Handlers.Job.Transactions
 
                 _logger.LogTrace("Quantity of {0} in the wallet {1}: {2}", asset.Id, wallet.Id, holding.Qty);
                 _logger.LogTrace("Initial value of {0} in the wallet {1}: {2}", asset.Id, wallet.Id, holding.InitialValue);
+
+                holding.Wallet.InitialValue = holding.InitialValue +
+                    await _context.Holdings
+                        .AsNoTracking()
+                        .Where(h => h.Wallet.Id == wallet.Id && h.Id != holding.Id)
+                        .SumAsync(h => h.InitialValue, cancellationToken);
             }
 
-            wallet.InitialValue = holding.InitialValue +
-                await _context.Holdings
-                    .AsNoTracking()
-                    .Where(h => h.Wallet.Id == wallet.Id && h.Id != holding.Id)
-                    .SumAsync(h => h.InitialValue, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Holding computed for the asset {0} in the wallet {1}.", asset.Id, wallet.Id);

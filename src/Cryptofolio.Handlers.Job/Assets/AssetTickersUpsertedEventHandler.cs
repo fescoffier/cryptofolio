@@ -46,7 +46,7 @@ namespace Cryptofolio.Handlers.Job.Assets
         public async Task<Unit> Handle(AssetTickersUpsertedEvent @event, CancellationToken cancellationToken, RequestHandlerDelegate<Unit> next)
         {
             _logger.LogInformation("Handling the event occurence {0} of type {1}.", @event.Id, typeof(AssetTickersUpsertedEvent).FullName);
-            _logger.LogDebug("Tickers tickers in cache.");
+            _logger.LogDebug("Storing tickers in cache.");
             await _cache.StoreTickersAsync(@event.Tickers
                 .Select(t => new Ticker
                 {
