@@ -39,3 +39,12 @@ services:
       args:
         - VERSION=$JOB_HANDLERS_VERSION
     image: ${REGISTRY:-registry.digitalocean.com/cryptofolio}/${JOB_HANDLERS_REPOSITORY:-jobs/handlers}:${JOB_HANDLERS_TAG:-latest}
+
+  cryptofolio-job-balances:
+    build:
+      # You can override the build context (where the source code is) by defining a JOB_BALANCES_BUILD_CONTEXT environment variable.
+      context: ${JOB_BALANCES_BUILD_CONTEXT:-../}
+      dockerfile: src/Cryptofolio.Balances.Job/Dockerfile
+      args:
+        - VERSION=$JOB_BALANCES_VERSION
+    image: ${REGISTRY:-registry.digitalocean.com/cryptofolio}/${JOB_BALANCES_REPOSITORY:-jobs/balances}:${JOB_BALANCES_TAG:-latest}

@@ -20,6 +20,10 @@ export JOB_HANDLERS_CONTEXT=${JOB_HANDLERS_CONTEXT:-../}
 export JOB_HANDLERS_REPOSITORY=${JOB_HANDLERS_REPOSITORY:-jobs/handlers}
 export JOB_HANDLERS_VERSION=$(dotnet version -p src/Cryptofolio.Handlers.Job/Cryptofolio.Handlers.Job.csproj --show | awk -v commit_sha=$(git rev-parse --short HEAD) '{print $3 "+" commit_sha}')
 export JOB_HANDLERS_TAG=$(dotnet version -p src/Cryptofolio.Handlers.Job/Cryptofolio.Handlers.Job.csproj --show | awk -v commit_sha=$(git rev-parse --short HEAD) '{print $3 "." commit_sha}')
+export JOB_BALANCES_CONTEXT=${JOB_BALANCES_CONTEXT:-../}
+export JOB_BALANCES_REPOSITORY=${JOB_BALANCES_REPOSITORY:-jobs/balances}
+export JOB_BALANCES_VERSION=$(dotnet version -p src/Cryptofolio.Balances.Job/Cryptofolio.Balances.Job.csproj --show | awk -v commit_sha=$(git rev-parse --short HEAD) '{print $3 "+" commit_sha}')
+export JOB_BALANCES_TAG=$(dotnet version -p src/Cryptofolio.Balances.Job/Cryptofolio.Balances.Job.csproj --show | awk -v commit_sha=$(git rev-parse --short HEAD) '{print $3 "." commit_sha}')
 
 echo -e "\n"
 echo "REGISTRY: $REGISTRY"
@@ -39,6 +43,10 @@ echo "JOB_HANDLERS_CONTEXT: $JOB_HANDLERS_CONTEXT"
 echo "JOB_HANDLERS_REPOSITORY: $JOB_HANDLERS_REPOSITORY"
 echo "JOB_HANDLERS_VERSION: $JOB_HANDLERS_VERSION"
 echo "JOB_HANDLERS_TAG: $JOB_HANDLERS_TAG"
+echo "JOB_BALANCES_CONTEXT: $JOB_BALANCES_CONTEXT"
+echo "JOB_BALANCES_REPOSITORY: $JOB_BALANCES_REPOSITORY"
+echo "JOB_BALANCES_VERSION: $JOB_BALANCES_VERSION"
+echo "JOB_BALANCES_TAG: $JOB_BALANCES_TAG"
 echo -e "\n"
 
 echo -e "Building images with their version tag.\n"
@@ -55,6 +63,7 @@ export API_TAG=latest
 export APP_TAG=latest
 export JOB_COLLECTOR_TAG=latest
 export JOB_HANDLERS_TAG=latest
+export JOB_BALANCES_TAG=latest
 
 echo -e "Building images with the 'latest' tag.\n"
 docker-compose -f docker/docker-compose-build.yaml build --no-rm

@@ -35,7 +35,8 @@ namespace Cryptofolio.Infrastructure.Migrations
                     name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     code = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: false),
                     symbol = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: false),
-                    precision = table.Column<int>(type: "integer", nullable: false, defaultValue: 2)
+                    precision = table.Column<int>(type: "integer", nullable: false, defaultValue: 2),
+                    value_format = table.Column<string>(type: "text", nullable: false, defaultValue: "{0}{1}")
                 },
                 constraints: table =>
                 {

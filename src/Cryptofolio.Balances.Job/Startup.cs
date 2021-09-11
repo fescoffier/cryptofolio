@@ -86,7 +86,8 @@ namespace Cryptofolio.Balances.Job
                     Configuration.GetSection("Kafka:Producer").Get<ProducerConfig>(),
                     Configuration.GetSection("Kafka:Topics:HealthChecks").Get<string>(),
                     name: "kafka"
-                );
+                )
+                .AddRedis(Configuration.GetConnectionString("Redis"), name: "redis");
 
             services.TryAddSingleton<ISystemClock, SystemClock>();
         }

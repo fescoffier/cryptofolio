@@ -131,6 +131,7 @@ namespace Cryptofolio.Handlers.Job
                     Configuration.GetSection("Kafka:Topics:HealthChecks").Get<string>(),
                     name: "kafka"
                 )
+                .AddRedis(Configuration.GetConnectionString("Redis"), name: "redis")
                 .AddCheck<ElasticsearchHealthCheck>("elasticsearch");
 
             services.TryAddSingleton<ISystemClock, SystemClock>();
