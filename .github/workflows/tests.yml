@@ -26,5 +26,5 @@ jobs:
         run: dotnet build --no-restore
       - name: Test
         env:
-          Fixer__ApiKey: $FIXER_APIKEY
+          Fixer__ApiKey: ${{ secrets.FIXER_APIKEY }}
         run: dotnet test --no-build --verbosity normal

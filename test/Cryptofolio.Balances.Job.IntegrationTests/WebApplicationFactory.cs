@@ -43,6 +43,7 @@ namespace Cryptofolio.Balances.Job.IntegrationTests
                 services.AddSingleton(systemClockMock);
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<ComputeWalletBalanceRequest>)));
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<BulkComputeWalletBalanceRequest>)));
+                services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(DatabaseMigrationService<CryptofolioContext>)));
             });
         }
 
