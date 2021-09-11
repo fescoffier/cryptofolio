@@ -17,11 +17,11 @@
                 [ngClass]="{'text-success': transaction.type === 'buy', 'text-danger': transaction.type === 'sell'}"></i>
               {{ transaction.type | titlecase }} via {{ transaction.exchange.name }}
             </div>
-            <div class=" card-subtitle text-muted">{{ transaction.date | date:"MMM dd, yyyy HH:mm" }}</div>
+            <div class=" card-text text-muted">{{ transaction.date | date:"MMM dd, yyyy HH:mm" }}</div>
           </div>
           <div class=" card-body col-3">
             <div class=" card-title">{{ transaction.qty }} {{ transaction.asset.symbol | uppercase }}</div>
-            <div class=" card-subtitle text-muted">Paid **** {{ transaction.currency | uppercase }}</div>
+            <div class=" card-text text-muted">Paid {{ transaction.initialValue | currencyValue: transaction.currency }}</div>
           </div>
           <div class=" card-body col-3">
             <div class=" card-title text-muted">TRADING PAIR</div>
@@ -30,7 +30,7 @@
           </div>
           <div class=" card-body col-3">
             <div class=" card-title text-muted">PRICE</div>
-            <div class=" card-text">{{ transaction.price | number:'1.0-3' }}
+            <div class=" card-text">{{ transaction.price | currencyValue: transaction.currency }}
             </div>
           </div>
           <div class=" card-body col-3">
@@ -43,11 +43,17 @@
           </div>
           <div class=" card-body col-3">
             <div class=" card-title text-muted">CHANGE</div>
-            <div class=" card-text">Not implemented</div>
+            <div class=" card-text" [ngClass]="{
+              'text-danger': transaction.change < 0,
+              'text-success': transaction.change > 0
+            }">{{ transaction.change > 0 ? "+" : "" }}{{ transaction.change | number: "1.0-2" }}%</div>
           </div>
           <div class=" card-body col-3">
             <div class=" card-title text-muted">CURRENT VALUE</div>
-            <div class=" card-text">Not implemented</div>
+            <div class=" card-text" [ngClass]="{
+              'text-danger': transaction.change < 0,
+              'text-success': transaction.change > 0
+            }">{{ transaction.currentValue | currencyValue: transaction.currency }}</div>
           </div>
         </div>
       </div>
@@ -74,10 +80,25 @@
               <ng-template #exchange_destination>{{ transaction.exchange.name }}</ng-template>
               <ng-template #normal_destination>{{ transaction.destination }}</ng-template>
             </div>
-            <div class=" card-subtitle text-muted">{{ transaction.date | date:"MMM dd, yyyy HH:mm" }}</div>
+            <div class=" card-text text-muted">{{ transaction.date | date:"MMM dd, yyyy HH:mm" }}</div>
           </div>
           <div class=" card-body col-3">
             <div class=" card-title">{{ transaction.qty }} {{ transaction.asset.symbol | uppercase }}</div>
+            <div class=" card-text text-muted">Value then {{ transaction.initialValue | currencyValue: transaction.wallet.currency }}</div>
+          </div>
+          <div class=" card-body col-3">
+            <div class=" card-title text-muted">CHANGE</div>
+            <div class=" card-text" [ngClass]="{
+              'text-danger': transaction.change < 0,
+              'text-success': transaction.change > 0
+            }">{{ transaction.change > 0 ? "+" : "" }}{{ transaction.change | number: "1.0-2" }}%</div>
+          </div>
+          <div class=" card-body col-3">
+            <div class=" card-title text-muted">CURRENT VALUE</div>
+            <div class=" card-text" [ngClass]="{
+              'text-danger': transaction.change < 0,
+              'text-success': transaction.change > 0
+            }">{{ transaction.currentValue | currencyValue: transaction.wallet.currency }}</div>
           </div>
         </div>
       </div>

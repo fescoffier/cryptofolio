@@ -220,3 +220,57 @@ Create the name of the handlers job service account to use.
 {{- default "default" .Values.jobs.handlers.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Balances job name.
+*/}}
+{{- define "cryptofolio-balances-job.name" -}}
+{{- .Values.jobs.balances.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{/*
+Balances job fullname.
+*/}}
+{{- define "cryptofolio-balances-job.fullname" -}}
+{{- if .Values.jobs.balances.fullnameOverride }}
+{{- .Values.jobs.balances.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $name := .Values.jobs.balances.nameOverride }}
+{{- if contains $name .Release.Name }}
+{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+Balances job common labels.
+*/}}
+{{- define "cryptofolio-balances-job.labels" -}}
+helm.sh/chart: {{ include "cryptofolio.chart" . }}
+{{ include "cryptofolio-balances-job.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+Balances job selector labels.
+*/}}
+{{- define "cryptofolio-balances-job.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "cryptofolio-balances-job.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
+Create the name of the balances job service account to use.
+*/}}
+{{- define "cryptofolio-balances-job.serviceAccountName" -}}
+{{- if .Values.jobs.balances.serviceAccount.create }}
+{{- default (include "cryptofolio-balances-job.fullname" .) .Values.jobs.balances.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.jobs.balances.serviceAccount.name }}
+{{- end }}
+{{- end }}

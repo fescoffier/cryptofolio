@@ -34,6 +34,6 @@ namespace Cryptofolio.Api.Controllers
         public IEnumerable<string> Sources() => InfrastructureConstants.Transactions.Sources.All;
 
         [HttpGet("destinations")]
-        public IEnumerable<string> Destinations() => InfrastructureConstants.Transactions.Sources.All;
+        public IEnumerable<string> Destinations() => InfrastructureConstants.Transactions.Destinations.All;
     }
 }

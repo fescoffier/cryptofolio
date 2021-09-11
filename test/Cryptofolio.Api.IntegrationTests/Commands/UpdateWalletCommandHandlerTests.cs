@@ -1,6 +1,7 @@
 using Cryptofolio.Api.Commands;
 using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Entities;
+using Cryptofolio.Infrastructure.TestsCommon;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Internal;
@@ -48,7 +49,8 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
                 RequestContext = new(null, Data.UserId),
                 Id = Data.Wallet1.Id,
                 Name = Data.Wallet1.Name + " updated",
-                Description = Data.Wallet1.Description
+                Description = Data.Wallet1.Description,
+                CurrencyId = Data.Wallet1.Currency.Id
             };
             var cancellationToken = CancellationToken.None;
 

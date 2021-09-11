@@ -118,9 +118,9 @@ namespace Cryptofolio.Infrastructure
                 public const string MyWallet = "My wallet";
 
                 /// <summary>
-                /// The transfer goes to an external source.
+                /// The transfer goes to an external destination.
                 /// </summary>
-                public const string ExternalSource = "External source";
+                public const string ExternalDestination = "External destination";
 
                 /// <summary>
                 /// The transfer destinations list.
@@ -129,7 +129,7 @@ namespace Cryptofolio.Infrastructure
                 {
                     MyExchange,
                     MyWallet,
-                    ExternalSource
+                    ExternalDestination
                 };
             }
         }
@@ -148,6 +148,11 @@ namespace Cryptofolio.Infrastructure
                 /// The asset category.
                 /// </summary>
                 public const string Asset = "Asset";
+
+                /// <summary>
+                /// The currency category.
+                /// </summary>
+                public const string Currency = "Currency";
 
                 /// <summary>
                 /// The exchange category.

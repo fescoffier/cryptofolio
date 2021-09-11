@@ -39,6 +39,23 @@ namespace Cryptofolio.Infrastructure.Entities
         public decimal Qty { get; set; }
 
         /// <summary>
+        /// The initial value (computed with the ticker at the transaction date) of the transaction.
+        /// </summary>
+        [JsonPropertyName("initial_value")]
+        public decimal InitialValue { get; set; }
+
+        /// <summary>
+        /// The current value (computed with the latest ticker) of the transaction.
+        /// </summary>
+        [JsonPropertyName("current_value")]
+        public decimal CurrentValue { get; set; }
+
+        /// <summary>
+        /// The change in percent.
+        /// </summary>
+        public decimal Change { get; set; }
+
+        /// <summary>
         /// The optional note.
         /// </summary>
         public string Note { get; set; }

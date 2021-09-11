@@ -12,13 +12,12 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 5.0.301
+          dotnet-version: 5.0.400
       - name: Warmup development dependencies
         run: docker-compose -f docker/docker-compose-dev.yaml up -d
       - name: Restore dependencies
@@ -26,4 +25,6 @@ jobs:
       - name: Build
         run: dotnet build --no-restore
       - name: Test
+        env:
+          Fixer__ApiKey: ${{ secrets.FIXER_APIKEY }}
         run: dotnet test --no-build --verbosity normal

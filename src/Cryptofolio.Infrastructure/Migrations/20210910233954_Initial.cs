@@ -17,8 +17,8 @@ namespace Cryptofolio.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    symbol = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    name = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
+                    symbol = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    name = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
                     description = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
@@ -32,10 +32,11 @@ namespace Cryptofolio.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<string>(type: "character varying(36)", maxLength: 36, nullable: false),
-                    name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    code = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: true),
-                    symbol = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: true),
-                    precision = table.Column<int>(type: "integer", nullable: false, defaultValue: 2)
+                    name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    code = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: false),
+                    symbol = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: false),
+                    precision = table.Column<int>(type: "integer", nullable: false, defaultValue: 2),
+                    value_format = table.Column<string>(type: "text", nullable: false, defaultValue: "{0}{1}")
                 },
                 constraints: table =>
                 {
@@ -48,11 +49,11 @@ namespace Cryptofolio.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    name = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
+                    name = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
                     description = table.Column<string>(type: "text", nullable: true),
                     year_established = table.Column<long>(type: "bigint", nullable: true),
-                    url = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: true),
-                    image = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: true)
+                    url = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: false),
+                    image = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -65,12 +66,70 @@ namespace Cryptofolio.Infrastructure.Migrations
                 columns: table => new
                 {
                     key = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    group = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    value = table.Column<string>(type: "text", nullable: true)
+                    group = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    value = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_setting", x => x.key);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "asset_ticker",
+                schema: "data",
+                columns: table => new
+                {
+                    timestamp = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    asset_id = table.Column<string>(type: "character varying(100)", nullable: false),
+                    vs_currency_id = table.Column<string>(type: "character varying(36)", nullable: false),
+                    value = table.Column<decimal>(type: "numeric", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_asset_ticker", x => new { x.asset_id, x.vs_currency_id, x.timestamp });
+                    table.ForeignKey(
+                        name: "FK_asset_ticker_asset_asset_id",
+                        column: x => x.asset_id,
+                        principalSchema: "data",
+                        principalTable: "asset",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_asset_ticker_currency_vs_currency_id",
+                        column: x => x.vs_currency_id,
+                        principalSchema: "data",
+                        principalTable: "currency",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "currency_ticker",
+                schema: "data",
+                columns: table => new
+                {
+                    timestamp = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    currency_id = table.Column<string>(type: "character varying(36)", nullable: false),
+                    vs_currency_id = table.Column<string>(type: "character varying(36)", nullable: false),
+                    value = table.Column<decimal>(type: "numeric", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_currency_ticker", x => new { x.currency_id, x.vs_currency_id, x.timestamp });
+                    table.ForeignKey(
+                        name: "FK_currency_ticker_currency_currency_id",
+                        column: x => x.currency_id,
+                        principalSchema: "data",
+                        principalTable: "currency",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_currency_ticker_currency_vs_currency_id",
+                        column: x => x.vs_currency_id,
+                        principalSchema: "data",
+                        principalTable: "currency",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -81,32 +140,53 @@ namespace Cryptofolio.Infrastructure.Migrations
                     id = table.Column<string>(type: "character varying(36)", maxLength: 36, nullable: false),
                     name = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
                     description = table.Column<string>(type: "text", nullable: true),
-                    selected = table.Column<bool>(type: "boolean", nullable: false),
+                    currency_id = table.Column<string>(type: "character varying(36)", nullable: false),
+                    InitialValue = table.Column<decimal>(type: "numeric", nullable: false),
+                    current_value = table.Column<decimal>(type: "numeric", nullable: false),
+                    change = table.Column<decimal>(type: "numeric", nullable: false),
+                    selected = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
                     user_id = table.Column<string>(type: "character varying(36)", maxLength: 36, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_wallet", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_wallet_currency_currency_id",
+                        column: x => x.currency_id,
+                        principalSchema: "data",
+                        principalTable: "currency",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "asset_ticker",
+                name: "holding",
                 schema: "data",
                 columns: table => new
                 {
-                    timestamp = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    vs_currency = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
+                    id = table.Column<string>(type: "character varying(36)", maxLength: 36, nullable: false),
+                    wallet_id = table.Column<string>(type: "character varying(36)", nullable: false),
                     asset_id = table.Column<string>(type: "character varying(100)", nullable: false),
-                    value = table.Column<decimal>(type: "numeric", nullable: false)
+                    qty = table.Column<decimal>(type: "numeric", nullable: false),
+                    InitialValue = table.Column<decimal>(type: "numeric", nullable: false),
+                    current_value = table.Column<decimal>(type: "numeric", nullable: false),
+                    change = table.Column<decimal>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_asset_ticker", x => new { x.asset_id, x.timestamp, x.vs_currency });
+                    table.PrimaryKey("PK_holding", x => x.id);
                     table.ForeignKey(
-                        name: "FK_asset_ticker_asset_asset_id",
+                        name: "FK_holding_asset_asset_id",
                         column: x => x.asset_id,
                         principalSchema: "data",
                         principalTable: "asset",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_holding_wallet_wallet_id",
+                        column: x => x.wallet_id,
+                        principalSchema: "data",
+                        principalTable: "wallet",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -122,6 +202,9 @@ namespace Cryptofolio.Infrastructure.Migrations
                     asset_id = table.Column<string>(type: "character varying(100)", nullable: false),
                     exchange_id = table.Column<string>(type: "character varying(100)", nullable: true),
                     qty = table.Column<decimal>(type: "numeric", nullable: false),
+                    initial_value = table.Column<decimal>(type: "numeric", nullable: false),
+                    current_value = table.Column<decimal>(type: "numeric", nullable: false),
+                    change = table.Column<decimal>(type: "numeric", nullable: false),
                     note = table.Column<string>(type: "text", nullable: true),
                     discriminator = table.Column<string>(type: "text", nullable: false),
                     type = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: true),
@@ -164,16 +247,60 @@ namespace Cryptofolio.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_asset_symbol",
+                schema: "data",
+                table: "asset",
+                column: "symbol");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_asset_ticker_timestamp",
                 schema: "data",
                 table: "asset_ticker",
                 column: "timestamp");
 
             migrationBuilder.CreateIndex(
-                name: "IX_asset_ticker_vs_currency",
+                name: "IX_asset_ticker_vs_currency_id",
                 schema: "data",
                 table: "asset_ticker",
-                column: "vs_currency");
+                column: "vs_currency_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_currency_code",
+                schema: "data",
+                table: "currency",
+                column: "code",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_currency_ticker_timestamp",
+                schema: "data",
+                table: "currency_ticker",
+                column: "timestamp");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_currency_ticker_vs_currency_id",
+                schema: "data",
+                table: "currency_ticker",
+                column: "vs_currency_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_holding_asset_id",
+                schema: "data",
+                table: "holding",
+                column: "asset_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_holding_wallet_id_asset_id",
+                schema: "data",
+                table: "holding",
+                columns: new[] { "wallet_id", "asset_id" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_setting_group",
+                schema: "data",
+                table: "setting",
+                column: "group");
 
             migrationBuilder.CreateIndex(
                 name: "IX_transaction_asset_id",
@@ -223,12 +350,26 @@ namespace Cryptofolio.Infrastructure.Migrations
                 schema: "data",
                 table: "transaction",
                 column: "wallet_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_wallet_currency_id",
+                schema: "data",
+                table: "wallet",
+                column: "currency_id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "asset_ticker",
+                schema: "data");
+
+            migrationBuilder.DropTable(
+                name: "currency_ticker",
+                schema: "data");
+
+            migrationBuilder.DropTable(
+                name: "holding",
                 schema: "data");
 
             migrationBuilder.DropTable(
@@ -244,15 +385,15 @@ namespace Cryptofolio.Infrastructure.Migrations
                 schema: "data");
 
             migrationBuilder.DropTable(
-                name: "currency",
-                schema: "data");
-
-            migrationBuilder.DropTable(
                 name: "exchange",
                 schema: "data");
 
             migrationBuilder.DropTable(
                 name: "wallet",
+                schema: "data");
+
+            migrationBuilder.DropTable(
+                name: "currency",
                 schema: "data");
         }
     }

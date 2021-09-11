@@ -3,6 +3,7 @@ using Cryptofolio.Collector.Job.Data;
 using Cryptofolio.Collector.Job.IntegrationTests.Data;
 using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Data;
+using Cryptofolio.Infrastructure.TestsCommon;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -23,20 +24,25 @@ namespace Cryptofolio.Collector.Job.IntegrationTests
     {
         public string DbName { get; } = Guid.NewGuid().ToString();
 
+        public TestData Data { get; } = new();
+
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureAppConfiguration(config =>
             {
                 config.AddInMemoryCollection(new Dictionary<string, string>
                 {
+                    { "Serilog:MinimumLevel:Default", "Fatal" },
                     { "ConnectionStrings:CryptofolioContext", $"Host=localhost;Database={DbName};Username=cryptofolio;Password=Pass@word1;Port=55432;IncludeErrorDetails=true" },
                     { "Kafka:Topics:Cryptofolio.Infrastructure.IEvent", Guid.NewGuid().ToString() },
                     { "Kafka:Topics:Cryptofolio.Infrastructure.Data.AssetDataRequest", Guid.NewGuid().ToString() },
                     { "Kafka:Topics:Cryptofolio.Infrastructure.Data.AssetTickerDataRequest", Guid.NewGuid().ToString() },
+                    { "Kafka:Topics:Cryptofolio.Infrastructure.Data.CurrencyTickerDataRequest", Guid.NewGuid().ToString() },
                     { "Kafka:Topics:Cryptofolio.Infrastructure.Data.ExchangeDataRequest", Guid.NewGuid().ToString() },
                     { "Kafka:Topics:Cryptofolio.Collector.Job.IntegrationTests.Data.TestDataRequest", Guid.NewGuid().ToString() },
                     { "Data:Schedules:Cryptofolio.Infrastructure.Data.AssetDataRequest", "* * * * *" },
                     { "Data:Schedules:Cryptofolio.Infrastructure.Data.AssetTickerDataRequest", "* * * * *" },
+                    { "Data:Schedules:Cryptofolio.Infrastructure.Data.CurrencyTickerDataRequest", "* * * * *" },
                     { "Data:Schedules:Cryptofolio.Infrastructure.Data.ExchangeDataRequest", "* * * * *" },
                     { "Data:Schedules:Cryptofolio.Collector.Job.IntegrationTests.Data.TestDataRequest", "* * * * *" }
                 });
@@ -60,11 +66,14 @@ namespace Cryptofolio.Collector.Job.IntegrationTests
                 });
                 services.AddSingleton<AssetDataRequestScheduler>();
                 services.AddSingleton<AssetTickerDataRequestScheduler>();
+                services.AddSingleton<CurrencyTickerDataRequestScheduler>();
                 services.AddSingleton<ExchangeDataRequestScheduler>();
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<AssetDataRequest>)));
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(AssetDataRequestScheduler)));
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<AssetTickerDataRequest>)));
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(AssetTickerDataRequestScheduler)));
+                services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<CurrencyTickerDataRequest>)));
+                services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(CurrencyTickerDataRequestScheduler)));
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<ExchangeDataRequest>)));
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(ExchangeDataRequestScheduler)));
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<TestDataRequest>)));
@@ -81,6 +90,21 @@ namespace Cryptofolio.Collector.Job.IntegrationTests
             var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
             context.Database.Migrate();
             return host;
+        }
+
+        public void PurgeData()
+        {
+            using var scope = Services.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
+            context.Transactions.RemoveRange(context.Transactions);
+            context.Holdings.RemoveRange(context.Holdings);
+            context.Wallets.RemoveRange(context.Wallets);
+            context.AssetTickers.RemoveRange(context.AssetTickers);
+            context.Assets.RemoveRange(context.Assets);
+            context.CurrencyTickers.RemoveRange(context.CurrencyTickers);
+            context.Currencies.RemoveRange(context.Currencies);
+            context.Exchanges.RemoveRange(context.Exchanges);
+            context.SaveChanges();
         }
     }
 }

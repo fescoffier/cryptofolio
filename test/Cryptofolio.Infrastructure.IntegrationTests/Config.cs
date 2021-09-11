@@ -12,6 +12,7 @@ namespace Cryptofolio.Infrastructure.IntegrationTests
                 .AddInMemoryCollection(new Dictionary<string, string>
                 {
                     { "ConnectionStrings:CryptofolioContext", $"Host=localhost;Database={Guid.NewGuid()};Username=cryptofolio;Password=Pass@word1;Port=55432;IncludeErrorDetails=true" },
+                    { "ConnectionStrings:Redis", "localhost:6379" },
                     { "Kafka:Topics:Cryptofolio.Infrastructure.IEvent", Guid.NewGuid().ToString() },
                     { "Kafka:Topics:Cryptofolio.Infrastructure.IntegrationTests.TestMessage", Guid.NewGuid().ToString() },
                     { "Kafka:Producer:BootstrapServers", "localhost:9092" },

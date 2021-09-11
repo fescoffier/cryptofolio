@@ -1,6 +1,7 @@
 using Cryptofolio.Api.Commands;
 using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Entities;
+using Cryptofolio.Infrastructure.TestsCommon;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Internal;
@@ -32,6 +33,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             _context = _scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
             _systemClockMock = _scope.ServiceProvider.GetRequiredService<Mock<ISystemClock>>();
             _dispatcherMock = _scope.ServiceProvider.GetRequiredService<Mock<IEventDispatcher>>();
+            _factory.PurgeData();
         }
 
         [Fact]

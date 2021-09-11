@@ -1,6 +1,7 @@
 using Cryptofolio.Api.Commands;
 using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Entities;
+using Cryptofolio.Infrastructure.TestsCommon;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -76,7 +77,7 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
                     .Include(t => t.Exchange)
                     .Include(t => t.Currency)
                     .Single(t => t.Id == Data.Transaction1.Id);
-                transaction.Date.Should().BeCloseTo(command.Date, precision: 1);
+                transaction.Date.Should().BeCloseTo(command.Date, precision: TimeSpan.FromTicks(10));
                 transaction.Exchange.Id.Should().Be(command.ExchangeId);
                 transaction.Currency.Id.Should().Be(command.CurrencyId);
                 transaction.Price.Should().Be(command.Price);

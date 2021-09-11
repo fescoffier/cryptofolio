@@ -1,6 +1,7 @@
 using Cryptofolio.Infrastructure;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Cryptofolio.Handlers.Job
 {
@@ -35,7 +36,7 @@ namespace Cryptofolio.Handlers.Job
             where THandler : class, IPipelineBehavior<TEvent, Unit>
         {
             services.AddScoped<IPipelineBehavior<TEvent, Unit>, EventTraceWriter<TEvent>>();
-            services.AddScoped<THandler>();
+            services.TryAddScoped<THandler>();
             services.AddScoped<IPipelineBehavior<TEvent, Unit>>(p => p.GetRequiredService<THandler>());
             services.AddScoped<IPipelineBehavior<TEvent, Unit>, EventTraceFinalizer<TEvent>>();
             return services;

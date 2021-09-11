@@ -1,7 +1,9 @@
 using CoinGecko.Clients;
 using CoinGecko.Interfaces;
 using Confluent.Kafka;
+using Cryptofolio.Collector.Job.Coingecko;
 using Cryptofolio.Collector.Job.Data;
+using Cryptofolio.Collector.Job.Fixer;
 using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Data;
 using Elasticsearch.Net;
@@ -18,6 +20,7 @@ using Microsoft.Extensions.Options;
 using Nest;
 using StackExchange.Redis;
 using System.Linq;
+using System.Text.Json;
 
 namespace Cryptofolio.Collector.Job
 {
@@ -71,6 +74,16 @@ namespace Cryptofolio.Collector.Job
             services.AddConsumer<AssetTickerDataRequest>(options =>
             {
                 options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(AssetTickerDataRequest).FullName}").Get<string>();
+                options.Config = Configuration.GetSection("Kafka:Consumer").Get<ConsumerConfig>();
+            });
+            services.AddProducer<CurrencyTickerDataRequest>(options =>
+            {
+                options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(CurrencyTickerDataRequest).FullName}").Get<string>();
+                options.Config = Configuration.GetSection("Kafka:Producer").Get<ProducerConfig>();
+            });
+            services.AddConsumer<CurrencyTickerDataRequest>(options =>
+            {
+                options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(CurrencyTickerDataRequest).FullName}").Get<string>();
                 options.Config = Configuration.GetSection("Kafka:Consumer").Get<ConsumerConfig>();
             });
             services.AddProducer<ExchangeDataRequest>(options =>
@@ -135,6 +148,20 @@ namespace Cryptofolio.Collector.Job
                 })
                 .ConfigurePrimaryHttpMessageHandler<CoingeckoHttpClientHandler>();
 
+            // Fixer
+            services.Configure<FixerOptions>(Configuration.GetSection("Fixer"));
+            services.PostConfigure<FixerOptions>(options =>
+            {
+                options.SerializerOptions ??= new();
+                options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                options.SerializerOptions.Converters.Add(new FixerDateTimeOffsetJsonConverter());
+            });
+            services.AddHttpClient<FixerClient>((provider, client) =>
+            {
+                var options = provider.GetRequiredService<IOptionsMonitor<FixerOptions>>().CurrentValue;
+                client.BaseAddress = new(options.ApiUri);
+            });
+
             // MediatR
             services.AddMediatR(typeof(Startup));
             // Assets
@@ -142,6 +169,9 @@ namespace Cryptofolio.Collector.Job
             services.AddScoped<IPipelineBehavior<AssetDataRequest, Unit>>(p => p.GetRequiredService<AssetDataRequestHandler>());
             services.AddScoped<AssetTickerDataRequestHandler>();
             services.AddScoped<IPipelineBehavior<AssetTickerDataRequest, Unit>>(p => p.GetRequiredService<AssetTickerDataRequestHandler>());
+            // Currencies
+            services.AddScoped<CurrencyTickerDataRequestHandler>();
+            services.AddScoped<IPipelineBehavior<CurrencyTickerDataRequest, Unit>>(p => p.GetRequiredService<CurrencyTickerDataRequestHandler>());
             // Exchanges
             services.AddScoped<ExchangeDataRequestHandler>();
             services.AddScoped<IPipelineBehavior<ExchangeDataRequest, Unit>>(p => p.GetRequiredService<ExchangeDataRequestHandler>());
@@ -150,6 +180,7 @@ namespace Cryptofolio.Collector.Job
             services.Configure<DataRequestSchedulerOptions>(Configuration.GetSection("Data"));
             services.AddHostedService<AssetDataRequestScheduler>();
             services.AddHostedService<AssetTickerDataRequestScheduler>();
+            services.AddHostedService<CurrencyTickerDataRequestScheduler>();
             services.AddHostedService<ExchangeDataRequestScheduler>();
 
             // Healthchecks

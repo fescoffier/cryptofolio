@@ -1,7 +1,9 @@
 using Cryptofolio.Api.Commands;
 using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Entities;
+using Cryptofolio.Infrastructure.TestsCommon;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Internal;
 using Moq;
@@ -44,17 +46,32 @@ namespace Cryptofolio.Api.IntegrationTests.Commands
             {
                 RequestContext = new(null, Data.UserId),
                 Name = Data.Wallet1.Name,
-                Description = Data.Wallet1.Description
+                Description = Data.Wallet1.Description,
+                CurrencyId = Data.Wallet1.Currency.Id
             };
             var cancellationToken = CancellationToken.None;
+            _context.Currencies.Add(Data.USD);
+            _context.SaveChanges();
 
             // Act
             var result = await _handler.Handle(command, cancellationToken);
 
             // Assert
             result.Succeeded.Should().BeTrue();
-            result.Data.Should().BeEquivalentTo(Data.Wallet1, options => options.Excluding(m => m.Id).Excluding(m => m.Selected));
-            _context.Wallets.Single(w => w.Id == result.Data.Id).Should().BeEquivalentTo(result.Data, options => options.Excluding(m => m.Selected));
+            result.Data
+                .Should()
+                .BeEquivalentTo(
+                    Data.Wallet1,
+                    options => options
+                        .Excluding(m => m.Id)
+                        .Excluding(m => m.Selected)
+                        .Excluding(m => m.InitialValue)
+                );
+            _context.Wallets
+                .Include(w => w.Currency)
+                .Single(w => w.Id == result.Data.Id)
+                .Should()
+                .BeEquivalentTo(result.Data, options => options.Excluding(m => m.Selected));
             _dispatcherMock.Verify(m => m.DispatchAsync(It.Is<WalletCreatedEvent>(w => w.Date == utcNow)), Times.Once());
         }
 

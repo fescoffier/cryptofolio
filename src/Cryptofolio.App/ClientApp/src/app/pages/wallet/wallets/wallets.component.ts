@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { Currency } from "src/app/models/currency";
 import swal from "sweetalert2";
 
 import { Wallet } from "../../../models/wallet";
@@ -11,6 +12,7 @@ import { WalletService } from "../wallet.service";
 })
 export class WalletsComponent implements OnInit {
   public wallets: Wallet[];
+  public currencies: Currency[];
 
   public form: FormGroup;
   public formSubmitted = false;
@@ -24,10 +26,13 @@ export class WalletsComponent implements OnInit {
 
   ngOnInit() {
     this.service.get().subscribe(wallets => this.wallets = wallets);
+    this.service.getCurrencies().subscribe(currencies => this.currencies = currencies);
     this.form = this.formBuilder.group(
       {
         id: [null],
         name: [null, [Validators.required, Validators.maxLength(250)]],
+        currency_id: [null, [Validators.required]],
+        currency_name: [null],
         description: [null]
       }
     );
@@ -77,6 +82,11 @@ export class WalletsComponent implements OnInit {
     }
   }
 
+  setCurrency(currency: Currency) {
+    this.form.controls.currency_id.setValue(currency.id);
+    this.form.controls.currency_name.setValue(currency.code);
+  }
+
   create() {
     this.form.reset();
     this.formSubmitted = false;
@@ -87,6 +97,8 @@ export class WalletsComponent implements OnInit {
   edit(wallet: Wallet) {
     this.form.controls["id"].setValue(wallet.id);
     this.form.controls["name"].setValue(wallet.name);
+    this.form.controls["currency_id"].setValue(wallet.currency.id);
+    this.form.controls["currency_name"].setValue(wallet.currency.code);
     this.form.controls["description"].setValue(wallet.description);
     this.formSubmitted = false;
     this.formDisplayed = true;

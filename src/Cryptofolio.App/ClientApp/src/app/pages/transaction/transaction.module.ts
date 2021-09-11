@@ -7,6 +7,7 @@ import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TimepickerModule } from "ngx-bootstrap/timepicker";
 
+import { PipeModule } from "../../pipes/pipe.module";
 import { TransactionRoutes } from "./transaction.routing";
 import { TransactionService } from "./transaction.service";
 import { TransactionEditComponent } from "./edit/transaction-edit.component";
@@ -21,7 +22,8 @@ import { TransactionsHistoryComponent } from "./history/transactions-history.com
     ScrollingModule,
     BsDatepickerModule.forRoot(),
     BsDropdownModule.forRoot(),
-    TimepickerModule.forRoot()
+    TimepickerModule.forRoot(),
+    PipeModule
   ],
   declarations: [
     TransactionsHistoryComponent,

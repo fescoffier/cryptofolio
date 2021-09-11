@@ -13,6 +13,9 @@ export abstract class Transaction {
   asset: Asset;
   exchange: Exchange;
   qty: number;
+  initialValue: number;
+  currentValue: number;
+  change: number;
   note: string;
   type_discriminator: string;
 }
@@ -30,6 +33,8 @@ export class BuyOrSellTransaction extends Transaction {
     this.asset = new Asset(properties.asset);
     this.exchange = new Exchange(properties.exchange);
     this.currency = new Currency(properties.currency);
+    this.initialValue = properties["initial_value"];
+    this.currentValue = properties["current_value"];
   }
 }
 
@@ -43,5 +48,7 @@ export class TransferTransaction extends Transaction {
     this.wallet = new Wallet(properties.wallet);
     this.asset = new Asset(properties.asset);
     this.exchange = new Exchange(properties.exchange);
+    this.initialValue = properties["initial_value"];
+    this.currentValue = properties["current_value"];
   }
 }

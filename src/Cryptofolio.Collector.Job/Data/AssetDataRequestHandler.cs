@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace Cryptofolio.Collector.Job.Data
 {
     /// <summary>
-    /// Provides an implementation of <see cref="IPipelineBehavior{AssetDataRequest, Unit}"/> to handle <see cref="AssetDataRequest"/> message.
+    /// Provides an implementation of <see cref="IPipelineBehavior{TRequest, TResponse}"/> to handle <see cref="AssetDataRequest"/> message.
     /// </summary>
     public class AssetDataRequestHandler : IPipelineBehavior<AssetDataRequest, Unit>
     {

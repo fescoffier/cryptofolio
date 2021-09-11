@@ -39,20 +39,15 @@ namespace Cryptofolio.Api.Tests.Controllers
         {
             // Setup
             var requestContext = TestContext.Instance.RequestContext;
-            var wallet = new Wallet
-            {
-                Id = Guid.NewGuid().ToString(),
-                UserId = TestContext.Instance.UserId
-            };
-            _context.Wallets.Add(wallet);
+            _context.Wallets.Add(TestContext.Instance.Data.Wallet1);
             _context.SaveChanges();
             var cancellationToken = CancellationToken.None;
 
             // Act
-            var w = await _controller.Get(wallet.Id, requestContext, cancellationToken);
+            var w = await _controller.Get(TestContext.Instance.Data.Wallet1.Id, requestContext, cancellationToken);
 
             // Assert
-            w.Should().BeEquivalentTo(wallet);
+            w.Should().BeEquivalentTo(TestContext.Instance.Data.Wallet1);
         }
 
         [Fact]
@@ -60,12 +55,7 @@ namespace Cryptofolio.Api.Tests.Controllers
         {
             // Setup
             var requestContext = TestContext.Instance.RequestContext;
-            var wallet = new Wallet
-            {
-                Id = Guid.NewGuid().ToString(),
-                UserId = TestContext.Instance.UserId
-            };
-            _context.Wallets.Add(wallet);
+            _context.Wallets.Add(TestContext.Instance.Data.Wallet1);
             _context.SaveChanges();
             var cancellationToken = CancellationToken.None;
 
@@ -81,20 +71,17 @@ namespace Cryptofolio.Api.Tests.Controllers
         {
             // Setup
             var requestContext = TestContext.Instance.RequestContext;
-            var wallet = new Wallet
-            {
-                Id = Guid.NewGuid().ToString(),
-                UserId = Guid.NewGuid().ToString()
-            };
-            _context.Wallets.Add(wallet);
+            TestContext.Instance.Data.Wallet1.UserId = Guid.NewGuid().ToString();
+            _context.Wallets.Add(TestContext.Instance.Data.Wallet1);
             _context.SaveChanges();
             var cancellationToken = CancellationToken.None;
 
             // Act
-            var w = await _controller.Get(wallet.Id, requestContext, cancellationToken);
+            var w = await _controller.Get(TestContext.Instance.Data.Wallet1.Id, requestContext, cancellationToken);
 
             // Assert
             w.Should().BeNull();
+            TestContext.Instance.Data.Wallet1.UserId = TestContext.Instance.Data.UserId;
         }
 
         [Fact]
@@ -102,12 +89,7 @@ namespace Cryptofolio.Api.Tests.Controllers
         {
             // Setup
             var requestContext = TestContext.Instance.RequestContext;
-            var wallet = new Wallet
-            {
-                Id = Guid.NewGuid().ToString(),
-                UserId = TestContext.Instance.UserId
-            };
-            _context.Wallets.Add(wallet);
+            _context.Wallets.Add(TestContext.Instance.Data.Wallet1);
             _context.SaveChanges();
             var cancellationToken = CancellationToken.None;
 
@@ -115,7 +97,7 @@ namespace Cryptofolio.Api.Tests.Controllers
             var ws = await _controller.Get(requestContext, cancellationToken);
 
             // Assert
-            ws.Should().HaveCount(1).And.ContainEquivalentOf(wallet);
+            ws.Should().HaveCount(1).And.ContainEquivalentOf(TestContext.Instance.Data.Wallet1);
         }
 
         [Fact]
@@ -123,12 +105,7 @@ namespace Cryptofolio.Api.Tests.Controllers
         {
             // Setup
             var requestContext = TestContext.Instance.RequestContext;
-            var wallet = new Wallet
-            {
-                Id = Guid.NewGuid().ToString(),
-                UserId = TestContext.Instance.UserId
-            };
-            _context.Wallets.Add(wallet);
+            _context.Wallets.Add(TestContext.Instance.Data.Wallet1);
             _context.SaveChanges();
             var cancellationToken = CancellationToken.None;
 
@@ -136,7 +113,7 @@ namespace Cryptofolio.Api.Tests.Controllers
             var ws = await _controller.Get(requestContext, cancellationToken);
 
             // Assert
-            ws.Should().HaveCount(1).And.ContainEquivalentOf(wallet);
+            ws.Should().HaveCount(1).And.ContainEquivalentOf(TestContext.Instance.Data.Wallet1);
         }
 
         [Fact]

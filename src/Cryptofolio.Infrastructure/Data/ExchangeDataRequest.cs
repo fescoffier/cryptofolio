@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace Cryptofolio.Infrastructure.Data
 {
     /// <summary>
-    /// Models a data request for <see cref="Core.Entities.Exchange"/>.
+    /// Models a data request for <see cref="Entities.Exchange"/>.
     /// </summary>
     public class ExchangeDataRequest : DataRequest
     {

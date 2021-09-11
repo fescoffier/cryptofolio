@@ -1,4 +1,5 @@
 using Cryptofolio.Infrastructure;
+using Cryptofolio.Infrastructure.TestsCommon;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -26,6 +27,7 @@ namespace Cryptofolio.Api.IntegrationTests
             {
                 config.AddInMemoryCollection(new Dictionary<string, string>
                 {
+                    { "Serilog:MinimumLevel:Default", "Fatal" },
                     { "ConnectionStrings:CryptofolioContext", $"Host=localhost;Database={DbName};Username=cryptofolio;Password=Pass@word1;Port=55432;IncludeErrorDetails=true" },
                     { "Kafka:Topics:Cryptofolio.Infrastructure.IEvent", Guid.NewGuid().ToString() }
                 });
@@ -64,9 +66,11 @@ namespace Cryptofolio.Api.IntegrationTests
             using var scope = Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
             context.Transactions.RemoveRange(context.Transactions);
+            context.Holdings.RemoveRange(context.Holdings);
             context.Wallets.RemoveRange(context.Wallets);
             context.AssetTickers.RemoveRange(context.AssetTickers);
             context.Assets.RemoveRange(context.Assets);
+            context.CurrencyTickers.RemoveRange(context.CurrencyTickers);
             context.Currencies.RemoveRange(context.Currencies);
             context.Exchanges.RemoveRange(context.Exchanges);
             context.SaveChanges();

@@ -1,11 +1,14 @@
 using Cryptofolio.Api.Commands;
 using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Entities;
+using Cryptofolio.Infrastructure.TestsCommon;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -70,16 +73,19 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             var command = new CreateWalletCommand
             {
                 Name = Data.Wallet1.Name,
-                Description = Data.Wallet1.Description
+                Description = Data.Wallet1.Description,
+                CurrencyId = Data.Wallet1.Currency.Id
             };
+            using var scope = _factory.Services.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
+            context.Currencies.Add(Data.USD);
+            context.SaveChanges();
 
             // Act
             var response = await client.PostAsJsonAsync("/wallets", command);
 
             // Assert
-            response.StatusCode.Should().Be(StatusCodes.Status201Created);
-            using var scope = _factory.Services.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
+            response.StatusCode.Should().Be((HttpStatusCode)StatusCodes.Status201Created);
             var createdWallet = await response.Content.ReadFromJsonAsync<Wallet>();
             var wallet = context.Wallets.Single(w => w.Id == createdWallet.Id);
             createdWallet.Should().BeEquivalentTo(wallet);
@@ -96,7 +102,7 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             var response = await client.PostAsJsonAsync("/wallets", command);
 
             // Assert
-            response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+            response.StatusCode.Should().Be((HttpStatusCode)StatusCodes.Status400BadRequest);
         }
 
         [Fact]
@@ -107,7 +113,8 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             var command = new CreateWalletCommand
             {
                 Name = Data.Wallet1.Name,
-                Description = Data.Wallet1.Description
+                Description = Data.Wallet1.Description,
+                CurrencyId = Data.Wallet1.Currency.Id
             };
             // Change the test data user id with a value length greater than 36 characters, triggers a database exception.
             Data.ChangUserId(new string(Enumerable.Repeat('A', 37).ToArray()));
@@ -116,7 +123,7 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             var response = await client.PostAsJsonAsync("/wallets", command);
 
             // Assert
-            response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
+            response.StatusCode.Should().Be((HttpStatusCode)StatusCodes.Status500InternalServerError);
             var document = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
             document.RootElement.GetProperty("errors").EnumerateArray().Should().HaveCount(1);
             document.RootElement.GetProperty("errors").EnumerateArray().First().GetString().Should().Be(CommandConstants.Wallet.Errors.CreateError);
@@ -139,20 +146,22 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             {
                 Id = Data.Wallet2.Id,
                 Name = Data.Wallet2.Name + " updated",
-                Description = Data.Wallet2.Description
+                Description = Data.Wallet2.Description,
+                CurrencyId = Data.Wallet2.Currency.Id
             };
 
             // Act
             var response = await client.PutAsJsonAsync("/wallets", command);
 
             // Assert
-            response.StatusCode.Should().Be(StatusCodes.Status204NoContent);
+            response.StatusCode.Should().Be((HttpStatusCode)StatusCodes.Status204NoContent);
             using (var scope = _factory.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
-                var wallet = context.Wallets.Single(w => w.Id == Data.Wallet2.Id);
+                var wallet = context.Wallets.Include(w => w.Currency).Single(w => w.Id == Data.Wallet2.Id);
                 wallet.Name.Should().Be(Data.Wallet2.Name + " updated");
                 wallet.Description.Should().Be(Data.Wallet2.Description);
+                wallet.Currency.Should().BeEquivalentTo(Data.Wallet2.Currency);
             }
         }
 
@@ -167,7 +176,7 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             var response = await client.PutAsJsonAsync("/wallets", command);
 
             // Assert
-            response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+            response.StatusCode.Should().Be((HttpStatusCode)StatusCodes.Status400BadRequest);
         }
 
         [Fact]
@@ -179,14 +188,15 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             {
                 Id = Data.Wallet2.Id,
                 Name = Data.Wallet2.Name,
-                Description = Data.Wallet2.Description
+                Description = Data.Wallet2.Description,
+                CurrencyId = Data.Wallet1.Currency.Id
             };
 
             // Act
             var response = await client.PutAsJsonAsync("/wallets", command);
 
             // Assert
-            response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
+            response.StatusCode.Should().Be((HttpStatusCode)StatusCodes.Status500InternalServerError);
             var document = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
             document.RootElement.GetProperty("errors").EnumerateArray().Should().HaveCount(1);
             document.RootElement.GetProperty("errors").EnumerateArray().First().GetString().Should().Be(CommandConstants.Wallet.Errors.UpdateError);
@@ -209,7 +219,7 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             var response = await client.PutAsync($"/wallets/{Data.Wallet2.Id}/select", null);
 
             // Assert
-            response.StatusCode.Should().Be(StatusCodes.Status204NoContent);
+            response.StatusCode.Should().Be((HttpStatusCode)StatusCodes.Status204NoContent);
             using (var scope = _factory.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
@@ -236,7 +246,7 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             var response = await client.PutAsync($"/wallets/none/select", null);
 
             // Assert
-            response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
+            response.StatusCode.Should().Be((HttpStatusCode)StatusCodes.Status500InternalServerError);
             var document = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
             document.RootElement.GetProperty("errors").EnumerateArray().Should().HaveCount(1);
             document.RootElement.GetProperty("errors").EnumerateArray().First().GetString().Should().Be(CommandConstants.Wallet.Errors.UpdateError);
@@ -267,7 +277,7 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             var response = await client.DeleteAsync($"/wallets/{Data.Wallet3.Id}");
 
             // Assert
-            response.StatusCode.Should().Be(StatusCodes.Status204NoContent);
+            response.StatusCode.Should().Be((HttpStatusCode)StatusCodes.Status204NoContent);
             using (var scope = _factory.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
@@ -285,7 +295,7 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             var response = await client.DeleteAsync($"/wallets/{Data.Wallet3.Id}");
 
             // Assert
-            response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
+            response.StatusCode.Should().Be((HttpStatusCode)StatusCodes.Status500InternalServerError);
             var document = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
             document.RootElement.GetProperty("errors").EnumerateArray().Should().HaveCount(1);
             document.RootElement.GetProperty("errors").EnumerateArray().First().GetString().Should().Be(CommandConstants.Wallet.Errors.DeleteError);

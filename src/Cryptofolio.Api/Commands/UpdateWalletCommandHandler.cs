@@ -1,6 +1,7 @@
 using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.Logging;
 using System;
@@ -53,6 +54,7 @@ namespace Cryptofolio.Api.Commands
                 {
                     Id = command.Id,
                     Name = command.Name,
+                    Currency = await _context.Currencies.SingleOrDefaultAsync(c => c.Id == command.CurrencyId, cancellationToken),
                     Description = command.Description
                 };
                 var walletEntry = _context.Wallets.Attach(wallet);

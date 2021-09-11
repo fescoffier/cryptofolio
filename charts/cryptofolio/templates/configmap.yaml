@@ -84,6 +84,7 @@ data:
         "Schedules": {
           "Cryptofolio.Infrastructure.Data.AssetDataRequest": "{{ .Values.jobs.collector.config.data.schedules.assetDataRequest }}",
           "Cryptofolio.Infrastructure.Data.AssetTickerDataRequest": "{{ .Values.jobs.collector.config.data.schedules.assetTickerDataRequest }}",
+          "Cryptofolio.Infrastructure.Data.CurrencyTickerDataRequest": "{{ .Values.jobs.collector.config.data.schedules.currencyTickerDataRequest }}",
           "Cryptofolio.Infrastructure.Data.ExchangeDataRequest": "{{ .Values.jobs.collector.config.data.schedules.exchangeDataRequest }}"
         },
         "SchedulersLockKey": "{{ .Values.jobs.collector.config.data.schedulersLockKey }}",
@@ -126,4 +127,33 @@ data:
         "Consumer": {{ .Values.jobs.handlers.config.kafka.consumerConfig | toJson }}
       },
       "Elasticsearch": {{ .Values.jobs.handlers.config.elasticsearch | toJson }}
+    }
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cryptofolio-balances-job.fullname" . }}-config
+  labels:
+    {{- include "cryptofolio-balances-job.labels" . | nindent 4 }}
+data:
+  appsettings.{{ .Values.jobs.balances.environment }}.json: |
+    {
+      "Serilog": {
+        "MinimumLevel": {
+          "Default": "{{ .Values.jobs.balances.config.logLevel }}"
+        },
+        "Elasticsearch": {{ .Values.jobs.balances.config.elasticsearch | toJson }}
+      },
+      "ConnectionStrings": {
+        "Redis": "{{ .Values.jobs.balances.config.connectionStrings.redis }}"
+      },
+      "Kafka": {
+        "Producer": {{ .Values.jobs.balances.config.kafka.producerConfig | toJson }},
+        "Consumer": {{ .Values.jobs.balances.config.kafka.consumerConfig | toJson }}
+      },
+      "Bulk": {
+        "BatchSize": {{ .Values.jobs.balances.config.bulk.batchSize }}
+      }
     }

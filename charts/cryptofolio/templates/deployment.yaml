@@ -220,6 +220,11 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.jobs.collector.config.secrets.connectionStrings.name }}
                   key: {{ .Values.jobs.collector.config.secrets.connectionStrings.data.cryptofolioContext }}
+            - name: Fixer__ApiKey
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.jobs.collector.config.secrets.fixer.name }}
+                  key: {{ .Values.jobs.collector.config.secrets.fixer.data.apiKey }}
           volumeMounts:
             - name: config
               mountPath: /app/appsettings.{{ .Values.jobs.collector.environment }}.json
@@ -333,6 +338,89 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.jobs.handlers.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cryptofolio-balances-job.fullname" . }}
+  labels:
+    {{- include "cryptofolio-balances-job.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.jobs.balances.autoscaling.enabled }}
+  replicas: {{ .Values.jobs.balances.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "cryptofolio-balances-job.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.jobs.balances.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "cryptofolio-balances-job.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.jobs.balances.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.jobs.balances.serviceAccount.enabled }}
+      serviceAccountName: {{ include "cryptofolio-balances-job.serviceAccountName" . }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.jobs.balances.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.jobs.balances.securityContext | nindent 12 }}
+          image: "{{ .Values.jobs.balances.image.repository }}:{{ .Values.jobs.balances.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.jobs.balances.image.pullPolicy }}
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: {{ .Values.jobs.balances.environment }}
+            - name: ASPNETCORE_URLS
+              value: http://+
+            - name: ConnectionStrings__CryptofolioContext
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.jobs.balances.config.secrets.connectionStrings.name }}
+                  key: {{ .Values.jobs.balances.config.secrets.connectionStrings.data.cryptofolioContext }}
+          volumeMounts:
+            - name: config
+              mountPath: /app/appsettings.{{ .Values.jobs.balances.environment }}.json
+              subPath: appsettings.{{ .Values.jobs.balances.environment }}.json
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            {{- toYaml .Values.jobs.balances.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.jobs.balances.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.jobs.balances.resources | nindent 12 }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "cryptofolio-balances-job.fullname" . }}-config
+            items:
+              - key: appsettings.{{ .Values.jobs.balances.environment }}.json
+                path: appsettings.{{ .Values.jobs.balances.environment }}.json
+      {{- with .Values.jobs.balances.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.jobs.balances.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.jobs.balances.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}

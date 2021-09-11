@@ -21,6 +21,8 @@ namespace Cryptofolio.Api.Controllers
         private readonly IMediator _mediator;
         private readonly CryptofolioContext _context;
 
+        private IQueryable<Wallet> Wallets => _context.Wallets.AsNoTracking().Include(w => w.Currency);
+
         public WalletController(IMediator mediator, CryptofolioContext context)
         {
             _mediator = mediator;
@@ -29,11 +31,11 @@ namespace Cryptofolio.Api.Controllers
 
         [HttpGet("{id}")]
         public Task<Wallet> Get(string id, [FromServices] RequestContext requestContext, CancellationToken cancellationToken) =>
-            _context.Wallets.AsNoTracking().SingleOrDefaultAsync(w => w.Id == id && w.UserId == requestContext.UserId, cancellationToken);
+            Wallets.SingleOrDefaultAsync(w => w.Id == id && w.UserId == requestContext.UserId, cancellationToken);
 
         [HttpGet]
         public Task<List<Wallet>> Get([FromServices] RequestContext requestContext, CancellationToken cancellationToken) =>
-            _context.Wallets.AsNoTracking().Where(w => w.UserId == requestContext.UserId).ToListAsync(cancellationToken);
+            Wallets.Where(w => w.UserId == requestContext.UserId).ToListAsync(cancellationToken);
 
         [HttpPost]
         [ServiceFilter(typeof(RequestContextActionFilter))]

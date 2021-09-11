@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -80,55 +81,51 @@ namespace Cryptofolio.Api.Commands
 
         private async Task<Transaction> UpdateEntity(UpdateTransactionCommand command, CancellationToken cancellationToken)
         {
-            Transaction transaction;
+            var transaction = await _context.Transactions
+                .Include(t => t.Wallet).ThenInclude(t => t.Currency)
+                .Include(t => t.Asset)
+                .Include(t => t.Exchange)
+                .Include(nameof(BuyOrSellTransaction.Currency))
+                .SingleOrDefaultAsync(t => t.Id == command.Id, cancellationToken);
 
-            if (command.Type == CommandConstants.Transaction.Types.Buy ||
-                command.Type == CommandConstants.Transaction.Types.Sell)
+            if (transaction is BuyOrSellTransaction bst &&
+                (command.Type == CommandConstants.Transaction.Types.Buy || command.Type == CommandConstants.Transaction.Types.Sell))
             {
-                var buyOrSellTransaction = new BuyOrSellTransaction
-                {
-                    Id = command.Id,
-                    Date = command.Date,
-                    Exchange = await _context.Exchanges.SingleOrDefaultAsync(e => e.Id == command.ExchangeId, cancellationToken),
-                    Currency = await _context.Currencies.SingleOrDefaultAsync(c => c.Id == command.CurrencyId, cancellationToken),
-                    Price = command.Price,
-                    Qty = command.Qty,
-                    Type = command.Type,
-                    Note = command.Note
-                };
-                var buyOrSellTransactionEntry = _context.Attach(buyOrSellTransaction);
-                buyOrSellTransactionEntry.Property(p => p.Type).IsModified = true;
-                buyOrSellTransactionEntry.Reference(p => p.Currency).IsModified = true;
-                buyOrSellTransactionEntry.Property(p => p.Price).IsModified = true;
-                transaction = buyOrSellTransaction;
+                bst.Date = command.Date;
+                bst.Exchange = await _context.Exchanges.SingleOrDefaultAsync(e => e.Id == command.ExchangeId, cancellationToken);
+                bst.Currency = await _context.Currencies.SingleOrDefaultAsync(c => c.Id == command.CurrencyId, cancellationToken);
+                bst.Price = command.Price;
+                bst.Qty = command.Qty;
+                bst.InitialValue = command.Qty * command.Price;
+                bst.Type = command.Type;
+                bst.Note = command.Note;
             }
-            else if (command.Type == CommandConstants.Transaction.Types.Transfer)
+            else if (transaction is TransferTransaction tft && command.Type == CommandConstants.Transaction.Types.Transfer)
             {
-                var transferTransaction = new TransferTransaction
-                {
-                    Id = command.Id,
-                    Date = command.Date,
-                    Exchange = await _context.Exchanges.SingleOrDefaultAsync(e => e.Id == command.ExchangeId, cancellationToken),
-                    Qty = command.Qty,
-                    Source = command.Source,
-                    Destination = command.Destination,
-                    Note = command.Note
-                };
-                var transferTransactionEntry = _context.Attach(transferTransaction);
-                transferTransactionEntry.Property(p => p.Source).IsModified = true;
-                transferTransactionEntry.Property(p => p.Destination).IsModified = true;
-                transaction = transferTransaction;
+                tft.Date = command.Date;
+                tft.Exchange = await _context.Exchanges.SingleOrDefaultAsync(e => e.Id == command.ExchangeId, cancellationToken);
+                tft.Qty = command.Qty;
+                tft.Source = command.Source;
+                tft.Destination = command.Destination;
+                tft.Note = command.Note;
+
+                var ticker = await _context.AssetTickers
+                        .AsNoTracking()
+                        .Where(t => t.Asset.Id == tft.Asset.Id && t.VsCurrency.Id == tft.Wallet.Currency.Id && t.Timestamp <= command.Date)
+                        .OrderByDescending(t => t.Timestamp)
+                        .Select(t => t.Value)
+                        .FirstOrDefaultAsync(cancellationToken);
+                tft.InitialValue = tft.Qty * ticker;
             }
             else
             {
                 throw new InvalidOperationException($"Unsupported transaction type: {command.Type}");
             }
 
-            var transactionEntry = _context.Entry(transaction);
-            transactionEntry.Property(p => p.Date).IsModified = true;
-            transactionEntry.Reference(p => p.Exchange).IsModified = true;
-            transactionEntry.Property(p => p.Qty).IsModified = true;
-            transactionEntry.Property(p => p.Note).IsModified = true;
+            transaction.Date = command.Date;
+            transaction.Exchange = await _context.Exchanges.SingleOrDefaultAsync(e => e.Id == command.ExchangeId, cancellationToken);
+            transaction.Qty = command.Qty;
+            transaction.Note = command.Note;
 
             return transaction;
         }

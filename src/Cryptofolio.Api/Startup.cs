@@ -101,6 +101,13 @@ namespace Cryptofolio.Api
             {
                 options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(IEvent).FullName}").Get<string>();
                 options.Config = Configuration.GetSection("Kafka:Producer").Get<ProducerConfig>();
+                options.ValueSerilializerOptions = new()
+                {
+                    Converters =
+                    {
+                        new TransactionPolymorphicJsonConverter()
+                    }
+                };
             });
             services.AddTransient<IEventDispatcher, KafkaEventDispatcher>();
 

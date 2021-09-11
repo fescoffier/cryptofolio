@@ -1,5 +1,10 @@
 using Confluent.Kafka;
+using Cryptofolio.Handlers.Job.Assets;
+using Cryptofolio.Handlers.Job.Currencies;
+using Cryptofolio.Handlers.Job.Transactions;
 using Cryptofolio.Infrastructure;
+using Cryptofolio.Infrastructure.Balances;
+using Cryptofolio.Infrastructure.Caching;
 using Cryptofolio.Infrastructure.Entities;
 using Elasticsearch.Net;
 using MediatR;
@@ -12,6 +17,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Internal;
 using Nest;
+using StackExchange.Redis;
 using System.Linq;
 using System.Text.Json;
 
@@ -48,6 +54,23 @@ namespace Cryptofolio.Handlers.Job
             {
                 options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(IEvent).FullName}").Get<string>();
                 options.Config = Configuration.GetSection("Kafka:Consumer").Get<ConsumerConfig>();
+                options.ValueSerilializerOptions = new()
+                {
+                    Converters =
+                    {
+                        new TransactionPolymorphicJsonConverter()
+                    }
+                };
+            });
+            services.AddProducer<ComputeWalletBalanceRequest>(options =>
+            {
+                options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(ComputeWalletBalanceRequest).FullName}").Get<string>();
+                options.Config = Configuration.GetSection("Kafka:Producer").Get<ProducerConfig>();
+            });
+            services.AddProducer<BulkComputeWalletBalanceRequest>(options =>
+            {
+                options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(BulkComputeWalletBalanceRequest).FullName}").Get<string>();
+                options.Config = Configuration.GetSection("Kafka:Producer").Get<ProducerConfig>();
             });
 
             // Elasticsearch
@@ -78,13 +101,26 @@ namespace Cryptofolio.Handlers.Job
             });
             services.AddSingleton<IElasticClient>(p => new ElasticClient(p.GetRequiredService<IConnectionSettingsValues>()));
 
+            // Redis
+            services.AddSingleton(ConnectionMultiplexer.Connect(Configuration.GetConnectionString("Redis")));
+            services.AddSingleton<IConnectionMultiplexer>(p => p.GetRequiredService<ConnectionMultiplexer>());
+            services.AddTransient(p => p.GetRequiredService<ConnectionMultiplexer>().GetDatabase());
+
             // MediatR
             services.AddMediatR(typeof(IMediator));
 
+            // Caching
+            services.AddTransient<AssetTickerCache>();
+            services.AddTransient<CurrencyTickerCache>();
+
             // Events
             services.AddDefaultEventHandler<AssetInfosUpsertedEvent>();
-            services.AddDefaultEventHandler<AssetTickerUpsertedEvent>();
+            services.AddEventHandler<AssetTickersUpsertedEvent, AssetTickersUpsertedEventHandler>();
+            services.AddEventHandler<CurrencyTickersUpsertedEvent, CurrencyTickersUpsertedEventHandler>();
             services.AddDefaultEventHandler<ExchangeInfosUpsertedEvent>();
+            services.AddEventHandler<TransactionCreatedEvent, TransactionEventHandler>();
+            services.AddEventHandler<TransactionUpdatedEvent, TransactionEventHandler>();
+            services.AddEventHandler<TransactionDeletedEvent, TransactionEventHandler>();
 
             // Healthchecks
             services
@@ -95,6 +131,7 @@ namespace Cryptofolio.Handlers.Job
                     Configuration.GetSection("Kafka:Topics:HealthChecks").Get<string>(),
                     name: "kafka"
                 )
+                .AddRedis(Configuration.GetConnectionString("Redis"), name: "redis")
                 .AddCheck<ElasticsearchHealthCheck>("elasticsearch");
 
             services.TryAddSingleton<ISystemClock, SystemClock>();
