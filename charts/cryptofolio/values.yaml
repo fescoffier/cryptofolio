@@ -223,7 +223,7 @@ app:
   affinity: {}
 
 jobs:
-  # --- Collect job
+  # --- Collector job
   collector:
     environment: Production
     config:
@@ -233,6 +233,10 @@ jobs:
           name: connection-strings
           data:
             cryptofolioContext: cryptofolio-context
+        fixer:
+          name: fixer
+          data:
+            apiKey: apiKey
       connectionStrings:
         redis: redis-master-0.redis-headless.default.svc.cluster.local:6379,redis-replicas-0.redis-headless.default.svc.cluster.local:6379,redis-replicas-1.redis-headless.default.svc.cluster.local:6379
       kafka:

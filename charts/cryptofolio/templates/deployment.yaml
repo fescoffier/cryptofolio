@@ -220,6 +220,11 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.jobs.collector.config.secrets.connectionStrings.name }}
                   key: {{ .Values.jobs.collector.config.secrets.connectionStrings.data.cryptofolioContext }}
+            - name: Fixer__ApiKey
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.jobs.collector.config.secrets.fixer.name }}
+                  key: {{ .Values.jobs.collector.config.secrets.fixer.data.apiKey }}
           volumeMounts:
             - name: config
               mountPath: /app/appsettings.{{ .Values.jobs.collector.environment }}.json
