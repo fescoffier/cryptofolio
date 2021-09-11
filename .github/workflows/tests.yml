@@ -12,8 +12,6 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-latest
-    env:
-      Fixer__ApiKey: $FIXER_APIKEY
     steps:
       - uses: actions/checkout@v2
       - name: Setup .NET
@@ -27,4 +25,6 @@ jobs:
       - name: Build
         run: dotnet build --no-restore
       - name: Test
+        env:
+          Fixer__ApiKey: $FIXER_APIKEY
         run: dotnet test --no-build --verbosity normal
