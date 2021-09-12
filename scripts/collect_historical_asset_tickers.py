@@ -12,36 +12,52 @@ import time
 COINGECKO_API = "https://api.coingecko.com/api/v3"
 
 
-def fetch_tickers(args):
-    logging.info("Calling Goingecko coins API using the following parameters:\n\tcoins: %s\n\tvs_currencies: %s\n\tdays: %s\n\tinterval: %s",
-                 args.coins,
-                 args.vs_currencies,
-                 args.days,
-                 args.data_interval)
+def fetch_tickers(coin, vs_currency, days, interval):
+    logging.info("Calling Goingecko coins API using the following parameters:\n\tcoin: %s\n\tvs_currency: %s\n\tdays: %s\n\tinterval: %s",
+                 coin,
+                 vs_currency,
+                 days,
+                 interval)
 
-    tickers = []
+    logging.info("Fetching tickers for the %s coin versus currency %s.", coin, vs_currency)
+    result = requests.get(f"{COINGECKO_API}/coins/{coin}/market_chart?vs_currency={vs_currency}&days={days}&interval={interval}")
+    logging.debug("Response status code: %s", result.status_code)
+    logging.debug("Data: \n%s", result.json())
 
-    for coin in args.coins.split(","):
-      for vs_currency in args.vs_currencies.split(","):
-        logging.info("Fetching tickers for the %s coin versus currency %s.", coin, vs_currency)
-        result = requests.get(
-            f"{COINGECKO_API}/coins/{coin}/market_chart?vs_currency={vs_currency}&days={args.days}&interval={args.data_interval}")
-        logging.debug("Response status code: %s", result.status_code)
-        logging.debug("Data: \n%s", result.json())
-
-        response = json.loads(result.content)
-        tickers.extend([{
-            "asset_id": coin,
-            "vs_currency_code": vs_currency,
-            "timestamp": datetime.datetime.fromtimestamp(price[0] / 1000).strftime("%Y-%m-%d %H:%M:%S.%f"),
-            "value": price[1]
-        } for price in response["prices"]])
-
-        logging.debug("Waiting %s seconds before the next call.", args.call_interval)
-        time.sleep(int(args.call_interval))
+    response = json.loads(result.content)
+    tickers = [{
+        "asset_id": coin,
+        "vs_currency_code": vs_currency,
+        "timestamp": datetime.datetime.fromtimestamp(price[0] / 1000).strftime("%Y-%m-%d %H:%M:%S.%f"),
+        "value": price[1]
+    } for price in response["prices"]]
 
     logging.info("Fetched %d tickers from Coingecko.", len(tickers))
+
     return tickers
+
+
+def store_tickers(args, tickers):
+    logging.info("Inserting %d tickers into the database.", len(tickers))
+
+    commands = [f"insert into \"data\".\"asset_ticker\" (\"timestamp\",\"asset_id\",\"vs_currency_id\",\"value\") \
+                values ('{t['timestamp']}','{t['asset_id']}',(select id from \"data\".\"currency\" where \"code\" = '{t['vs_currency_code'].lower()}'),{t['value']}) \
+                on conflict (\"timestamp\",\"asset_id\",\"vs_currency_id\") do update set \"value\" = {t['value']};"
+                for t in tickers]
+    command = "\n".join(commands)
+
+    logging.info("Opening the database connection.")
+
+    with psycopg2.connect(database=args.database, user=args.user, password=args.password, host=args.host, port=args.port) as con:
+        logging.info("Database connection opened.")
+        with con.cursor() as cur:
+            logging.debug("Executing SQL command: %s", command)
+            cur.execute(command)
+            logging.info("Committing to database.")
+            con.commit()
+            logging.info("Committed to database.")
+
+    logging.info("Inserted %d tickers into the database.", len(tickers))
 
 
 def main(args, loglevel):
@@ -49,22 +65,12 @@ def main(args, loglevel):
 
     logging.info("Collecting currency tickers from the Coingecko API.")
 
-    tickers = fetch_tickers(args)
-    commands = [f"insert into \"data\".\"asset_ticker\" (\"timestamp\",\"asset_id\",\"vs_currency_id\",\"value\") \
-                values ('{t['timestamp']}','{t['asset_id']}',(select id from \"data\".\"currency\" where \"code\" = '{t['vs_currency_code'].lower()}'),{t['value']}) \
-                on conflict (\"timestamp\",\"asset_id\",\"vs_currency_id\") do update set \"value\" = {t['value']};"
-                for t in tickers]
-    logging.info("Opening the database connection.")
-    with psycopg2.connect(database=args.database, user=args.user, password=args.password, host=args.host, port=args.port) as con:
-        logging.info("Database connection opened.")
-        with con.cursor() as cur:
-            logging.info("Executing SQL commands.")
-            for command in commands:
-                logging.debug("Executing SQL command: %s", command)
-                cur.execute(command)
-            logging.info("Committing to database.")
-            con.commit()
-            logging.info("Committed to database.")
+    for coin in args.coins.split(","):
+        for vs_currency in args.vs_currencies.split(","):
+            tickers = fetch_tickers(coin, vs_currency, args.days, args.data_interval)
+            store_tickers(args, tickers)
+            logging.debug("Waiting %s seconds before the next call.", args.call_interval)
+            time.sleep(int(args.call_interval))
 
     logging.info("Currency tickers collected from the Coingecko API.")
 
