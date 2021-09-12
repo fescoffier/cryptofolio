@@ -38,8 +38,10 @@ jobs:
           export APP_TAG=$(dotnet version -p src/Cryptofolio.App/Cryptofolio.App.csproj --show | awk -v commit_sha=$(git rev-parse --short HEAD) '{print $3 "." commit_sha}')
           export JOB_COLLECTOR_TAG=$(dotnet version -p src/Cryptofolio.Collector.Job/Cryptofolio.Collector.Job.csproj --show | awk -v commit_sha=$(git rev-parse --short HEAD) '{print $3 "." commit_sha}')
           export JOB_HANDLERS_TAG=$(dotnet version -p src/Cryptofolio.Handlers.Job/Cryptofolio.Handlers.Job.csproj --show | awk -v commit_sha=$(git rev-parse --short HEAD) '{print $3 "." commit_sha}')
+          export JOB_BALANCES_TAG=$(dotnet version -p src/Cryptofolio.Balances.Job/Cryptofolio.Balances.Job.csproj --show | awk -v commit_sha=$(git rev-parse --short HEAD) '{print $3 "." commit_sha}')
           echo "Using API_TAG: $API_TAG"
           echo "Using APP_TAG: $APP_TAG"
           echo "Using JOB_COLLECTOR_TAG: $JOB_COLLECTOR_TAG"
           echo "Using JOB_HANDLERS_TAG: $JOB_HANDLERS_TAG"
-          helm upgrade --install --set api.image.tag=$API_TAG --set app.image.tag=$APP_TAG --set jobs.collector.image.tag=$JOB_COLLECTOR_TAG --set jobs.handlers.image.tag=$JOB_HANDLERS_TAG cryptofolio charts/cryptofolio
+          echo "Using JOB_BALANCES_TAG: $JOB_HANDLERS_TAG"
+          helm upgrade --install --set api.image.tag=$API_TAG --set app.image.tag=$APP_TAG --set jobs.collector.image.tag=$JOB_COLLECTOR_TAG --set jobs.handlers.image.tag=$JOB_HANDLERS_TAG --set jobs.balances.image.tag=$JOB_BALANCES_TAG cryptofolio charts/cryptofolio
