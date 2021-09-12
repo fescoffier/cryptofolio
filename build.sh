@@ -3,7 +3,7 @@
 echo "Restoring dotnet tools."
 dotnet tool restore --tool-manifest .config/dotnet-tools.json
 
-export REGISTRY=registry.digitalocean.com/cryptofolio
+export REGISTRY=${REGISTRY:-registry.digitalocean.com/cryptofolio}
 export API_BUILD_CONTEXT=${API_BUILD_CONTEXT:-../}
 export API_REPOSITORY=${API_REPOSITORY:-api}
 export API_VERSION=$(dotnet version -p src/Cryptofolio.Api/Cryptofolio.Api.csproj --show | awk -v commit_sha=$(git rev-parse --short HEAD) '{print $3 "+" commit_sha}')

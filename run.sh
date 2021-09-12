@@ -1,5 +1,12 @@
 #!/bin/bash
 
+docker-compose -f docker/docker-compose-dev.yaml up -d
+
+dotnet restore
+dotnet build --no-restore
+
+npm install src/Cryptofolio.App/ClientApp/
+
 _term() {
   echo "Terminating processes."
   kill -TERM $APP_PID $API_PID $JOB_HANDLERS_PID $JOB_BALANCES_PID $JOB_COLLECTOR_PID 2>/dev/null
