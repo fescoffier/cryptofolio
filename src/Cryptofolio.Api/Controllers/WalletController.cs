@@ -1,5 +1,6 @@
 using Cryptofolio.Api.Commands;
 using Cryptofolio.Infrastructure;
+using Cryptofolio.Infrastructure.Caching;
 using Cryptofolio.Infrastructure.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -20,13 +21,22 @@ namespace Cryptofolio.Api.Controllers
     {
         private readonly IMediator _mediator;
         private readonly CryptofolioContext _context;
+        private readonly AssetTickerCache _tickerCache;
 
-        private IQueryable<Wallet> Wallets => _context.Wallets.AsNoTracking().Include(w => w.Currency);
+        private IQueryable<Wallet> Wallets => _context.Wallets
+            .AsNoTracking()
+            .Include(w => w.Currency)
+            .Include(w => w.Holdings)
+            .ThenInclude(w => w.Asset);
 
-        public WalletController(IMediator mediator, CryptofolioContext context)
+        public WalletController(
+            IMediator mediator,
+            CryptofolioContext context,
+            AssetTickerCache tickerCache)
         {
             _mediator = mediator;
             _context = context;
+            _tickerCache = tickerCache;
         }
 
         [HttpGet("{id}")]
@@ -34,8 +44,32 @@ namespace Cryptofolio.Api.Controllers
             Wallets.SingleOrDefaultAsync(w => w.Id == id && w.UserId == requestContext.UserId, cancellationToken);
 
         [HttpGet]
-        public Task<List<Wallet>> Get([FromServices] RequestContext requestContext, CancellationToken cancellationToken) =>
-            Wallets.Where(w => w.UserId == requestContext.UserId).ToListAsync(cancellationToken);
+        public async Task<List<Wallet>> Get([FromServices] RequestContext requestContext, CancellationToken cancellationToken)
+        {
+            var wallets = await Wallets
+                .Where(w => w.UserId == requestContext.UserId)
+                .OrderByDescending(w => w.CurrentValue)
+                .ToListAsync(cancellationToken);
+            var tickers = await _tickerCache.GetTickersAsync(wallets
+                .SelectMany(w => w.Holdings.Select(h => new TickerPair(h.Asset.Symbol, w.Currency.Code)))
+                .Distinct()
+                .ToArray()
+            );
+            foreach (var wallet in wallets)
+            {
+                foreach (var holding in wallet.Holdings)
+                {
+                    holding.Asset.CurrentValue = tickers
+                        .Where(t => t.Pair.Left == holding.Asset.Symbol && t.Pair.Right == wallet.Currency.Code)
+                        .Select(t => t.Value)
+                        .FirstOrDefault();
+                    // Avoids circular ref.
+                    holding.Wallet = null;
+                }
+                wallet.Holdings = wallet.Holdings.OrderByDescending(h => h.CurrentValue).ToArray();
+            }
+            return wallets;
+        }
 
         [HttpPost]
         [ServiceFilter(typeof(RequestContextActionFilter))]

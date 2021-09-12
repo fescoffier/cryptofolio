@@ -1,0 +1,86 @@
+<div class=" content">
+  <div class=" row" *ngFor="let wallet of wallets">
+    <div class=" col-12">
+      <div class=" card card-chart">
+        <div class=" card-header">
+          <div class=" row">
+            <div class=" col-sm-6 text-left">
+              <h5 class=" card-category">Your holdings</h5>
+              <h2 class=" card-title">{{ wallet.name }}</h2>
+            </div>
+          </div>
+        </div>
+        <div class=" card-body p-3">
+          <div class=" table-responsive" style="overflow-y: hidden; overflow-x: auto;">
+            <table class=" table">
+              <thead>
+                <tr>
+                  <th class=" text-center"></th>
+                  <th>Asset</th>
+                  <th class=" text-right">Qty</th>
+                  <th class=" text-right">Price</th>
+                  <th class=" text-right">Current value</th>
+                  <th class=" text-right">Profits/Losses</th>
+                  <th class=" text-right">Change</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let holding of wallet.holdings">
+                  <td>
+                    <div class=" img-container">
+                      <img [alt]="holding.asset.name" [src]="holding.asset.smallImageUrl" />
+                    </div>
+                  </td>
+                  <td class=" td-name">
+                    <a href="javascript:void(0)">{{ holding.asset.symbol | uppercase }}</a><br />
+                    <small>{{ holding.asset.name }}</small>
+                  </td>
+                  <td class=" td-number text-right">{{ holding.qty | number: "1.0-8" }}</td>
+                  <td class=" td-number text-right">{{ holding.asset.currentValue }}</td>
+                  <td class=" td-number text-right">{{ holding.currentValue | currencyValue: wallet.currency }}</td>
+                  <td class=" td-number text-right">
+                    <span [ngClass]="{
+                      'text-danger': holding.change < 0,
+                      'text-success': holding.change > 0
+                    }">
+                    {{ holding.currentValue - holding.initialValue > 0 ? "+" : "" }}{{ holding.currentValue - holding.initialValue | currencyValue: wallet.currency }}
+                    </span>
+                  </td>
+                  <td class=" td-number text-right">
+                    <span [ngClass]="{
+                      'text-danger': holding.change < 0,
+                      'text-success': holding.change > 0
+                    }">
+                      {{ holding.change > 0 ? "+" : "" }}{{ holding.change | number: "1.0-2" }}%
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="3"></td>
+                  <td class=" td-number text-right">Balance</td>
+                  <td class=" td-number text-right">{{ wallet.currentValue | currencyValue: wallet.currency }}</td>
+                  <td class=" td-number text-right">
+                    <span [ngClass]="{
+                      'text-danger': wallet.change < 0,
+                      'text-success': wallet.change > 0
+                    }">
+                    {{ wallet.currentValue - wallet.initialValue > 0 ? "+" : "" }}{{ wallet.currentValue - wallet.initialValue | currencyValue: wallet.currency }}
+                    </span>
+                  </td>
+                  <td class=" td-number text-right">
+                    <span [ngClass]="{
+                      'text-danger': wallet.change < 0,
+                      'text-success': wallet.change > 0
+                    }">
+                      {{ wallet.change > 0 ? "+" : "" }}{{ wallet.change | number: "1.0-2" }}%
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

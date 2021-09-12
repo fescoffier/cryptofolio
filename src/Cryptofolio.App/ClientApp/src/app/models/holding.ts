@@ -12,7 +12,9 @@ export class Holding {
 
   constructor(properties?: any) {
     Object.assign(this, properties);
-    this.wallet = new Wallet(properties.wallet);
+    if (properties.wallet) {
+      this.wallet = new Wallet(properties.wallet);
+    }
     this.asset = new Asset(properties.asset);
     this.initialValue = properties["initial_value"];
     this.currentValue = properties["current_value"];

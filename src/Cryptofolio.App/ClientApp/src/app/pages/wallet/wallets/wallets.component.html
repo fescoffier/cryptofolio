@@ -52,7 +52,7 @@
                     <span [ngClass]="{
                       'text-danger': wallet.change < 0,
                       'text-success': wallet.change > 0
-                    }">{{ wallet.change | number: "1.0-2" }}%</span>
+                    }">{{ wallet.change > 0 ? "+" : "" }}{{ wallet.change | number: "1.0-2" }}%</span>
                   </td>
                   <td class=" text-right">
                     <button (click)="select(wallet)" class=" btn btn-round btn-icon mr-2"

@@ -1,6 +1,7 @@
 using Cryptofolio.Api.Commands;
 using Cryptofolio.Api.Controllers;
 using Cryptofolio.Infrastructure;
+using Cryptofolio.Infrastructure.Caching;
 using Cryptofolio.Infrastructure.Entities;
 using FluentAssertions;
 using MediatR;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using StackExchange.Redis;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,13 +21,15 @@ namespace Cryptofolio.Api.Tests.Controllers
     {
         private readonly CryptofolioContext _context;
         private readonly Mock<IMediator> _mediatorMock;
+        private readonly Mock<AssetTickerCache> _tickerCacheMock;
         private readonly WalletController _controller;
 
         public WalletControllerTests()
         {
             _context = new(new DbContextOptionsBuilder<CryptofolioContext>().UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
             _mediatorMock = new();
-            _controller = new(_mediatorMock.Object, _context)
+            _tickerCacheMock = new(new Mock<IDatabase>().Object);
+            _controller = new(_mediatorMock.Object, _context, _tickerCacheMock.Object)
             {
                 ControllerContext = new()
                 {
