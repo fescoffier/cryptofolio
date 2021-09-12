@@ -1,6 +1,7 @@
 using Confluent.Kafka;
 using Cryptofolio.Api.Commands;
 using Cryptofolio.Infrastructure;
+using Cryptofolio.Infrastructure.Caching;
 using Cryptofolio.Infrastructure.Entities;
 using Elasticsearch.Net;
 using MediatR;
@@ -147,6 +148,9 @@ namespace Cryptofolio.Api
                 )
                 .AddRedis(Configuration.GetConnectionString("Redis"), name: "redis")
                 .AddCheck<ElasticsearchHealthCheck>("elasticsearch");
+
+            // Caching
+            services.AddTransient<AssetTickerCache>();
 
             // Traceability
             services.AddHttpContextAccessor();

@@ -8,7 +8,6 @@ import { ToastrModule } from "ngx-toastr";
 
 import { AppComponent } from "./app.component";
 import { AdminLayoutComponent } from "./layouts/admin-layout/admin-layout.component";
-import { AuthLayoutComponent } from "./layouts/auth-layout/auth-layout.component";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { ComponentsModule } from "./components/components.module";
@@ -19,8 +18,7 @@ import { AuthenticationInterceptor } from "./authentication.interceptor";
 @NgModule({
   declarations: [
     AppComponent,
-    AdminLayoutComponent,
-    AuthLayoutComponent
+    AdminLayoutComponent
   ],
   imports: [
     CommonModule,

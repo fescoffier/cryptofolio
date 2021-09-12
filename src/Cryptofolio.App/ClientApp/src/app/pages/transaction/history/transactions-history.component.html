@@ -11,6 +11,11 @@
           </button>
         </div>
         <div class=" row pl-3 pr-3">
+          <div class=" card-body p-0 pl-3 pt-3" style="font-size: 1.3rem;">
+            <div class=" card-title mb-0">{{ transaction.wallet.name }}</div>
+          </div>
+        </div>
+        <div class=" row pl-3 pr-3">
           <div class=" card-body col-3">
             <div class=" card-title">
               <i class=" tim-icons icon-coins"
@@ -20,7 +25,10 @@
             <div class=" card-text text-muted">{{ transaction.date | date:"MMM dd, yyyy HH:mm" }}</div>
           </div>
           <div class=" card-body col-3">
-            <div class=" card-title">{{ transaction.qty }} {{ transaction.asset.symbol | uppercase }}</div>
+            <div class=" card-title">
+              <img class="mr-1" [src]="transaction.asset.thumbImageUrl" />
+              <span>{{ transaction.qty }} {{ transaction.asset.symbol | uppercase }}</span>
+            </div>
             <div class=" card-text text-muted">Paid {{ transaction.initialValue | currencyValue: transaction.currency }}</div>
           </div>
           <div class=" card-body col-3">

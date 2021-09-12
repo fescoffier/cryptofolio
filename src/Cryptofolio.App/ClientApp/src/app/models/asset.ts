@@ -5,9 +5,15 @@ export class Asset {
   symbol: string;
   name: string;
   description: string;
+  thumbImageUrl: string;
+  smallImageUrl: string;
+  largeImageUrl: string;
 
   constructor(properties?: any) {
     Object.assign(this, properties);
+    this.thumbImageUrl = properties["thumb_image_url"];
+    this.smallImageUrl = properties["small_image_url"];
+    this.largeImageUrl = properties["large_image_url"];
   }
 }
 

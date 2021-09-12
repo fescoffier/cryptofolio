@@ -17,6 +17,10 @@ namespace Cryptofolio.Infrastructure.Entities
             builder.Property(p => p.Name).HasMaxLength(250).HasColumnName("name").IsRequired();
             builder.Property(p => p.Symbol).HasMaxLength(50).HasColumnName("symbol").IsRequired();
             builder.Property(p => p.Description).HasColumnType("text").HasColumnName("description");
+            builder.Ignore(p => p.CurrentValue);
+            builder.Property(p => p.ThumbImageUrl).HasColumnName("thumb_image_url");
+            builder.Property(p => p.SmallImageUrl).HasColumnName("small_image_url");
+            builder.Property(p => p.LargeImageUrl).HasColumnName("large_image_url");
             builder.HasIndex(p => p.Symbol);
         }
     }

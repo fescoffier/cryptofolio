@@ -9,7 +9,7 @@ python collect_historical_currency_tickers.py \
   --access_key $FIXER_APIKEY \
   --base USD \
   --symbols EUR,JPY,GBP,CHF,CAD \
-  --years 2020,2019 \
+  --years 2021,2020,2019,2018,2017,2016,2015,2014,2013,2012,2011,2010 \
   --host localhost \
   --port 55432 \
   --database cryptofolio \
@@ -28,7 +28,7 @@ python collect_historical_asset_tickers.py \
   --vs_currencies usd,eur,jpy,gbp,chf,cad \
   --days max \
   --data_interval daily \
-  --call_interval 10 \
+  --call_interval 5 \
   --host localhost \
   --port 55432 \
   --database cryptofolio \
@@ -44,11 +44,11 @@ python collect_historical_asset_tickers.py \
 Execute this command to fetch currencies historical data from Fixer :
 
 ```bash
-FIXER_APIKEY=$(kubectl get secret fixer -o jsonpath="{.data.apiKey}" | base64 -d) POSTGRES_PASSWORD=$(kubectl get secret postgres-passwords -o jsonpath="{.data.postgresql-password}" | base64 -d) collect_historical_currency_tickers.py \
+FIXER_APIKEY=$(kubectl get secret fixer -o jsonpath="{.data.apiKey}" | base64 -d) POSTGRES_PASSWORD=$(kubectl get secret postgres-passwords -o jsonpath="{.data.postgresql-password}" | base64 -d) python collect_historical_currency_tickers.py \
   --access_key $FIXER_APIKEY \
   --base USD \
   --symbols EUR,JPY,GBP,CHF,CAD \
-  --years 2020,2019 \
+  --years 2021,2020,2019,2018,2017,2016,2015,2014,2013,2012,2011,2010 \
   --host localhost \
   --port 5432 \
   --database cryptofolio \
@@ -60,12 +60,12 @@ FIXER_APIKEY=$(kubectl get secret fixer -o jsonpath="{.data.apiKey}" | base64 -d
 Execute this command to fetch assets historical data from Coingecko :
 
 ```bash
-POSTGRES_PASSWORD=$(kubectl get secret postgres-passwords -o jsonpath="{.data.postgresql-password}" | base64 -d) collect_historical_asset_tickers.py \
+POSTGRES_PASSWORD=$(kubectl get secret postgres-passwords -o jsonpath="{.data.postgresql-password}" | base64 -d) python collect_historical_asset_tickers.py \
   --coins bitcoin,ethereum,binancecoin,cardano,ripple,dogecoin,polkadot,uniswap,solana,litecoin,chainlink,theta-token,stellar,internet-computer,vechain \
   --vs_currencies usd,eur,jpy,gbp,chf,cad \
   --days max \
   --data_interval daily \
-  --call_interval 10 \
+  --call_interval 5 \
   --host localhost \
   --port 5432 \
   --database cryptofolio \

@@ -78,6 +78,9 @@ namespace Cryptofolio.Collector.Job.Data
             asset.Name = coin.Name;
             asset.Symbol = coin.Symbol;
             asset.Description = coin.Description["en"];
+            asset.ThumbImageUrl = coin.Image.Thumb.ToString();
+            asset.SmallImageUrl = coin.Image.Small.ToString();
+            asset.LargeImageUrl = coin.Image.Large.ToString();
 
             try
             {

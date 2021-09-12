@@ -107,10 +107,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
 
     for (var item = 0; item < this.listTitles.length; item++) {
-      if (this.listTitles[item].path === titlee) {
+      if (titlee.startsWith(this.listTitles[item].path)) {
         return this.listTitles[item].title;
       }
     }
+    
+    console.log(titlee, this.listTitles);
+
     return "Dashboard";
   }
   sidebarOpen() {

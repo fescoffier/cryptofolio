@@ -47,5 +47,12 @@ namespace Cryptofolio.Infrastructure.Caching
 
         /// <inheritdoc/>
         public override string ToString() => $"{Left}/{Right}";
+
+        /// <inheritdoc/>
+        public override int GetHashCode() => HashCode.Combine(Left, Right);
+
+        /// <inheritdoc/>
+        public override bool Equals(object obj) =>
+            obj is TickerPair pair && pair.Left == Left && pair.Right == Right;
     }
 }
