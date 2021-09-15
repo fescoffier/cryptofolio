@@ -121,8 +121,14 @@ namespace Cryptofolio.Collector.Job.Data
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                var (scheduledFor, scheduledAt) = await GetScheduledFor();
-                if (scheduledFor != Environment.MachineName || scheduledAt > SystemClock.UtcNow)
+                var (scheduledFor, scheduledAt, stale) = await GetScheduledFor();
+                if (stale)
+                {
+                    Logger.LogWarning("The scheduler {0} went stale. Recomputing the next execution.", scheduledFor);
+                    await ComputeNextExecution();
+                    continue;
+                }
+                else if (scheduledFor != Environment.MachineName || scheduledAt > SystemClock.UtcNow)
                 {
                     await Task.Delay(Options.CronCheckIntervalMs, stoppingToken);
                     continue;
@@ -183,8 +189,8 @@ namespace Cryptofolio.Collector.Job.Data
 
                 Logger.LogInformation("Computing the next execution of the schedule.");
 
-                var (_, scheduledAt) = await GetScheduledFor();
-                if (scheduledAt < SystemClock.UtcNow)
+                var (_, scheduledAt, stale) = await GetScheduledFor();
+                if (scheduledAt < SystemClock.UtcNow || stale)
                 {
                     var cron = Options.Schedules[typeof(TRequest).FullName];
                     var nextScheduler = await GetNextScheduler();
@@ -210,16 +216,19 @@ namespace Cryptofolio.Collector.Job.Data
             }
         }
 
-        private async Task<(string, DateTimeOffset)> GetScheduledFor()
+        private async Task<(string, DateTimeOffset, bool)> GetScheduledFor()
         {
             var hash = await Database.HashGetAllAsync(string.Format(CultureInfo.InvariantCulture, Options.SchedulesHashKeyFormat, GetType().FullName));
             var f1 = hash.SingleOrDefault(h => h.Name == SchedulesHashScheduledForField);
             var f2 = hash.SingleOrDefault(h => h.Name == SchedulesHashScheduledAtField);
             if (f1.Value.HasValue)
             {
-                return (f1.Value.ToString(), JsonSerializer.Deserialize<DateTimeOffset>(f2.Value.ToString()));
+                var scheduledFor = f1.Value.ToString();
+                var scheduledAt = JsonSerializer.Deserialize<DateTimeOffset>(f2.Value.ToString());
+                var stale = !await Database.HashExistsAsync(Options.SchedulersHashKey, scheduledFor);
+                return (scheduledFor, scheduledAt, stale);
             }
-            return (null, default);
+            return (null, default, true);
         }
 
         private async Task<string> GetNextScheduler()

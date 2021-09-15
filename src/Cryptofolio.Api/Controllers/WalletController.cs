@@ -48,7 +48,8 @@ namespace Cryptofolio.Api.Controllers
         {
             var wallets = await Wallets
                 .Where(w => w.UserId == requestContext.UserId)
-                .OrderByDescending(w => w.CurrentValue)
+                .OrderByDescending(w => w.Selected)
+                .ThenByDescending(w => w.CurrentValue)
                 .ToListAsync(cancellationToken);
             var tickers = await _tickerCache.GetTickersAsync(wallets
                 .SelectMany(w => w.Holdings.Select(h => new TickerPair(h.Asset.Symbol, w.Currency.Code)))

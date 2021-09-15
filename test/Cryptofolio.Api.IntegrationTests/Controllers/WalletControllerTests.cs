@@ -52,6 +52,9 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             var client = _factory.CreateClient();
             using var scope = _factory.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
+            Data.Wallet1.CurrentValue = 1000;
+            Data.Wallet2.CurrentValue = 1100;
+            Data.Wallet3.CurrentValue = 1200;
             context.Wallets.AddRange(Data.Wallet1, Data.Wallet2, Data.Wallet3);
             context.SaveChanges();
 
@@ -59,10 +62,12 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
             var wallets = await client.GetFromJsonAsync<List<Wallet>>("/wallets");
 
             // Assert
-            wallets.Should().HaveCount(3);
-            wallets.Should().ContainEquivalentOf(Data.Wallet1);
-            wallets.Should().ContainEquivalentOf(Data.Wallet2);
-            wallets.Should().ContainEquivalentOf(Data.Wallet3);
+            wallets.Should().BeEquivalentTo(new[]
+            {
+                Data.Wallet1,
+                Data.Wallet3,
+                Data.Wallet2
+            });
         }
 
         [Fact]

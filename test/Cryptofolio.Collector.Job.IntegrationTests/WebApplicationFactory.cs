@@ -24,6 +24,8 @@ namespace Cryptofolio.Collector.Job.IntegrationTests
     {
         public string DbName { get; } = Guid.NewGuid().ToString();
 
+        public string RedisKeyPrefix { get; set; } = Guid.NewGuid().ToString();
+
         public TestData Data { get; } = new();
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -79,7 +81,7 @@ namespace Cryptofolio.Collector.Job.IntegrationTests
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<TestDataRequest>)));
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(DatabaseMigrationService<CryptofolioContext>)));
                 services.AddSingleton<TestDataRequestScheduler>();
-                services.AddTransient(p => p.GetRequiredService<ConnectionMultiplexer>().GetDatabase().WithKeyPrefix(Guid.NewGuid().ToString()));
+                services.AddTransient(p => p.GetRequiredService<ConnectionMultiplexer>().GetDatabase().WithKeyPrefix(RedisKeyPrefix));
             });
         }
 

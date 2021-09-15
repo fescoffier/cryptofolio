@@ -51,7 +51,7 @@ namespace Cryptofolio.Collector.Job.IntegrationTests.Data
 
             // Act
             await _scheduler.StartAsync(CancellationToken.None);
-            await Task.Delay(TimeSpan.FromSeconds(65));
+            await Task.Delay(TimeSpan.FromSeconds(60));
             await _scheduler.StopAsync(CancellationToken.None);
 
             // Asset
