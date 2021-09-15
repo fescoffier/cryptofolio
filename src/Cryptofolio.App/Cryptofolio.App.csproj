@@ -13,11 +13,6 @@
     <BuildServerSideRenderer>false</BuildServerSideRenderer>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\Debug\Cryptofolio.App.xml</DocumentationFile>
-    <OutputPath>bin\Debug</OutputPath>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.Kafka" Version="5.0.1" />
     <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="5.0.2" />
