@@ -5,7 +5,9 @@ docker-compose -f docker/docker-compose-dev.yaml up -d
 dotnet restore
 dotnet build --no-restore
 
-npm install src/Cryptofolio.App/ClientApp/
+pushd src/Cryptofolio.App/ClientApp/
+npm i --pure-lockfile
+popd
 
 _term() {
   echo "Terminating processes."

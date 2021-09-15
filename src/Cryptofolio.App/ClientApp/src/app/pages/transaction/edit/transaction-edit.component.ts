@@ -65,7 +65,22 @@ export class TransactionEditComponent implements OnInit {
     this.service.getAssetsDestinations().subscribe(assetsDestinations => this.assetsDestinations = assetsDestinations);
     this.service.getCurrencies().subscribe(currencies => this.currencies = currencies);
     this.service.getExchanges().subscribe(exchanges => this.exchanges = exchanges);
-    this.service.getWallets().subscribe(wallets => this.wallets = wallets);
+    this.service
+      .getWallets()
+      .subscribe(wallets => {
+        this.wallets = wallets;
+        const selected = wallets.filter(w => w.selected)[0];
+        if (selected && this.formMode === "create") {
+          const date = new Date();
+          this.formControls["transaction_date"].setValue(date);
+          this.formControls["transaction_time"].setValue(date);
+          this.formControls["wallet_id"].setValue(selected.id);
+          this.formControls["wallet_name"].setValue(selected.name);
+          this.formControls["currency_id"].setValue(selected.currency.id);
+          this.formControls["currency_name"].setValue(selected.currency.code);
+          this.setTicker();
+        }
+      });
   }
 
   private createForm(transaction?: Transaction): FormGroup {
@@ -107,6 +122,20 @@ export class TransactionEditComponent implements OnInit {
     }
   }
 
+  private setTicker() {
+    if (this.type === "buy" || this.type === "sell") {
+      const assetId = this.formControls["asset_id"].value;
+      const priceControl = this.formControls["price"];
+      if (assetId && !priceControl.value) {
+        const vsCurrency = this.formControls["currency_name"].value;
+        const timestamp = this.formControls["transaction_date"].value;
+        this.service
+          .getAssetTicker(assetId, vsCurrency, timestamp)
+          .subscribe(ticker => priceControl.setValue(ticker.value));
+      }
+    }
+  }
+
   private validateExchange(type: string): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (type === "transfer") {
@@ -134,31 +163,35 @@ export class TransactionEditComponent implements OnInit {
   }
 
   setWallet(wallet: Wallet) {
-    this.form.controls.wallet_id.setValue(wallet.id);
-    this.form.controls.wallet_name.setValue(wallet.name);
+    this.formControls.wallet_id.setValue(wallet.id);
+    this.formControls.wallet_name.setValue(wallet.name);
   }
 
   setAsset(asset: Asset) {
-    this.form.controls.asset_id.setValue(asset.id);
-    this.form.controls.asset_name.setValue(asset.name);
+    this.formControls.asset_id.setValue(asset.id);
+    this.formControls.asset_name.setValue(asset.name);
+    this.formControls.price.setValue(null);
+    this.setTicker();
   }
 
   setSource(source: string) {
-    this.form.controls.source.setValue(source);
+    this.formControls.source.setValue(source);
   }
 
   setDestination(destination: string) {
-    this.form.controls.destination.setValue(destination);
+    this.formControls.destination.setValue(destination);
   }
 
   setExchange(exchange: Exchange) {
-    this.form.controls.exchange_id.setValue(exchange.id);
-    this.form.controls.exchange_name.setValue(exchange.name);
+    this.formControls.exchange_id.setValue(exchange.id);
+    this.formControls.exchange_name.setValue(exchange.name);
   }
 
   setCurrency(currency: Currency) {
-    this.form.controls.currency_id.setValue(currency.id);
-    this.form.controls.currency_name.setValue(currency.code);
+    this.formControls.currency_id.setValue(currency.id);
+    this.formControls.currency_name.setValue(currency.code);
+    this.formControls.price.setValue(null);
+    this.setTicker();
   }
 
   reset() {

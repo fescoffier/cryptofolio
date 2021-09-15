@@ -3,6 +3,7 @@ using Cryptofolio.Infrastructure.Entities;
 using Cryptofolio.Infrastructure.TestsCommon;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -37,6 +38,42 @@ namespace Cryptofolio.Api.IntegrationTests.Controllers
 
             // Assert
             asset.Should().BeEquivalentTo(Data.BTC);
+        }
+
+        [Fact]
+        public async Task GetLatestTicker_Test()
+        {
+            // Setup
+            var client = _factory.CreateClient();
+            using var scope = _factory.Services.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
+            context.AssetTickers.Add(Data.BTC_USD_Ticker);
+            context.SaveChanges();
+
+            // Act
+            var ticker = await client.GetFromJsonAsync<AssetTicker>($"/assets/{Data.BTC.Id}/tickers/{Data.USD.Code}/latest");
+
+            // Assert
+            ticker.Should().BeEquivalentTo(Data.BTC_USD_Ticker, options => options.Excluding(m => m.Timestamp));
+            ticker.Timestamp.ToUniversalTime().Should().BeCloseTo(Data.BTC_USD_Ticker.Timestamp, precision: TimeSpan.FromTicks(10));
+        }
+
+        [Fact]
+        public async Task GetTicker_Test()
+        {
+            // Setup
+            var client = _factory.CreateClient();
+            using var scope = _factory.Services.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
+            context.AssetTickers.Add(Data.BTC_USD_Ticker);
+            context.SaveChanges();
+
+            // Act
+            var ticker = await client.GetFromJsonAsync<AssetTicker>($"/assets/{Data.BTC.Id}/tickers/{Data.USD.Code}/{Data.BTC_USD_Ticker.Timestamp.AddSeconds(1):yyyy-MM-ddTHH:mm:ss.fffZ}");
+
+            // Assert
+            ticker.Should().BeEquivalentTo(Data.BTC_USD_Ticker, options => options.Excluding(m => m.Timestamp));
+            ticker.Timestamp.ToUniversalTime().Should().BeCloseTo(Data.BTC_USD_Ticker.Timestamp, precision: TimeSpan.FromTicks(10));
         }
 
         [Fact]

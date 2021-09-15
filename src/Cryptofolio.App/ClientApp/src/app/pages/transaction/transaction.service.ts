@@ -1,10 +1,11 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable, LOCALE_ID } from "@angular/core";
+import { formatDate } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { map } from "rxjs/internal/operators";
 
 import { ApiOptions } from "../../api-options";
-import { Asset } from "../../models/asset";
+import { Asset, AssetTicker } from "../../models/asset";
 import { Currency } from "../../models/currency";
 import { Exchange } from "../../models/exchange";
 import { BuyOrSellTransaction, Transaction, TransferTransaction } from "../../models/transaction";
@@ -12,13 +13,21 @@ import { Wallet } from "../../models/wallet";
 
 @Injectable()
 export class TransactionService {
-  constructor(private http: HttpClient, private api: ApiOptions) {}
+  constructor(@Inject(LOCALE_ID) private locale: string, private http: HttpClient, private api: ApiOptions) {}
 
   getWallets(): Observable<Wallet[]> {
     return this.http
       .get<any[]>(this.api.walletsEndpoint)
       .pipe(
         map(wallets => wallets.map(w => new Wallet(w)))
+      );
+  }
+
+  getAssetTicker(assetId: string, vsCurrency: string, timestamp: Date): Observable<AssetTicker> {
+    return this.http
+      .get<any>(`${this.api.assetsEndpoint}/${assetId}/tickers/${vsCurrency}/${(timestamp ? formatDate(timestamp, "yyyy-MM-ddTHH:mmZ", this.locale) : "latest")}`)
+      .pipe(
+        map(ticker => new AssetTicker(ticker))
       );
   }
 
