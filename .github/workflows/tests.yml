@@ -26,6 +26,6 @@ jobs:
         run: dotnet build --no-restore
       - name: Test
         env:
-          SCHEDULER_TEST_DELAY: 00:01:10
+          SCHEDULER_TEST_DELAY: 00:01:05
           Fixer__ApiKey: ${{ secrets.FIXER_APIKEY }}
         run: dotnet test --no-build --verbosity normal
