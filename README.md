@@ -1,5 +1,9 @@
 # Cryptofolio
 
+[![Tests](https://github.com/fperronnet/cryptofolio/actions/workflows/tests.yml/badge.svg)](https://github.com/fperronnet/cryptofolio/actions/workflows/tests.yml)
+[![Build](https://github.com/fperronnet/cryptofolio/actions/workflows/build.yml/badge.svg)](https://github.com/fperronnet/cryptofolio/actions/workflows/build.yml)
+[![Deploy](https://github.com/fperronnet/cryptofolio/actions/workflows/deploy.yml/badge.svg)](https://github.com/fperronnet/cryptofolio/actions/workflows/deploy.yml)
+
 This repository contains the Cryptofolio app. It's an online cryptocurrency web application.
 It was initially designed for the [GLG204](https://formation.cnam.fr/rechercher-par-discipline/architectures-logicielles-java-2--208399.kjsp) unit of value by [Fabien PERRONNET](mailto:perronnet-fabien@live.fr).
 
