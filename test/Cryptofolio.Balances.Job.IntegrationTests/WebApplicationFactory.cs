@@ -10,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Internal;
 using Moq;
+using StackExchange.Redis;
+using StackExchange.Redis.KeyspaceIsolation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +21,8 @@ namespace Cryptofolio.Balances.Job.IntegrationTests
     public class WebApplicationFactory : WebApplicationFactory<Startup>
     {
         public string DbName { get; } = Guid.NewGuid().ToString();
+
+        public string RedisKeyPrefix { get; set; } = Guid.NewGuid().ToString();
 
         public TestData Data { get; } = new();
 
@@ -52,6 +56,7 @@ namespace Cryptofolio.Balances.Job.IntegrationTests
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<ComputeWalletBalanceResponse>)));
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<BulkComputeWalletBalanceRequest>)));
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(DatabaseMigrationService<CryptofolioContext>)));
+                services.AddTransient(p => p.GetRequiredService<ConnectionMultiplexer>().GetDatabase().WithKeyPrefix(RedisKeyPrefix));
             });
         }
 

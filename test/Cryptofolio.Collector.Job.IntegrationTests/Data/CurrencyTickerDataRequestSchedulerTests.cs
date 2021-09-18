@@ -4,7 +4,6 @@ using Cryptofolio.Infrastructure.Data;
 using Cryptofolio.Infrastructure.Entities;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;

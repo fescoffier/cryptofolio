@@ -74,6 +74,7 @@ namespace Cryptofolio.App.IntegrationTests.Balances
             // Act
             await connection.StartAsync(cancellationToken);
             await _handler.Handle(response, cancellationToken);
+            await Task.Delay(1000);
             await connection.StopAsync(cancellationToken);
 
             // Assert
