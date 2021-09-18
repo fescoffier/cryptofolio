@@ -113,7 +113,7 @@ api:
 app:
   environment: Production
   config:
-    logLevel: Verbose
+    logLevel: Information
     secrets:
       connectionStrings:
         name: connection-strings
