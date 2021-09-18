@@ -12,7 +12,7 @@ namespace Cryptofolio.App
         /// Creates a new instance of <see cref="IdentityContext"/>.
         /// </summary>
         /// <param name="options">The options.</param>
-        public IdentityContext(DbContextOptions options) : base(options)
+        public IdentityContext(DbContextOptions<IdentityContext> options) : base(options)
         {
         }
 

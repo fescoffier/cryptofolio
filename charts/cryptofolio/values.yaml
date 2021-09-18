@@ -118,6 +118,7 @@ app:
       connectionStrings:
         name: connection-strings
         data:
+          cryptofolioContext: cryptofolio-context
           identityContext: identity-context
       users:
         name: cryptofolio-app-users

@@ -123,6 +123,11 @@ spec:
               value: {{ .Values.app.environment }}
             - name: ASPNETCORE_URLS
               value: http://+
+            - name: ConnectionStrings__CryptofolioContext
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.app.config.secrets.connectionStrings.name }}
+                  key: {{ .Values.app.config.secrets.connectionStrings.data.cryptofolioContext }}
             - name: ConnectionStrings__IdentityContext
               valueFrom:
                 secretKeyRef:

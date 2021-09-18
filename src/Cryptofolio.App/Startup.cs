@@ -1,5 +1,10 @@
 using Confluent.Kafka;
+using Cryptofolio.App.Balances;
+using Cryptofolio.App.Hubs;
 using Cryptofolio.Infrastructure;
+using Cryptofolio.Infrastructure.Balances;
+using Cryptofolio.Infrastructure.Caching;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
@@ -29,8 +34,11 @@ namespace Cryptofolio.App
 
         public void ConfigureServices(IServiceCollection services)
         {
-            // Mvc.
+            // Mvc
             services.AddControllersWithViews();
+
+            // SignalR
+            services.AddSignalR();
 
             // Identity
             services
@@ -65,6 +73,15 @@ namespace Cryptofolio.App
             }
 
             // EF Core
+            services.AddDbContext<CryptofolioContext>(builder =>
+            {
+                builder.UseNpgsql(Configuration.GetConnectionString("CryptofolioContext"));
+                if (Environment.IsDevelopment())
+                {
+                    builder.EnableSensitiveDataLogging();
+                    builder.EnableDetailedErrors();
+                }
+            });
             services.AddDbContext<IdentityContext>(builder =>
             {
                 builder.UseNpgsql(Configuration.GetConnectionString("IdentityContext"));
@@ -74,7 +91,16 @@ namespace Cryptofolio.App
                     builder.EnableDetailedErrors();
                 }
             });
+            services.AddHostedService<DatabaseMigrationService<CryptofolioContext>>();
             services.AddHostedService<DatabaseMigrationService<IdentityContext>>();
+
+            // Kafka
+            services.AddConsumer<ComputeWalletBalanceResponse>(options =>
+            {
+                options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(ComputeWalletBalanceResponse).FullName}").Get<string>();
+                options.Config = Configuration.GetSection("Kafka:Consumer").Get<ConsumerConfig>();
+                options.Config.GroupId += $"{options.Config.GroupId}-{System.Environment.MachineName}";
+            });
 
             // Redis
             services.AddSingleton(ConnectionMultiplexer.Connect(Configuration.GetConnectionString("Redis")));
@@ -84,12 +110,23 @@ namespace Cryptofolio.App
             // Healthchecks
             services
                 .AddHealthChecks()
+                .AddNpgSql(Configuration.GetConnectionString("CryptofolioContext"), name: "db_data")
+                .AddNpgSql(Configuration.GetConnectionString("IdentityContext"), name: "db_identity")
                 .AddKafka(
                     Configuration.GetSection("Kafka:Producer").Get<ProducerConfig>(),
                     Configuration.GetSection("Kafka:Topics:HealthChecks").Get<string>(),
                     name: "kafka"
                 )
                 .AddRedis(Configuration.GetConnectionString("Redis"), name: "redis");
+
+            // MediatR
+            services.AddMediatR(typeof(IMediator));
+            // Balances
+            services.AddScoped<ComputeWalletBalanceResponseHandler>();
+            services.AddScoped<IRequestHandler<ComputeWalletBalanceResponse, Unit>>(p => p.GetRequiredService<ComputeWalletBalanceResponseHandler>());
+
+            // Caching
+            services.AddTransient<AssetTickerCache>();
 
             // Angular
             services.AddSpaStaticFiles(configuration =>
@@ -129,7 +166,11 @@ namespace Cryptofolio.App
                 app.UseSpaStaticFiles();
             }
 
-            app.UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute());
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapDefaultControllerRoute();
+                endpoints.MapHub<DashboardHub>(DashboardHub.Endpoint);
+            });
 
             app.UseSpa(spa =>
             {

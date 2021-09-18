@@ -36,7 +36,7 @@
                     <small>{{ holding.asset.name }}</small>
                   </td>
                   <td class=" td-number text-right">{{ holding.qty | number: "1.0-8" }}</td>
-                  <td class=" td-number text-right">{{ holding.asset.currentValue }}</td>
+                  <td class=" td-number text-right">{{ holding.asset.currentValue | currencyValue: wallet.currency }}</td>
                   <td class=" td-number text-right">{{ holding.currentValue | currencyValue: wallet.currency }}</td>
                   <td class=" td-number text-right">
                     <span [ngClass]="{

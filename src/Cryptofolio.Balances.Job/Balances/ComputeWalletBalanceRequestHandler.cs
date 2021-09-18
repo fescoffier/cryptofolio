@@ -1,3 +1,4 @@
+using Confluent.Kafka;
 using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Balances;
 using Cryptofolio.Infrastructure.Caching;
@@ -5,6 +6,7 @@ using Cryptofolio.Infrastructure.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -20,21 +22,29 @@ namespace Cryptofolio.Balances.Job.Balances
     {
         private readonly CryptofolioContext _context;
         private readonly AssetTickerCache _tickerCache;
+        private readonly KafkaProducerWrapper<string, ComputeWalletBalanceResponse> _producerWrapper;
         private readonly ILogger<ComputeWalletBalanceRequestHandler> _logger;
+
+        private IProducer<string, ComputeWalletBalanceResponse> Producer => _producerWrapper.Producer;
+
+        private KafkaProducerOptions<ComputeWalletBalanceResponse> ProducerOptions => _producerWrapper.Options;
 
         /// <summary>
         /// Creates a new instance of <see cref="ComputeWalletBalanceRequestHandler"/>.
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="tickerCache">The ticker cache.</param>
+        /// <param name="producerWrapper">The producer wrapper.</param>
         /// <param name="logger">The logger.</param>
         public ComputeWalletBalanceRequestHandler(
             CryptofolioContext context,
             AssetTickerCache tickerCache,
+            KafkaProducerWrapper<string, ComputeWalletBalanceResponse> producerWrapper,
             ILogger<ComputeWalletBalanceRequestHandler> logger)
         {
             _context = context;
             _tickerCache = tickerCache;
+            _producerWrapper = producerWrapper;
             _logger = logger;
         }
 
@@ -122,6 +132,18 @@ namespace Cryptofolio.Balances.Job.Balances
                 }
 
                 await _context.SaveChangesAsync(cancellationToken);
+                await Producer.ProduceAsync(
+                    ProducerOptions.Topic,
+                    new()
+                    {
+                        Key = Guid.NewGuid().ToString(),
+                        Value = new()
+                        {
+                            WalletId = wallet.Id
+                        }
+                    },
+                    CancellationToken.None
+                );
 
                 async Task<decimal> GetAssetTicker(TickerPair pair)
                 {

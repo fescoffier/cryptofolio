@@ -1,3 +1,4 @@
+using Confluent.Kafka;
 using Cryptofolio.Infrastructure;
 using Cryptofolio.Infrastructure.Balances;
 using Cryptofolio.Infrastructure.TestsCommon;
@@ -30,6 +31,7 @@ namespace Cryptofolio.Balances.Job.IntegrationTests
                     { "Serilog:MinimumLevel:Default", "Fatal" },
                     { "ConnectionStrings:CryptofolioContext", $"Host=localhost;Database={DbName};Username=cryptofolio;Password=Pass@word1;Port=55432;IncludeErrorDetails=true" },
                     { "Kafka:Topics:Cryptofolio.Infrastructure.Balances.ComputeWalletBalanceRequest", Guid.NewGuid().ToString() },
+                    { "Kafka:Topics:Cryptofolio.Infrastructure.Balances.ComputeWalletBalanceResponse", Guid.NewGuid().ToString() },
                     { "Kafka:Topics:Cryptofolio.Infrastructure.Balances.BulkComputeWalletBalanceRequest", Guid.NewGuid().ToString() },
                     { "Bulk:BatchSize", "2" }
                 });
@@ -41,7 +43,13 @@ namespace Cryptofolio.Balances.Job.IntegrationTests
                 systemClockMock.SetupGet(m => m.UtcNow).Returns(() => DateTimeOffset.UtcNow);
                 services.AddSingleton(systemClockMock.Object);
                 services.AddSingleton(systemClockMock);
+                services.AddConsumer<ComputeWalletBalanceResponse>(options =>
+                {
+                    options.Topic = ctx.Configuration.GetSection($"Kafka:Topics:{typeof(ComputeWalletBalanceResponse).FullName}").Get<string>();
+                    options.Config = ctx.Configuration.GetSection("Kafka:Consumer").Get<ConsumerConfig>();
+                });
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<ComputeWalletBalanceRequest>)));
+                services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<ComputeWalletBalanceResponse>)));
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(KafkaMessageHandler<BulkComputeWalletBalanceRequest>)));
                 services.Remove(services.Single(s => s.ServiceType == typeof(IHostedService) && s.ImplementationType == typeof(DatabaseMigrationService<CryptofolioContext>)));
             });

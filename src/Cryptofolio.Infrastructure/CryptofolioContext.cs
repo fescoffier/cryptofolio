@@ -57,7 +57,7 @@ namespace Cryptofolio.Infrastructure
         /// Creates a new instance of <see cref="CryptofolioContext"/>.
         /// </summary>
         /// <param name="options">The options that configures the context.</param>
-        public CryptofolioContext(DbContextOptions options) : base(options)
+        public CryptofolioContext(DbContextOptions<CryptofolioContext> options) : base(options)
         {
         }
 

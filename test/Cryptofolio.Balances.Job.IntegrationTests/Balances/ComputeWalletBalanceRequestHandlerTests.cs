@@ -17,6 +17,8 @@ namespace Cryptofolio.Balances.Job.IntegrationTests.Balances
         private readonly WebApplicationFactory _factory;
         private readonly IServiceScope _scope;
         private readonly ComputeWalletBalanceRequestHandler _handler;
+        private readonly KafkaProducerWrapper<string, ComputeWalletBalanceResponse> _producerWrapper;
+        private readonly KafkaConsumerWrapper<string, ComputeWalletBalanceResponse> _consumerWrapper;
         private readonly CryptofolioContext _context;
         private readonly AssetTickerCache _tickerCache;
 
@@ -27,6 +29,8 @@ namespace Cryptofolio.Balances.Job.IntegrationTests.Balances
             _factory = factory;
             _scope = factory.Services.CreateScope();
             _handler = _scope.ServiceProvider.GetRequiredService<ComputeWalletBalanceRequestHandler>();
+            _producerWrapper = _scope.ServiceProvider.GetRequiredService<KafkaProducerWrapper<string, ComputeWalletBalanceResponse>>();
+            _consumerWrapper = _scope.ServiceProvider.GetRequiredService<KafkaConsumerWrapper<string, ComputeWalletBalanceResponse>>();
             _context = _scope.ServiceProvider.GetRequiredService<CryptofolioContext>();
             _tickerCache = _scope.ServiceProvider.GetRequiredService<AssetTickerCache>();
             factory.PurgeData();
@@ -52,6 +56,7 @@ namespace Cryptofolio.Balances.Job.IntegrationTests.Balances
                 WalletId = Data.Wallet1.Id
             };
             var cancellationToken = CancellationToken.None;
+            _producerWrapper.Options.Topic = _consumerWrapper.Options.Topic = Guid.NewGuid().ToString();
 
             // Act
             await _handler.Handle(request, cancellationToken);
@@ -65,6 +70,11 @@ namespace Cryptofolio.Balances.Job.IntegrationTests.Balances
             Data.Holding1.Change.Should().Be(28.890201659461346365564834460m);
             Data.Wallet1.CurrentValue.Should().Be(960_000);
             Data.Wallet1.Change.Should().Be(28.890201659461346365564834460m);
+
+            _consumerWrapper.Consumer.Subscribe(_consumerWrapper.Options.Topic);
+            var cr = _consumerWrapper.Consumer.Consume();
+            _consumerWrapper.Consumer.Unsubscribe();
+            cr.Message.Value.WalletId.Should().Be(Data.Wallet1.Id);
         }
 
         [Fact]
@@ -93,6 +103,7 @@ namespace Cryptofolio.Balances.Job.IntegrationTests.Balances
                 WalletId = Data.Wallet2.Id
             };
             var cancellationToken = CancellationToken.None;
+            _producerWrapper.Options.Topic = _consumerWrapper.Options.Topic = Guid.NewGuid().ToString();
 
             // Act
             await _handler.Handle(request, cancellationToken);
@@ -104,6 +115,11 @@ namespace Cryptofolio.Balances.Job.IntegrationTests.Balances
             Data.Holding2.Change.Should().Be(2.6666666666666666666666666700m);
             Data.Wallet2.CurrentValue.Should().Be(9_856_000);
             Data.Wallet2.Change.Should().Be(2.6666666666666666666666666700m);
+
+            _consumerWrapper.Consumer.Subscribe(_consumerWrapper.Options.Topic);
+            var cr = _consumerWrapper.Consumer.Consume();
+            _consumerWrapper.Consumer.Unsubscribe();
+            cr.Message.Value.WalletId.Should().Be(Data.Wallet2.Id);
         }
 
         [Fact]
@@ -126,6 +142,7 @@ namespace Cryptofolio.Balances.Job.IntegrationTests.Balances
                 WalletId = Data.Wallet3.Id
             };
             var cancellationToken = CancellationToken.None;
+            _producerWrapper.Options.Topic = _consumerWrapper.Options.Topic = Guid.NewGuid().ToString();
 
             // Act
             await _handler.Handle(request, cancellationToken);
@@ -137,6 +154,11 @@ namespace Cryptofolio.Balances.Job.IntegrationTests.Balances
             Data.Holding3.Change.Should().Be(37.59m);
             Data.Wallet3.CurrentValue.Should().Be(1100720);
             Data.Wallet3.Change.Should().Be(37.59m);
+
+            _consumerWrapper.Consumer.Subscribe(_consumerWrapper.Options.Topic);
+            var cr = _consumerWrapper.Consumer.Consume();
+            _consumerWrapper.Consumer.Unsubscribe();
+            cr.Message.Value.WalletId.Should().Be(Data.Wallet3.Id);
         }
     }
 }

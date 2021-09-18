@@ -48,9 +48,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Infrastructure.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Balances", "Balances", "{2A0DCE70-4995-436A-81B4-5EE4265B98B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptofolio.Balances.Job", "src\Cryptofolio.Balances.Job\Cryptofolio.Balances.Job.csproj", "{27B2E99C-1795-4AF1-984E-FDEC54608566}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Balances.Job", "src\Cryptofolio.Balances.Job\Cryptofolio.Balances.Job.csproj", "{27B2E99C-1795-4AF1-984E-FDEC54608566}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptofolio.Balances.Job.IntegrationTests", "test\Cryptofolio.Balances.Job.IntegrationTests\Cryptofolio.Balances.Job.IntegrationTests.csproj", "{06901527-0834-4F08-B5CC-D96E85FA8D08}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptofolio.Balances.Job.IntegrationTests", "test\Cryptofolio.Balances.Job.IntegrationTests\Cryptofolio.Balances.Job.IntegrationTests.csproj", "{06901527-0834-4F08-B5CC-D96E85FA8D08}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptofolio.App.IntegrationTests", "test\Cryptofolio.App.IntegrationTests\Cryptofolio.App.IntegrationTests.csproj", "{88B7B1B3-56BA-4782-9E2B-AC6D7A3B84A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -118,6 +120,10 @@ Global
 		{06901527-0834-4F08-B5CC-D96E85FA8D08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06901527-0834-4F08-B5CC-D96E85FA8D08}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06901527-0834-4F08-B5CC-D96E85FA8D08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88B7B1B3-56BA-4782-9E2B-AC6D7A3B84A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88B7B1B3-56BA-4782-9E2B-AC6D7A3B84A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88B7B1B3-56BA-4782-9E2B-AC6D7A3B84A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88B7B1B3-56BA-4782-9E2B-AC6D7A3B84A7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -138,6 +144,7 @@ Global
 		{09050952-1ADE-4B7B-B02F-65BA65B52525} = {F80CA797-A4CA-4C02-9496-5518EAA9F03E}
 		{27B2E99C-1795-4AF1-984E-FDEC54608566} = {2A0DCE70-4995-436A-81B4-5EE4265B98B4}
 		{06901527-0834-4F08-B5CC-D96E85FA8D08} = {2A0DCE70-4995-436A-81B4-5EE4265B98B4}
+		{88B7B1B3-56BA-4782-9E2B-AC6D7A3B84A7} = {3A290A0A-4DDE-4E16-AA04-F5B6C6BCE818}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7F9B8C09-ECC1-413C-92A4-58299272789F}

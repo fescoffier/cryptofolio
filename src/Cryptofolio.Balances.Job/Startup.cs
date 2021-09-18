@@ -53,6 +53,11 @@ namespace Cryptofolio.Balances.Job
                 options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(ComputeWalletBalanceRequest).FullName}").Get<string>();
                 options.Config = Configuration.GetSection("Kafka:Consumer").Get<ConsumerConfig>();
             });
+            services.AddProducer<ComputeWalletBalanceResponse>(options =>
+            {
+                options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(ComputeWalletBalanceResponse).FullName}").Get<string>();
+                options.Config = Configuration.GetSection("Kafka:Producer").Get<ProducerConfig>();
+            });
             services.AddConsumer<BulkComputeWalletBalanceRequest>(options =>
             {
                 options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(BulkComputeWalletBalanceRequest).FullName}").Get<string>();
