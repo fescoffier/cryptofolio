@@ -74,6 +74,8 @@ namespace Cryptofolio.App.Balances
                     holding.Wallet = null;
                 }
 
+                wallet.Holdings = wallet.Holdings.OrderByDescending(h => h.CurrentValue).ToArray();
+
                 await _hubContext.Clients
                     .User(wallet.UserId)
                     .SendAsync(nameof(IDashboardClient.WalletBalanceChanged), wallet, cancellationToken);

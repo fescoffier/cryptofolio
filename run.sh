@@ -16,6 +16,8 @@ _term() {
 
 trap _term SIGTERM
 
+export Serilog__MinimumLevel__Default=Information
+
 dotnet run -p src/Cryptofolio.App/ &
 APP_PID=$!
 
