@@ -24,14 +24,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .build();
     this.connection.on("WalletBalanceChanged", (walletJson: any) => {
       const wallet = new Wallet(walletJson);
-      this.wallets = this.wallets
-        .map(w => w.id == wallet.id ? wallet : w)
-        .sort((a, b) => {
-          if (a.selected) {
-            return -1;
-          }
-          return a > b ? 1 : -1
-        });
+      this.wallets = this.wallets.map(w => w.id == wallet.id ? wallet : w);
     });
     this.connection
       .start()

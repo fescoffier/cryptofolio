@@ -95,7 +95,7 @@ namespace Cryptofolio.Api.Commands
                 {
                     Id = Guid.NewGuid().ToString(),
                     Date = command.Date,
-                    Wallet = await _context.Wallets.SingleOrDefaultAsync(w => w.Id == command.WalletId, cancellationToken),
+                    Wallet = await _context.Wallets.Include(w => w.Currency).SingleOrDefaultAsync(w => w.Id == command.WalletId, cancellationToken),
                     Asset = await _context.Assets.SingleOrDefaultAsync(a => a.Id == command.AssetId, cancellationToken),
                     Exchange = await _context.Exchanges.SingleOrDefaultAsync(e => e.Id == command.ExchangeId, cancellationToken),
                     Currency = await _context.Currencies.SingleOrDefaultAsync(c => c.Id == command.CurrencyId, cancellationToken),

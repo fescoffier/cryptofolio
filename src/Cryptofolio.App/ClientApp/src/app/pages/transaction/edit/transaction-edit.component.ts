@@ -85,7 +85,7 @@ export class TransactionEditComponent implements OnInit {
 
   private createForm(transaction?: Transaction): FormGroup {
     if (this.type === "buy" || this.type === "sell") {
-      return this.fb.group({
+      const form = this.fb.group({
         id: [transaction?.id],
         transaction_date: [transaction?.date, [Validators.required]],
         transaction_time: [transaction?.date],
@@ -101,6 +101,9 @@ export class TransactionEditComponent implements OnInit {
         qty: [transaction?.qty, [Validators.required, Validators.min(0), Validators.max(Number.MAX_VALUE)]],
         note: [transaction?.note]
       });
+      form.controls.transaction_date.valueChanges.subscribe(_ => this.setTicker());
+      form.controls.transaction_time.valueChanges.subscribe(_ => this.setTicker());
+      return form;
     } else if (this.type === "transfer") {
       return this.fb.group({
         id: [transaction?.id],
@@ -125,13 +128,18 @@ export class TransactionEditComponent implements OnInit {
   private setTicker() {
     if (this.type === "buy" || this.type === "sell") {
       const assetId = this.formControls["asset_id"].value;
-      const priceControl = this.formControls["price"];
-      if (assetId && !priceControl.value) {
+      if (assetId) {
         const vsCurrency = this.formControls["currency_name"].value;
-        const timestamp = this.formControls["transaction_date"].value;
+        const timestamp = this.formControls.transaction_date.value as Date;
+        const time = this.formControls.transaction_time.value as Date;
+        if (time) {
+          timestamp.setHours(time.getHours());
+          timestamp.setMinutes(time.getMinutes());
+          timestamp.setSeconds(0);
+        }
         this.service
           .getAssetTicker(assetId, vsCurrency, timestamp)
-          .subscribe(ticker => priceControl.setValue(ticker.value));
+          .subscribe(ticker => this.formControls["price"].setValue(ticker.value));
       }
     }
   }
