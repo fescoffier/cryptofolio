@@ -38,7 +38,9 @@ namespace Cryptofolio.App
             services.AddControllersWithViews();
 
             // SignalR
-            services.AddSignalR();
+            services
+                .AddSignalR()
+                .AddStackExchangeRedis(Configuration.GetConnectionString("Redis"));
 
             // Identity
             services
@@ -99,7 +101,6 @@ namespace Cryptofolio.App
             {
                 options.Topic = Configuration.GetSection($"Kafka:Topics:{typeof(ComputeWalletBalanceResponse).FullName}").Get<string>();
                 options.Config = Configuration.GetSection("Kafka:Consumer").Get<ConsumerConfig>();
-                options.Config.GroupId += $"{options.Config.GroupId}-{System.Environment.MachineName}";
             });
 
             // Redis

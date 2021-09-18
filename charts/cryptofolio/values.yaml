@@ -180,6 +180,7 @@ app:
   ingress:
     enabled: true
     annotations:
+      nginx.ingress.kubernetes.io/affinity: "cookie"
       cert-manager.io/cluster-issuer: "letsencrypt-prod"
     hosts:
       - host: app.cryptofolio.dev
