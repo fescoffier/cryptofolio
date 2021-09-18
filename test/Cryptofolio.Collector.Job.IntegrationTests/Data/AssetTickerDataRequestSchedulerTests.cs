@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Cryptofolio.Collector.Job.IntegrationTests.Data
 {
-    public class AssetTickerDataRequestSchedulerTests : IClassFixture<WebApplicationFactory>
+    public class AssetTickerDataRequestSchedulerTests : SchedulerTestBase, IClassFixture<WebApplicationFactory>
     {
         private readonly WebApplicationFactory _factory;
         private readonly AssetTickerDataRequestScheduler _scheduler;
@@ -62,7 +62,7 @@ namespace Cryptofolio.Collector.Job.IntegrationTests.Data
 
             // Act
             await _scheduler.StartAsync(CancellationToken.None);
-            await Task.Delay(TimeSpan.FromSeconds(60));
+            await Task.Delay(SchedulerDelay);
             await _scheduler.StopAsync(CancellationToken.None);
 
             // Asset

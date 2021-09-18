@@ -19,7 +19,7 @@ using Xunit;
 
 namespace Cryptofolio.Collector.Job.IntegrationTests.Data
 {
-    public class DataRequestSchedulerBaseTests : IClassFixture<WebApplicationFactory>
+    public class DataRequestSchedulerBaseTests : SchedulerTestBase, IClassFixture<WebApplicationFactory>
     {
         private readonly TestDataRequestScheduler _scheduler;
         private readonly KafkaProducerWrapper<string, TestDataRequest> _producerWrapper;
@@ -68,7 +68,7 @@ namespace Cryptofolio.Collector.Job.IntegrationTests.Data
 
             // Act
             await _scheduler.StartAsync(CancellationToken.None);
-            await Task.Delay(TimeSpan.FromSeconds(60));
+            await Task.Delay(SchedulerDelay);
             await _scheduler.StopAsync(CancellationToken.None);
 
             // Assert
@@ -124,7 +124,7 @@ namespace Cryptofolio.Collector.Job.IntegrationTests.Data
                     new(DataRequestSchedulerBase<TestDataRequest>.SchedulesHashScheduledAtField, JsonSerializer.Serialize(DateTimeOffset.UtcNow.AddMinutes(10)))
                 }
             );
-            await Task.Delay(TimeSpan.FromSeconds(60));
+            await Task.Delay(SchedulerDelay);
             await _scheduler.StopAsync(CancellationToken.None);
 
             // Assert
