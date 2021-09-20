@@ -8,7 +8,7 @@ import { Currency } from "../../models/currency";
 import { Wallet } from "../../models/wallet";
 
 @Injectable()
-export class WalletService {
+export class WalletsService {
   constructor(private http: HttpClient, private api: ApiOptions) {}
 
   getCurrencies(): Observable<Currency[]> {

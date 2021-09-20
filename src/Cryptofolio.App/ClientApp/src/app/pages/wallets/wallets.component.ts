@@ -3,8 +3,8 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Currency } from "src/app/models/currency";
 import swal from "sweetalert2";
 
-import { Wallet } from "../../../models/wallet";
-import { WalletService } from "../wallet.service";
+import { Wallet } from "../../models/wallet";
+import { WalletsService } from "./wallets.service";
 
 @Component({
   selector: "app-wallets",
@@ -22,7 +22,7 @@ export class WalletsComponent implements OnInit {
     return this.form.controls;
   }
 
-  constructor(private formBuilder: FormBuilder, private service: WalletService) { }
+  constructor(private formBuilder: FormBuilder, private service: WalletsService) { }
 
   ngOnInit() {
     this.service.get().subscribe(wallets => this.wallets = wallets);

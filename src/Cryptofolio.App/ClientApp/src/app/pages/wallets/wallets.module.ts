@@ -5,16 +5,16 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 import { PipeModule } from "../../pipes/pipe.module";
-import { WalletsComponent } from "./wallets/wallets.component";
-import { WalletRoutes } from "./wallet.routing";
-import { WalletService } from "./wallet.service";
+import { WalletsComponent } from "./wallets.component";
+import { WalletsRoutes } from "./wallets.routing";
+import { WalletsService } from "./wallets.service";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule.withConfig({ warnOnNgModelWithFormControl: "never" }),
-    RouterModule.forChild(WalletRoutes),
+    RouterModule.forChild(WalletsRoutes),
     BsDropdownModule,
     PipeModule
   ],
@@ -22,7 +22,7 @@ import { WalletService } from "./wallet.service";
     WalletsComponent
   ],
   providers: [
-    WalletService
+    WalletsService
   ]
 })
-export class WalletModule {}
+export class WalletsModule {}

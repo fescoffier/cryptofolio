@@ -23,7 +23,7 @@ const routes: Routes = [
       {
         path: "wallets",
         loadChildren:
-          "./pages/wallet/wallet.module#WalletModule"
+          "./pages/wallets/wallets.module#WalletsModule"
       },
       {
         path: "transactions",
