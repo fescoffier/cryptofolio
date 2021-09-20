@@ -13,7 +13,7 @@ import {
 import { Asset } from "../../../models/asset";
 import { Currency } from "../../../models/currency";
 import { Exchange } from "../../../models/exchange";
-import { Transaction } from "../../../models/transaction";
+import { BuyOrSellTransaction, Transaction } from "../../../models/transaction";
 import { TransactionService } from "../transaction.service";
 import { Wallet } from "../../../models/wallet";
 
@@ -53,6 +53,9 @@ export class TransactionEditComponent implements OnInit {
         this.service
           .get(params["id"])
           .subscribe(transaction => {
+            if (transaction instanceof BuyOrSellTransaction) {
+              this.type = transaction.type;
+            }
             this.formMode = "edit";
             this.form = this.createForm(transaction);
           });
@@ -69,17 +72,7 @@ export class TransactionEditComponent implements OnInit {
       .getWallets()
       .subscribe(wallets => {
         this.wallets = wallets;
-        const selected = wallets.filter(w => w.selected)[0];
-        if (selected && this.formMode === "create") {
-          const date = new Date();
-          this.formControls["transaction_date"].setValue(date);
-          this.formControls["transaction_time"].setValue(date);
-          this.formControls["wallet_id"].setValue(selected.id);
-          this.formControls["wallet_name"].setValue(selected.name);
-          this.formControls["currency_id"].setValue(selected.currency.id);
-          this.formControls["currency_name"].setValue(selected.currency.code);
-          this.setTicker();
-        }
+        this.setDefault();
       });
   }
 
@@ -125,6 +118,22 @@ export class TransactionEditComponent implements OnInit {
     }
   }
 
+  private setDefault() {
+    const selected = this.wallets.filter(w => w.selected)[0];
+        if (selected && this.formMode === "create") {
+          const date = new Date();
+          this.formControls["transaction_date"].setValue(date);
+          this.formControls["transaction_time"].setValue(date);
+          this.formControls["wallet_id"].setValue(selected.id);
+          this.formControls["wallet_name"].setValue(selected.name);
+          if (this.type === "buy" || this.type === "sell") {
+            this.formControls["currency_id"].setValue(selected.currency.id);
+            this.formControls["currency_name"].setValue(selected.currency.code);
+          }
+          this.setTicker();
+        }
+  }
+
   private setTicker() {
     if (this.type === "buy" || this.type === "sell") {
       const assetId = this.formControls["asset_id"].value;
@@ -168,6 +177,7 @@ export class TransactionEditComponent implements OnInit {
     this.type = type;
     this.form = this.createForm();
     this.formSubmitted = false;
+    this.setDefault();
   }
 
   setWallet(wallet: Wallet) {

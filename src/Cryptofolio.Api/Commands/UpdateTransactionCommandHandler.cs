@@ -97,7 +97,6 @@ namespace Cryptofolio.Api.Commands
                 bst.Price = command.Price;
                 bst.Qty = command.Qty;
                 bst.InitialValue = command.Qty * command.Price;
-                bst.Type = command.Type;
                 bst.Note = command.Note;
             }
             else if (transaction is TransferTransaction tft && command.Type == CommandConstants.Transaction.Types.Transfer)
