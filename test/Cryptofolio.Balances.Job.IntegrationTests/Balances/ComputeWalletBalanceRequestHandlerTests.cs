@@ -67,9 +67,9 @@ namespace Cryptofolio.Balances.Job.IntegrationTests.Balances
             Data.Transaction2.CurrentValue.Should().Be(240_000);
             Data.Transaction2.Change.Should().Be(-5.948742064425111685868798500m);
             Data.Holding1.CurrentValue.Should().Be(960_000);
-            Data.Holding1.Change.Should().Be(28.890201659461346365564834460m);
+            Data.Holding1.Change.Should().Be(20m);
             Data.Wallet1.CurrentValue.Should().Be(960_000);
-            Data.Wallet1.Change.Should().Be(28.890201659461346365564834460m);
+            Data.Wallet1.Change.Should().Be(20m);
 
             _consumerWrapper.Consumer.Subscribe(_consumerWrapper.Options.Topic);
             var cr = _consumerWrapper.Consumer.Consume();

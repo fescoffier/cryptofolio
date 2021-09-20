@@ -125,6 +125,10 @@ namespace Cryptofolio.Handlers.Job.Transactions
                 }
                 else if (holding.Qty > 0)
                 {
+                    var sumBuyQty = transactions
+                        .OfType<BuyOrSellTransaction>()
+                        .Where(t => t.Type == InfrastructureConstants.Transactions.Types.Buy)
+                        .Sum(t => t.Qty);
                     foreach (var transaction in transactions)
                     {
                         if (transaction is BuyOrSellTransaction bst)
@@ -144,9 +148,9 @@ namespace Cryptofolio.Handlers.Job.Transactions
                             {
                                 holding.InitialValue += (bst.InitialValue * rate);
                             }
-                            else
+                            else if (bst.Type == InfrastructureConstants.Transactions.Types.Sell && sumBuyQty > 0)
                             {
-                                holding.InitialValue -= (bst.InitialValue * rate);
+                                holding.InitialValue -= (holding.InitialValue * (bst.Qty / sumBuyQty));
                             }
                         }
                         else if (transaction is TransferTransaction tft)

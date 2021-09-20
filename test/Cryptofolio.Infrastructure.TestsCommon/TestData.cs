@@ -230,7 +230,7 @@ namespace Cryptofolio.Infrastructure.TestsCommon
                 Asset = BTC,
                 Wallet = Wallet1,
                 Qty = Transaction1.Qty - Transaction2.Qty,
-                InitialValue = Transaction1.InitialValue - Transaction2.InitialValue
+                InitialValue = Transaction1.InitialValue - (Transaction1.InitialValue * Transaction2.Qty / Transaction1.Qty)
             };
             Holding2 = new()
             {
