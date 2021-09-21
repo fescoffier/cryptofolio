@@ -1,0 +1,140 @@
+<div class=" content">
+  <div class=" row">
+    <div class=" col-md-12" *ngIf="asset">
+      <div class=" card">
+        <div class=" card-header">
+          <div class="card-title d-flex flex-row align-items-center">
+            <img [src]="asset.image.small" [alt]="asset.name" class="mr-3" />
+            <h2 class="mb-0">{{ asset.name }} - {{ asset.symbol | uppercase }} - <small>Rank #{{ asset.market_cap_rank }}</small></h2>
+          </div>
+        </div>
+        <div class="card-body pb-0">
+          <h2 class="mb-3">
+            ${{ asset.market_data.current_price.usd | number: "1.0-2" }}
+            <small [ngClass]="{
+              'text-danger': asset.market_data.price_change_percentage_24h < 0,
+              'text-success': asset.market_data.price_change_percentage_24h > 0
+            }">{{ asset.market_data.price_change_percentage_24h | number: "1.0-2" }}%</small>
+          </h2>
+          <div class=" progress-container progress-success">
+            <div class=" progress">
+              <progressbar class="progress-bar-success" [value]="((asset.market_data.current_price.usd - asset.market_data.low_24h.usd) * 100) / (asset.market_data.high_24h.usd - asset.market_data.low_24h.usd)">
+              </progressbar>
+            </div>
+            <div class="d-flex flex-row justify-content-between">
+              <span class=" progress-badge">${{ asset.market_data.low_24h.usd | number: "1.0-2" }}</span>
+              <span class=" progress-badge">24h range</span>
+              <span class=" progress-badge">${{ asset.market_data.high_24h.usd | number: "1.0-2" }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-body pb-0">
+          <h3 class="mb-3">Market stats</h3>
+          <div class=" table-responsive overflow-hidden pb-0">
+            <table class=" table mb-0">
+              <tbody>
+                <tr>
+                  <td>Market cap</td>
+                  <td>
+                    ${{ asset.market_data.market_cap.usd | number: "1.0-2"}}
+                    <small [ngClass]="{
+                      'text-danger': asset.market_data.market_cap_change_percentage_24h < 0,
+                      'text-success': asset.market_data.market_cap_change_percentage_24h > 0
+                    }">{{ asset.market_data.market_cap_change_percentage_24h | number: "1.0-2" }}%</small>
+                  </td>
+                  <td>Circulating supply</td>
+                  <td>{{ asset.market_data.circulating_supply | number: "1.0-2" }}</td>
+                </tr>
+                <tr>
+                  <td>24h trading volume</td>
+                  <td>${{ asset.market_data.total_volume.usd | number: "1.0-2" }}</td>
+                  <td>Total supply</td>
+                  <td>{{ (asset.market_data.total_supply | number: "1.0-2") || "∞" }}</td>
+                </tr>
+                <tr>
+                  <td>Fully diluted market cap</td>
+                  <td>${{ (asset.market_data.fully_diluted_valuation.usd | number: "1.0-2") || "?" }}</td>
+                  <td>Max supply</td>
+                  <td>{{ (asset.market_data.max_supply | number: "1.0-2") || "?" }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card-body">
+          <h3 class="mb-3">Price change</h3>
+          <div class=" table-responsive overflow-hidden pb-0">
+            <table class=" table mb-0">
+              <thead>
+                <tr>
+                  <th class=" text-center">24h</th>
+                  <th class=" text-center">7d</th>
+                  <th class=" text-center">14d</th>
+                  <th class=" text-center">30d</th>
+                  <th class=" text-center">200d</th>
+                  <th class=" text-center">1y</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="text-center">
+                    <span [ngClass]="{
+                      'text-danger': asset.market_data.price_change_percentage_24h < 0,
+                      'text-success': asset.market_data.price_change_percentage_24h > 0
+                    }">{{ asset.market_data.price_change_percentage_24h | number: "1.0-2"}}%</span>
+                  </td>
+                  <td class="text-center">
+                    <span [ngClass]="{
+                      'text-danger': asset.market_data.price_change_percentage_7d < 0,
+                      'text-success': asset.market_data.price_change_percentage_7d > 0
+                    }">{{ asset.market_data.price_change_percentage_7d | number: "1.0-2"}}%</span>
+                  </td>
+                  <td class="text-center">
+                    <span [ngClass]="{
+                      'text-danger': asset.market_data.price_change_percentage_14d < 0,
+                      'text-success': asset.market_data.price_change_percentage_14d > 0
+                    }">{{ asset.market_data.price_change_percentage_14d | number: "1.0-2"}}%</span>
+                  </td>
+                  <td class="text-center">
+                    <span [ngClass]="{
+                      'text-danger': asset.market_data.price_change_percentage_30d < 0,
+                      'text-success': asset.market_data.price_change_percentage_30d > 0
+                    }">{{ asset.market_data.price_change_percentage_30d | number: "1.0-2"}}%</span>
+                  </td>
+                  <td class="text-center">
+                    <span [ngClass]="{
+                      'text-danger': asset.market_data.price_change_percentage_200d < 0,
+                      'text-success': asset.market_data.price_change_percentage_200d > 0
+                    }">{{ asset.market_data.price_change_percentage_200d | number: "1.0-2"}}%</span>
+                  </td>
+                  <td class="text-center">
+                    <span [ngClass]="{
+                      'text-danger': asset.market_data.price_change_percentage_1y < 0,
+                      'text-success': asset.market_data.price_change_percentage_1y > 0
+                    }">{{ asset.market_data.price_change_percentage_1y | number: "1.0-2"}}%</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class=" card">
+        <div class="card-body">
+          <!-- TradingView Widget BEGIN -->
+          <div class="tradingview-widget-container">
+            <div id="tradingview_chart" style="width: 100%; height: 640px;">
+              Loading chart...
+            </div>
+            <div class="tradingview-widget-copyright">
+              <a href="https://www.tradingview.com/symbols/{{ asset.symbol | uppercase }}USD/" rel="noopener"target="_blank">
+                <span class="blue-text">{{ asset.symbol | uppercase }}/USD Chart</span>
+              </a> by TradingView
+            </div>
+          </div>
+          <!-- TradingView Widget END -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

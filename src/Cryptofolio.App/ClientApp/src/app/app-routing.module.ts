@@ -21,6 +21,11 @@ const routes: Routes = [
           "./pages/dashboard/dashboard.module#DashboardModule"
       },
       {
+        path: "assets",
+        loadChildren:
+          "./pages/assets/assets.module#AssetsModule"
+      },
+      {
         path: "wallets",
         loadChildren:
           "./pages/wallets/wallets.module#WalletsModule"

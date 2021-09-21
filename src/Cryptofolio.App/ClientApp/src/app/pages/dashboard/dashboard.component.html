@@ -32,7 +32,7 @@
                     </div>
                   </td>
                   <td class=" td-name">
-                    <a href="javascript:void(0)">{{ holding.asset.symbol | uppercase }}</a><br />
+                    <a [routerLink]="'/assets/' + holding.asset.id">{{ holding.asset.symbol | uppercase }}</a><br />
                     <small>{{ holding.asset.name }}</small>
                   </td>
                   <td class=" td-number text-right">{{ holding.qty | number: "1.0-8" }}</td>

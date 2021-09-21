@@ -111,8 +111,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
         return this.listTitles[item].title;
       }
     }
-    
-    console.log(titlee, this.listTitles);
 
     return "Dashboard";
   }
